@@ -1,29 +1,70 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Scanner;
 
-public class ComputerFactory extends DAOFactory {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import model.Company;
+import model.Computer;
+
+public class ComputerFactory {
+	private Connection conn;
+	private static ComputerFactory INSTANCE = null;
 	/**
 	 * ComputerFactory contient les méthodes spécifiques à la table computer.
 	 * @throws SQLException
 	 */
-	public ComputerFactory() throws SQLException {
-		super();
+	private ComputerFactory() throws SQLException {
+		this.initConnexion();
 	}
 
 	/**
-	 * Liste les ordinateurs contenus dans la table computer.
-	 * @param champs les champs de la table à afficher
+	 * Méthode qui retourne l'instance unique de la classe ComputerFactory.
+	 * @return l'instance de la classe ComputerFactory
 	 * @throws SQLException
 	 */
-	public void listComputers(ArrayList<String> champs) throws SQLException {
-		Statement stmt = super.conn.createStatement();
+    public static ComputerFactory getInstance() throws SQLException{           
+        if (ComputerFactory.INSTANCE == null) {
+        	ComputerFactory.INSTANCE = new ComputerFactory(); 
+        }
+        return ComputerFactory.INSTANCE;
+    }
+    
+	/**
+	 * Initialise la connexion à la BDD.
+	 * @throws SQLException
+	 */
+	private void initConnexion() {
+		String url = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
+		Properties prp = new Properties();
+		prp.put("user", "root");
+		prp.put("password", "");
+		try {
+			this.conn = DriverManager.getConnection(url, prp);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	/**
+	 * Liste les ordinateurs contenus dans la table computer.
+	 * @param champs les champs de la table à afficher
+	 * @return retour la liste des resultats de la requête
+	 * @throws SQLException
+	 */
+	public ArrayList<Computer> listComputers(ArrayList<String> champs) throws SQLException {
+		ArrayList<Computer> computers = new ArrayList<Computer>();
+		Statement stmt = this.conn.createStatement();
 		Scanner scanner = new Scanner(System.in);
 		String query = "SELECT ";
 		for (int i = 0; i<champs.size() - 1; i++) {
@@ -31,45 +72,84 @@ public class ComputerFactory extends DAOFactory {
 		}
 		query += champs.get(champs.size() - 1) + " FROM computer";
 		ResultSet rs = stmt.executeQuery(query);
-		int nombre = 0;
         while (rs.next()) {
-        	if(nombre == 10) {
-     		   System.out.println("Appuyer sur \"ENTRÉE\" pour continuer");
-    		   scanner.nextLine();
-    		   nombre = 0;
-        	}
-    		String ligne = "computer : ";
-    		for (int i = 0; i<champs.size() - 1; i++) {
+        	Computer computer = new Computer();
+    		for (int i = 0; i<champs.size(); i++) {
     			if(rs.getString(champs.get(i)) != null) {
-                    ligne += rs.getString(champs.get(i)) + " ";
+        			switch(champs.get(i)) {
+	    				case "id" :
+	    					computer.setId(Integer.parseInt(rs.getString(champs.get(i))));
+	    					break;
+	    				case "name" :
+	    					computer.setName(rs.getString(champs.get(i)));
+	    					break;
+	    				case "introduced" :
+	    					if (! rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+		    					computer.setIntroduced(Timestamp.valueOf(rs.getString(champs.get(i))));
+	    					}
+	    					break;
+	    				case "discontinued" :
+	    					if (! rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+		    					computer.setDiscontinued(Timestamp.valueOf(rs.getString(champs.get(i))));
+	    					}
+	    					break;
+	    				case "company_id" :
+	    					computer.setCompany(new Company(Integer.parseInt(rs.getString(champs.get(i))),""));
+	    					break;
+	    				default :
+	    					break;
+        			}
     			}
     		}
-    		ligne += rs.getString(champs.get(champs.size() - 1));
-    		System.out.println(ligne);
-    		nombre++;
+    		computers.add(computer);
         }
+        return computers;
 	}
 	
 	/**
 	 * Affiche les informations d'un ordinateur contenu dans la table computer.
 	 * @param numero l'id de l'ordinateur à afficher
+	 * @return retour la liste des resultats de la requête
 	 * @throws SQLException
 	 */
-	public void showComputerDetails(int numero) throws SQLException {
-		Statement stmt = super.conn.createStatement();			
+	public ArrayList<Computer> showComputerDetails(int numero) throws SQLException {
+		ArrayList<Computer> computers = new ArrayList<Computer>();
+		Statement stmt = this.conn.createStatement();			
 		String query = "SELECT * FROM computer WHERE id = " + numero;
 		ResultSet rs = stmt.executeQuery(query);
 		String[] champs = {"id", "name", "introduced", "discontinued", "company_id"};
-		while ( rs.next() ) {
-			String ligne = "computer : ";
-    		for (int i = 0; i<champs.length - 1; i++) {
+		while (rs.next()) {
+        	Computer computer = new Computer();
+    		for (int i = 0; i<champs.length; i++) {
     			if(rs.getString(champs[i]) != null) {
-                    ligne += rs.getString(champs[i]) + " ";
-    			}
+        			switch(champs[i]) {
+	    				case "id" :
+	    					computer.setId(Integer.parseInt(rs.getString(champs[i])));
+	    					break;
+	    				case "name" :
+	    					computer.setName(rs.getString(champs[i]));
+	    					break;
+	    				case "introduced" :
+	    					if (! rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+		    					computer.setIntroduced(Timestamp.valueOf(rs.getString(champs[i])));
+	    					}
+	    					break;
+	    				case "discontinued" :
+	    					if (! rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+		    					computer.setDiscontinued(Timestamp.valueOf(rs.getString(champs[i])));
+	    					}
+	    					break;
+	    				case "company_id" :
+	    					computer.setCompany(new Company(Integer.parseInt(rs.getString(champs[i])),""));
+	    					break;
+	    				default :
+	    					break;
+        			}
+        		}
     		}
-    		ligne += rs.getString(champs[champs.length - 1]);
-    		System.out.println(ligne);
+    		computers.add(computer);
         }
+		return computers;
 	}
 	
 	/** 
@@ -83,7 +163,7 @@ public class ComputerFactory extends DAOFactory {
 	 */
 	public void createComputer(String name, String introduced, String discontinued, String companyId) throws SQLException, IllegalArgumentException {
 		String query = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
-		PreparedStatement stmt = super.conn.prepareStatement(query);
+		PreparedStatement stmt = this.conn.prepareStatement(query);
 		if ("".equals(name)) {
 			stmt.setString(1, null);
 		} else {
@@ -123,7 +203,7 @@ public class ComputerFactory extends DAOFactory {
 			query += champs.get(i) + " = ?, ";
 		}
 		query += champs.get(champs.size() - 1) + " = ? WHERE id = ?";
-		PreparedStatement stmt = super.conn.prepareStatement(query);
+		PreparedStatement stmt = this.conn.prepareStatement(query);
 		for (int i = 0; i<champs.size(); i++) {
 			switch(champs.get(i)) {
 				case "name" :
@@ -178,7 +258,7 @@ public class ComputerFactory extends DAOFactory {
 			query += champs.get(i) + " = ? AND ";
 		}
 		query += champs.get(champs.size() - 1) + " = ?";
-		PreparedStatement stmt = super.conn.prepareStatement(query);
+		PreparedStatement stmt = this.conn.prepareStatement(query);
 		for (int i = 0; i<champs.size(); i++) {
 			switch(champs.get(i)) {
 				case "id" :

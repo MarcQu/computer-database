@@ -1,4 +1,4 @@
-package ui;
+package view;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -9,9 +9,11 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import controler.Controler;
 import dao.CompanyFactory;
 import dao.ComputerFactory;
-import dao.DAOFactory;
+import model.Company;
+import model.Computer;
 
 public class Interface {
 	/**
@@ -66,16 +68,31 @@ public class Interface {
 	 * @throws SQLException
 	 */
 	private void useCommandCompany(Logger logger, Scanner sc) throws SQLException {
-		CompanyFactory factory = new CompanyFactory();
 		// Boucle pour le menu company
 		retour : while(true) {
 			String command = sc.nextLine();
 			// Switch pour les commandes
 			switch (command) {
 				case "listCompanies" :
-					champsEntries(logger, factory, sc);
-					System.out.print("-> ");
+					System.out.println("Lister l'id? (y/n)");
+					String id = sc.nextLine();
+					System.out.println("Lister le nom? (y/n)");	
+					String name = sc.nextLine();
+					ArrayList<String> champs = new ArrayList<String>();
+					if ("y".equals(id.toLowerCase())) {
+						champs.add("id");
+					}
+					if ("y".equals(name.toLowerCase())) {
+						champs.add("name");
+					}
+					if (champs.size() > 0) {
+						ArrayList<Company> companies = Controler.getInstance().listCompanies(champs);
+						for (Company company : companies) {
+							System.out.println(company.toString());
+						}
+					}
 				    logger.info("listCompanies");
+					System.out.print("-> ");
 					break;
 				case "aide" :
 					System.out.println("Liste des commandes :");
@@ -101,7 +118,7 @@ public class Interface {
 	 * @throws SQLException
 	 */
 	private void useCommandComputer(Logger logger, Scanner sc) throws SQLException {
-		ComputerFactory factory = new ComputerFactory();
+		ComputerFactory factory = ComputerFactory.getInstance();
 		// Boucle pour le menu computer
 		retour : while(true) {
 			String command = sc.nextLine();
@@ -114,9 +131,39 @@ public class Interface {
 			// Switch pour les commandes
 			switch (command) {
 				case "listComputers" :
-					champsEntries(logger, factory, sc);
-					System.out.print("-> ");
+					System.out.println("Lister l'id? (y/n)");
+					id = sc.nextLine();
+					System.out.println("Lister le nom? (y/n)");	
+					name = sc.nextLine();
+					System.out.println("Lister l'introduced? (y/n)");
+					introduced = sc.nextLine();
+					System.out.println("Lister le discontinued? (y/n)");	
+					discontinued = sc.nextLine();
+					System.out.println("Lister l'id company? (y/n)");	
+					companyId = sc.nextLine();
+					if (id.toLowerCase().equals("y")) {
+						champs.add("id");
+					}
+					if (name.toLowerCase().equals("y")) {
+						champs.add("name");
+					}
+					if (introduced.toLowerCase().equals("y")) {
+						champs.add("introduced");
+					}
+					if (discontinued.toLowerCase().equals("y")) {
+						champs.add("discontinued");
+					}
+					if (companyId.toLowerCase().equals("y")) {
+						champs.add("company_id");
+					}
+					if (champs.size() > 0) {
+						ArrayList<Computer> computers = Controler.getInstance().listComputers(champs);
+						for (Computer computer : computers) {
+							System.out.println(computer.toString());
+						}
+					}
 				    logger.info("listComputers");
+					System.out.print("-> ");
 					break;
 				case "showComputerDetails" :
 					System.out.println("Entrer un id d'ordinateur : ");
@@ -127,10 +174,13 @@ public class Interface {
 						id = sc.nextLine();
 					}
 					if(!"".equals(id)) {
-						factory.showComputerDetails(Integer.parseInt(id));
+						ArrayList<Computer> computers = Controler.getInstance().showComputerDetails(Integer.parseInt(id));
+						for (Computer computer : computers) {
+							System.out.println(computer.toString());
+						}
 					}
-					System.out.print("-> ");
 				    logger.info("showComputerDetails");
+					System.out.print("-> ");
 					break;
 				case "createComputer" :
 					System.out.println("Entrer un nom d'ordinateur : ");
@@ -171,8 +221,8 @@ public class Interface {
 						companyId = sc.nextLine();
 					}
 					factory.createComputer(name, introduced, discontinued, companyId);
-					System.out.print("-> ");
 				    logger.info("createComputer");
+					System.out.print("-> ");
 					break;
 				case "updateComputer" :
 					System.out.println("Entrer l'id de l'ordinateur à modifier : ");
@@ -234,8 +284,8 @@ public class Interface {
 					if (champs.size() > 0) {
 						factory.updateComputer(id, name, introduced, discontinued, companyId, champs);
 					}
-					System.out.print("-> ");
 				    logger.info("updateComputer");
+					System.out.print("-> ");
 					break;
 				case "deleteComputer" :
 					System.out.println("Entrer l'id de la companie à supprimer : ");
@@ -288,8 +338,8 @@ public class Interface {
 					if (champs.size() > 0) {
 						factory.deleteComputer(id, name, introduced, discontinued, companyId, champs);
 					}
-					System.out.print("-> ");
 				    logger.info("deleteComputer");
+					System.out.print("-> ");
 					break;
 				case "aide" :
 					System.out.println("Liste des commandes :");
@@ -309,63 +359,6 @@ public class Interface {
 					System.out.println("Commande inconnue");
 					System.out.print("-> ");
 					break;
-			}
-		}
-	}
-	
-	/**
-	 * Gère la séléction des champs.
-	 * @param factory la factory qui gère la dao
-	 * @param sc scanner pour les entrées de l'utilisateur
-	 * @throws SQLException
-	 */
-	private void champsEntries(Logger logger, DAOFactory factory, Scanner sc) throws SQLException {
-		// Demande à l'utilisateur quels champs seront affichés
-		if ("class dao.CompanyFactory".equals(factory.getClass().toString())) {
-			System.out.println("Lister l'id? (y/n)");
-			String id = sc.nextLine();
-			System.out.println("Lister le nom? (y/n)");	
-			String name = sc.nextLine();
-			ArrayList<String> champs = new ArrayList<String>();
-			if ("y".equals(id.toLowerCase())) {
-				champs.add("id");
-			}
-			if ("y".equals(name.toLowerCase())) {
-				champs.add("name");
-			}
-			if (champs.size() > 0) {
-				((CompanyFactory)factory).listCompanies(champs);
-			}
-		}
-		if ("class dao.ComputerFactory".equals(factory.getClass().toString())) {
-			System.out.println("Lister l'id? (y/n)");
-			String id = sc.nextLine();
-			System.out.println("Lister le nom? (y/n)");	
-			String name = sc.nextLine();
-			System.out.println("Lister l'introduced? (y/n)");
-			String introduced = sc.nextLine();
-			System.out.println("Lister le discontinued? (y/n)");	
-			String discontinued = sc.nextLine();
-			System.out.println("Lister l'id company? (y/n)");	
-			String companyId = sc.nextLine();
-			ArrayList<String> champs = new ArrayList<String>();
-			if (id.toLowerCase().equals("y")) {
-				champs.add("id");
-			}
-			if (name.toLowerCase().equals("y")) {
-				champs.add("name");
-			}
-			if (introduced.toLowerCase().equals("y")) {
-				champs.add("introduced");
-			}
-			if (discontinued.toLowerCase().equals("y")) {
-				champs.add("discontinued");
-			}
-			if (companyId.toLowerCase().equals("y")) {
-				champs.add("company_id");
-			}
-			if (champs.size() > 0) {
-				((ComputerFactory)factory).listComputers(champs);
 			}
 		}
 	}
