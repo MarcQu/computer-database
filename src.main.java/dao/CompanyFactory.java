@@ -10,11 +10,11 @@ import java.util.Scanner;
 
 import model.Company;
 
-public class CompanyFactory {
+public class CompanyFactory implements AutoCloseable {
 	private Connection conn;
 	private static CompanyFactory INSTANCE = null;
 	/**
-	 * CompanyFactory contient les méthodes spécifiques à la table company.
+	 * CompanyFactory contient les mÃ©thodes spÃ©cifiques Ã  la table company.
 	 * @throws SQLException
 	 */
 	private CompanyFactory() throws SQLException {
@@ -22,7 +22,7 @@ public class CompanyFactory {
 	}
 	
 	/**
-	 * Méthode qui retourne l'instance unique de la classe CompanyFactory.
+	 * Mï¿½thode qui retourne l'instance unique de la classe CompanyFactory.
 	 * @return l'instance de la classe CompanyFactory
 	 * @throws SQLException
 	 */
@@ -34,7 +34,7 @@ public class CompanyFactory {
     }
     
 	/**
-	 * Initialise la connexion à la BDD.
+	 * Initialise la connexion Ã  la BDD.
 	 * @throws SQLException
 	 */
 	private void initConnexion() {
@@ -51,11 +51,49 @@ public class CompanyFactory {
 	
 	/**
 	 * Liste les companies contenues dans la table company.
-	 * @param champs les champs de la table à afficher
-	 * @return retour la liste des resultats de la requête
+	 * @param champs les champs de la table Ã  afficher
+	 * @param nombre le nombre de rÃ©sultats Ã  afficher
+	 * @return retour la liste des resultats de la requÃ¨te
 	 * @throws SQLException
 	 */
-	public ArrayList<Company> listCompanies(ArrayList<String> champs) throws SQLException {
+	public ArrayList<Company> listCompanies(int nombre, int offset, ArrayList<String> champs) throws SQLException {
+		ArrayList<Company> companies = new ArrayList<Company>();
+		Statement stmt = this.conn.createStatement();
+		Scanner scanner = new Scanner(System.in);
+		String query = "SELECT ";
+		for (int i = 0; i<champs.size() - 1; i++) {
+			query += champs.get(i) + ", ";
+		}
+		query += champs.get(champs.size() - 1) + " FROM company LIMIT " + nombre + " OFFSET " + offset;
+		ResultSet rs = stmt.executeQuery(query);
+        while (rs.next()) {
+        	Company company = new Company();
+    		for (int i = 0; i<champs.size(); i++) {
+    			if(rs.getString(champs.get(i)) != null) {
+        			switch(champs.get(i)) {
+	    				case "id" :
+	    					company.setId(Integer.parseInt(rs.getString(champs.get(i))));
+	    					break;
+	    				case "name" :
+	    					company.setName(rs.getString(champs.get(i)));
+	    					break;
+	    				default :
+	    					break;
+        			}    				
+    			}
+    		}
+    		companies.add(company);
+        }
+        return companies;
+	}
+
+	/**
+	 * Liste toutes les companies contenues dans la table company.
+	 * @param champs les champs de la table Ã  afficher
+	 * @return retour la liste des resultats de la requÃ¨te
+	 * @throws SQLException
+	 */
+	public ArrayList<Company> listCompaniesAll(ArrayList<String> champs) throws SQLException {
 		ArrayList<Company> companies = new ArrayList<Company>();
 		Statement stmt = this.conn.createStatement();
 		Scanner scanner = new Scanner(System.in);
@@ -84,5 +122,10 @@ public class CompanyFactory {
     		companies.add(company);
         }
         return companies;
+	}
+	
+	@Override
+	public void close() throws Exception {
+		this.conn.close();
 	}
 }

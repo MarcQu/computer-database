@@ -11,7 +11,7 @@ public class CompanyService {
 	}
 	
 	/**
-	 * M�thode qui retourne l'instance unique de la classe CompanyService.
+	 * Méthode qui retourne l'instance unique de la classe CompanyService.
 	 * @return l'instance de la classe CompanyService
 	 * @throws SQLException
 	 */
@@ -23,12 +23,23 @@ public class CompanyService {
     }
     
 	/**
-	 * Liste les companies contenues dans la table company.
-	 * @param champs les champs de la table � afficher
-	 * @return retour la liste des resultats de la requ�te
+	 * Liste certaines companies contenues dans la table company.
+	 * @param champs les champs de la table à afficher
+	 * @param nombre le nombre de résultats à afficher
+	 * @return retour la liste des resultats de la requète
 	 * @throws SQLException
 	 */
-    public ArrayList<Company> listCompanies(ArrayList<String> champs) throws SQLException {
-    	return CompanyFactory.getInstance().listCompanies(champs);
+    public ArrayList<Company> listCompanies(int nombre, int offset, ArrayList<String> champs) throws SQLException {
+    	return CompanyFactory.getInstance().listCompanies(nombre, offset, champs);
+    }
+    
+	/**
+	 * Liste toutes les companies contenues dans la table company.
+	 * @param champs les champs de la table à afficher
+	 * @return retour la liste des resultats de la requète
+	 * @throws SQLException
+	 */
+    public ArrayList<Company> listCompaniesAll(ArrayList<String> champs) throws SQLException {
+    	return CompanyFactory.getInstance().listCompaniesAll(champs);
     }
 }

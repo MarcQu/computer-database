@@ -11,17 +11,14 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import model.Company;
 import model.Computer;
 
-public class ComputerFactory {
+public class ComputerFactory implements AutoCloseable {
 	private Connection conn;
 	private static ComputerFactory INSTANCE = null;
 	/**
-	 * ComputerFactory contient les méthodes spécifiques à la table computer.
+	 * ComputerFactory contient les mÃ©thodes spÃ©cifiques Ã  la table computer.
 	 * @throws SQLException
 	 */
 	private ComputerFactory() throws SQLException {
@@ -29,7 +26,7 @@ public class ComputerFactory {
 	}
 
 	/**
-	 * Méthode qui retourne l'instance unique de la classe ComputerFactory.
+	 * Mï¿½thode qui retourne l'instance unique de la classe ComputerFactory.
 	 * @return l'instance de la classe ComputerFactory
 	 * @throws SQLException
 	 */
@@ -41,7 +38,7 @@ public class ComputerFactory {
     }
     
 	/**
-	 * Initialise la connexion à la BDD.
+	 * Initialise la connexion Ã  la BDD.
 	 * @throws SQLException
 	 */
 	private void initConnexion() {
@@ -57,12 +54,63 @@ public class ComputerFactory {
 	}
 	
 	/**
-	 * Liste les ordinateurs contenus dans la table computer.
-	 * @param champs les champs de la table à afficher
-	 * @return retour la liste des resultats de la requête
+	 * Liste quelques ordinateurs contenus dans la table computer.
+	 * @param nombre nombre de rÃ©sultat Ã  afficher
+	 * @param champs les champs de la table Ã  afficher
+	 * @return retour la liste des resultats de la requÃ¨te
 	 * @throws SQLException
 	 */
-	public ArrayList<Computer> listComputers(ArrayList<String> champs) throws SQLException {
+	public ArrayList<Computer> listComputers(int nombre, int offset, ArrayList<String> champs) throws SQLException {
+		ArrayList<Computer> computers = new ArrayList<Computer>();
+		Statement stmt = this.conn.createStatement();
+		Scanner scanner = new Scanner(System.in);
+		String query = "SELECT ";
+		for (int i = 0; i<champs.size() - 1; i++) {
+			query += champs.get(i) + ", ";
+		}
+		query += champs.get(champs.size() - 1) + " FROM computer LIMIT " + nombre + " OFFSET " + offset;
+		ResultSet rs = stmt.executeQuery(query);
+        while (rs.next()) {
+        	Computer computer = new Computer();
+    		for (int i = 0; i<champs.size(); i++) {
+    			if(rs.getString(champs.get(i)) != null) {
+        			switch(champs.get(i)) {
+	    				case "id" :
+	    					computer.setId(Integer.parseInt(rs.getString(champs.get(i))));
+	    					break;
+	    				case "name" :
+	    					computer.setName(rs.getString(champs.get(i)));
+	    					break;
+	    				case "introduced" :
+	    					if (! rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+		    					computer.setIntroduced(Timestamp.valueOf(rs.getString(champs.get(i))));
+	    					}
+	    					break;
+	    				case "discontinued" :
+	    					if (! rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+		    					computer.setDiscontinued(Timestamp.valueOf(rs.getString(champs.get(i))));
+	    					}
+	    					break;
+	    				case "company_id" :
+	    					computer.setCompany(new Company(Integer.parseInt(rs.getString(champs.get(i))),""));
+	    					break;
+	    				default :
+	    					break;
+        			}
+    			}
+    		}
+    		computers.add(computer);
+        }
+        return computers;
+	}
+	
+	/**
+	 * Liste tous les ordinateurs contenus dans la table computer.
+	 * @param champs les champs de la table Ã  afficher
+	 * @return retour la liste des resultats de la requÃ¨te
+	 * @throws SQLException
+	 */
+	public ArrayList<Computer> listComputersAll(ArrayList<String> champs) throws SQLException {
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		Statement stmt = this.conn.createStatement();
 		Scanner scanner = new Scanner(System.in);
@@ -108,8 +156,8 @@ public class ComputerFactory {
 	
 	/**
 	 * Affiche les informations d'un ordinateur contenu dans la table computer.
-	 * @param numero l'id de l'ordinateur à afficher
-	 * @return retour la liste des resultats de la requête
+	 * @param numero l'id de l'ordinateur Ã  afficher
+	 * @return retour la liste des resultats de la requÃ¨te
 	 * @throws SQLException
 	 */
 	public ArrayList<Computer> showComputerDetails(int numero) throws SQLException {
@@ -154,10 +202,10 @@ public class ComputerFactory {
 	
 	/** 
 	 * Ajoute un ordinateur dans la table computer.
-	 * @param name le nom de l'ordinateur à ajouter
-	 * @param introduced la date d'introduction de l'ordinateur à ajouter
-	 * @param discontinued la date d'interruption de l'ordinateur à ajouter
-	 * @param companyId l'id de la companie de l'ordinateur à ajouter
+	 * @param name le nom de l'ordinateur Ã  ajouter
+	 * @param introduced la date d'introduction de l'ordinateur Ã  ajouter
+	 * @param discontinued la date d'interruption de l'ordinateur Ã  ajouter
+	 * @param companyId l'id de la companie de l'ordinateur Ã  ajouter
 	 * @throws SQLException
 	 * @throws IllegalArgumentException
 	 */
@@ -188,13 +236,13 @@ public class ComputerFactory {
 	}
 	
 	/** 
-	 * Met à jour un ordinateur dans la table computer.
-	 * @param id l'id de l'ordinateur à mettre à jour
-	 * @param name le nom de l'ordinateur à mettre à jour
-	 * @param introduced la date d'introduction de l'ordinateur à mettre à jour
-	 * @param discontinued la date d'interruption de l'ordinateur à mettre à jour
-	 * @param companyId l'id de la companie de l'ordinateur à mettre à jour
-	 * @param champs les champs qui sont prises en compte par la mise à jour
+	 * Met Ã  jour un ordinateur dans la table computer.
+	 * @param id l'id de l'ordinateur Ã  mettre Ã  jour
+	 * @param name le nom de l'ordinateur Ã  mettre Ã  jour
+	 * @param introduced la date d'introduction de l'ordinateur Ã  mettre Ã  jour
+	 * @param discontinued la date d'interruption de l'ordinateur Ã  mettre Ã  jour
+	 * @param companyId l'id de la companie de l'ordinateur Ã  mettre Ã  jour
+	 * @param champs les champs qui sont prises en compte par la mise Ã  jour
 	 * @throws SQLException
 	 */
 	public void updateComputer(String id, String name, String introduced, String discontinued, String companyId, ArrayList<String> champs) throws SQLException {
@@ -244,11 +292,11 @@ public class ComputerFactory {
 	
 	/** 
 	 * Supprime un ordinateur de la table computer.
-	 * @param id l'id de l'ordinateur à supprimer
-	 * @param name le nom de l'ordinateur à supprimer
-	 * @param introduced la date d'introduction de l'ordinateur à supprimer
-	 * @param discontinued la date d'interruption de l'ordinateur à supprimer
-	 * @param companyId l'id de la companie de l'ordinateur à supprimer
+	 * @param id l'id de l'ordinateur Ã  supprimer
+	 * @param name le nom de l'ordinateur Ã  supprimer
+	 * @param introduced la date d'introduction de l'ordinateur Ã  supprimer
+	 * @param discontinued la date d'interruption de l'ordinateur Ã  supprimer
+	 * @param companyId l'id de la companie de l'ordinateur Ã  supprimer
 	 * @param champs les champs qui sont prises en compte par la suppression
 	 * @throws SQLException
 	 */
@@ -301,5 +349,10 @@ public class ComputerFactory {
 			}
 		}
 		stmt.executeUpdate();
+	}
+
+	@Override
+	public void close() throws Exception {
+		this.conn.close();
 	}
 }

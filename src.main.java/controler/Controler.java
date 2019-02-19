@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dao.ComputerFactory;
 import model.Company;
 import model.Computer;
 import service.CompanyService;
@@ -20,7 +19,7 @@ public class Controler {
 		this.logger = LoggerFactory.getLogger(Controler.class);
 	}
 	/**
-	 * MÈthode qui retourne l'instance unique de la classe Controler.
+	 * M√©thode qui retourne l'instance unique de la classe Controler.
 	 * @return l'instance de la classe Controler
 	 * @throws SQLException
 	 */
@@ -40,29 +39,51 @@ public class Controler {
     }
     
 	/**
-	 * Liste les companies contenues dans la table company.
-	 * @param champs les champs de la table ‡ afficher
-	 * @return retour la liste des resultats de la requÍte
+	 * Liste certraines companies contenues dans la table company.
+	 * @param champs les champs de la table √† afficher
+	 * @param nombre le nombre de r√©sultats √† afficher
+	 * @return retour la liste des resultats de la requ√®te
 	 * @throws SQLException
 	 */
-    public ArrayList<Company> listCompanies(ArrayList<String> champs) throws SQLException {
-    	return CompanyService.getInstance().listCompanies(champs);
+    public ArrayList<Company> listCompanies(int nombre, int offset, ArrayList<String> champs) throws SQLException {
+    	return CompanyService.getInstance().listCompanies(nombre, offset, champs);
     }
     
 	/**
-	 * Liste les ordinateurs contenus dans la table computer.
-	 * @param champs les champs de la table ‡ afficher
-	 * @return retour la liste des resultats de la requÍte
+	 * Liste toutes les companies contenues dans la table company.
+	 * @param champs les champs de la table √† afficher
+	 * @return retour la liste des resultats de la requ√®te
 	 * @throws SQLException
 	 */
-	public ArrayList<Computer> listComputers(ArrayList<String> champs) throws SQLException {
-		return ComputerService.getInstance().listComputers(champs);
+    public ArrayList<Company> listCompaniesAll(ArrayList<String> champs) throws SQLException {
+    	return CompanyService.getInstance().listCompaniesAll(champs);
+    }
+    
+	/**
+	 * Liste certains ordinateurs contenus dans la table computer.
+	 * @param champs les champs de la table √† afficher
+	 * @param nombre le nombre de r√©sultats √† afficher
+	 * @return retour la liste des resultats de la requ√®te
+	 * @throws SQLException
+	 */
+	public ArrayList<Computer> listComputers(int nombre, int offset, ArrayList<String> champs) throws SQLException {
+		return ComputerService.getInstance().listComputers(nombre, offset, champs);
+	}
+	
+	/**
+	 * Liste tous les ordinateurs contenus dans la table computer.
+	 * @param champs les champs de la table √† afficher
+	 * @return retour la liste des resultats de la requ√®te
+	 * @throws SQLException
+	 */
+	public ArrayList<Computer> listComputersAll(ArrayList<String> champs) throws SQLException {
+		return ComputerService.getInstance().listComputersAll(champs);
 	}
 	
 	/**
 	 * Affiche les informations d'un ordinateur contenu dans la table computer.
-	 * @param numero l'id de l'ordinateur ‡ afficher
-	 * @return retour la liste des resultats de la requÍte
+	 * @param numero l'id de l'ordinateur √† afficher
+	 * @return retour la liste des resultats de la requ√®te
 	 * @throws SQLException
 	 */
 	public ArrayList<Computer> showComputerDetails(int numero) throws SQLException {
@@ -71,10 +92,10 @@ public class Controler {
 	
 	/** 
 	 * Ajoute un ordinateur dans la table computer.
-	 * @param name le nom de l'ordinateur ‡ ajouter
-	 * @param introduced la date d'introduction de l'ordinateur ‡ ajouter
-	 * @param discontinued la date d'interruption de l'ordinateur ‡ ajouter
-	 * @param companyId l'id de la companie de l'ordinateur ‡ ajouter
+	 * @param name le nom de l'ordinateur √† ajouter
+	 * @param introduced la date d'introduction de l'ordinateur √† ajouter
+	 * @param discontinued la date d'interruption de l'ordinateur √† ajouter
+	 * @param companyId l'id de la companie de l'ordinateur √† ajouter
 	 * @throws SQLException
 	 * @throws IllegalArgumentException
 	 */
@@ -83,13 +104,13 @@ public class Controler {
 	}
 	
 	/** 
-	 * Met ‡ jour un ordinateur dans la table computer.
-	 * @param id l'id de l'ordinateur ‡ mettre ‡ jour
-	 * @param name le nom de l'ordinateur ‡ mettre ‡ jour
-	 * @param introduced la date d'introduction de l'ordinateur ‡ mettre ‡ jour
-	 * @param discontinued la date d'interruption de l'ordinateur ‡ mettre ‡ jour
-	 * @param companyId l'id de la companie de l'ordinateur ‡ mettre ‡ jour
-	 * @param champs les champs qui sont prises en compte par la mise ‡ jour
+	 * Met √† jour un ordinateur dans la table computer.
+	 * @param id l'id de l'ordinateur √† mettre √† jour
+	 * @param name le nom de l'ordinateur √† mettre √† jour
+	 * @param introduced la date d'introduction de l'ordinateur √† mettre √† jour
+	 * @param discontinued la date d'interruption de l'ordinateur √† mettre √† jour
+	 * @param companyId l'id de la companie de l'ordinateur √† mettre √† jour
+	 * @param champs les champs qui sont prises en compte par la mise √† jour
 	 * @throws SQLException
 	 */
 	public void updateComputer(String id, String name, String introduced, String discontinued, String companyId, ArrayList<String> champs) throws SQLException {
@@ -98,11 +119,11 @@ public class Controler {
 	
 	/** 
 	 * Supprime un ordinateur de la table computer.
-	 * @param id l'id de l'ordinateur ‡ supprimer
-	 * @param name le nom de l'ordinateur ‡ supprimer
-	 * @param introduced la date d'introduction de l'ordinateur ‡ supprimer
-	 * @param discontinued la date d'interruption de l'ordinateur ‡ supprimer
-	 * @param companyId l'id de la companie de l'ordinateur ‡ supprimer
+	 * @param id l'id de l'ordinateur √† supprimer
+	 * @param name le nom de l'ordinateur √† supprimer
+	 * @param introduced la date d'introduction de l'ordinateur √† supprimer
+	 * @param discontinued la date d'interruption de l'ordinateur √† supprimer
+	 * @param companyId l'id de la companie de l'ordinateur √† supprimer
 	 * @param champs les champs qui sont prises en compte par la suppression
 	 * @throws SQLException
 	 */
