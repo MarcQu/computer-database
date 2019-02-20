@@ -15,45 +15,55 @@ import controler.Controler;
 import model.Company;
 
 /**
- * Servlet implementation class CreateComputer
+ * Servlet implementation class CreateComputer.
  */
 @WebServlet("/CreateComputer")
 public class CreateComputer extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	public static final String VUE = "/WEB-INF/views/createComputer.jsp";
+  private static final long serialVersionUID = 1L;
+  public static final String VUE = "/WEB-INF/views/createComputer.jsp";
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
-			HttpSession session = request.getSession();
-			ArrayList<String> champs = new ArrayList<String>();
-	        champs.add("id");
-	        champs.add("name");
-			ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
-			session.setAttribute("companies", companies);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
-	}
+  /**
+   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+   * @param request la requète
+   * @param response la réponse
+   * @throws ServletException ServletException
+   * @throws IOException      IOException
+   */
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    try {
+      HttpSession session = request.getSession();
+      ArrayList<String> champs = new ArrayList<String>();
+      champs.add("id");
+      champs.add("name");
+      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
+      session.setAttribute("companies", companies);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+  }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String name = request.getParameter("computerName");
-		String introduced = request.getParameter("introduced") + " 00:00:00";
-		String discontinued = request.getParameter("discontinued") + " 00:00:00";
-		String companyId = request.getParameter("companyId");
-		try {
-			Controler.getInstance().createComputer(name, introduced, discontinued, companyId);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
-	}
+  /**
+   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+   * @param request la requète
+   * @param response la réponse
+   * @throws ServletException ServletException
+   * @throws IOException      IOException
+   */
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    String name = request.getParameter("computerName");
+    String introduced = request.getParameter("introduced") + " 00:00:00";
+    String discontinued = request.getParameter("discontinued") + " 00:00:00";
+    String companyId = request.getParameter("companyId");
+    try {
+      Controler.getInstance().createComputer(name, introduced, discontinued, companyId);
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+  }
 }

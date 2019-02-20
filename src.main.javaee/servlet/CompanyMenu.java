@@ -15,35 +15,44 @@ import controler.Controler;
 import model.Company;
 
 /**
- * Servlet implementation class Company
+ * Servlet implementation class Company.
  */
 @WebServlet("/CompanyMenu")
 public class CompanyMenu extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	public static final String VUE = "/WEB-INF/views/companyMenu.jsp";
+  private static final long serialVersionUID = 1L;
+  public static final String VUE = "/WEB-INF/views/companyMenu.jsp";
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
-			HttpSession session = request.getSession();
-			ArrayList<String> champs = new ArrayList<String>();
-	        champs.add("id");
-	        champs.add("name");
-			ArrayList<Company> companies = Controler.getInstance().listCompanies(10, 0, champs);
-	        request.setAttribute("nombreCompanies", companies.size());
-			session.setAttribute("companies", companies);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
-	}
+  /**
+   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+   * @param request la requète
+   * @param response la réponse
+   * @throws ServletException ServletException
+   * @throws IOException      IOException
+   */
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    try {
+      HttpSession session = request.getSession();
+      ArrayList<String> champs = new ArrayList<String>();
+      champs.add("id");
+      champs.add("name");
+      ArrayList<Company> companies = Controler.getInstance().listCompanies(10, 0, champs);
+      request.setAttribute("nombreCompanies", companies.size());
+      session.setAttribute("companies", companies);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+  }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
+  /**
+   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+   * @param request la requète
+   * @param response la réponse
+   * @throws ServletException ServletException
+   * @throws IOException      IOException
+   */
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+  }
 }
