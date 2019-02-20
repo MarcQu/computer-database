@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dao.CompanyFactory;
+import dao.ComputerFactory;
 import model.Company;
 import model.Computer;
 import service.CompanyService;
@@ -43,6 +45,15 @@ public class Controler {
   }
 
   /**
+   * Retourne le nombre de lignes dans la table company.
+   * @return nombre le nombre de ligne
+   * @throws SQLException
+   */
+  public int countCompanies() throws SQLException {
+    return CompanyService.getInstance().countCompanies();
+  }
+
+  /**
    * Liste certraines companies contenues dans la table company.
    * @param champs les champs de la table à afficher
    * @param nombre le nombre de résultats à afficher
@@ -65,6 +76,15 @@ public class Controler {
     return CompanyService.getInstance().listCompaniesAll(champs);
   }
 
+  /**
+   * Retourne le nombre de lignes dans la table computer.
+   * @return nombre le nombre de ligne
+   * @throws SQLException
+   */
+  public int countComputers() throws SQLException {
+    return ComputerService.getInstance().countComputers();
+  }
+  
   /**
    * Liste certains ordinateurs contenus dans la table computer.
    * @param champs les champs de la table à afficher

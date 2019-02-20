@@ -1,14 +1,12 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.Scanner;
 
 import model.Company;
@@ -17,13 +15,15 @@ import model.Computer;
 public class ComputerFactory implements AutoCloseable {
   private Connection conn;
   private static ComputerFactory instance = null;
+  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
+  private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer";
 
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
    * @throws SQLException SQLException
    */
   private ComputerFactory() throws SQLException {
-    this.initConnexion();
+    this.conn = DAOFactory.getInstance(URL).getConnection();
   }
 
   /**
@@ -39,19 +39,16 @@ public class ComputerFactory implements AutoCloseable {
   }
 
   /**
-   * Initialise la connexion à la BDD.
+   * Retourne le nombre de lignes dans la table computer.
+   * @return nombre le nombre de ligne
    * @throws SQLException
    */
-  private void initConnexion() {
-    String url = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
-    Properties prp = new Properties();
-    prp.put("user", "root");
-    prp.put("password", "");
-    try {
-      this.conn = DriverManager.getConnection(url, prp);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+  public int countComputers() throws SQLException {
+    Statement stmt = this.conn.createStatement();
+    ResultSet rs = stmt.executeQuery(COUNT);
+    rs.next();
+    int nombre = rs.getInt("rowcount");
+    return nombre;
   }
 
   /**

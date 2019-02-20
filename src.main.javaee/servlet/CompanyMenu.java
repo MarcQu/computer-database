@@ -36,9 +36,12 @@ public class CompanyMenu extends HttpServlet {
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(10, 0, champs);
+      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
       request.setAttribute("nombreCompanies", companies.size());
       session.setAttribute("companies", companies);
+      
+      
+      int nombre = Controler.getInstance().countCompanies();
     } catch (SQLException e) {
       e.printStackTrace();
     }

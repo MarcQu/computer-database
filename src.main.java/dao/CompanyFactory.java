@@ -1,12 +1,10 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.Scanner;
 
 import model.Company;
@@ -14,17 +12,18 @@ import model.Company;
 public class CompanyFactory implements AutoCloseable {
   private Connection conn;
   private static CompanyFactory instance = null;
-
+  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
+  private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company";
   /**
    * CompanyFactory contient les méthodes spécifiques à la table company.
    * @throws SQLException SQLException
    */
   private CompanyFactory() throws SQLException {
-    this.initConnexion();
+    this.conn = DAOFactory.getInstance(URL).getConnection();
   }
 
   /**
-   * M�thode qui retourne l'instance unique de la classe CompanyFactory.
+   * Méthode qui retourne l'instance unique de la classe CompanyFactory.
    * @return l'instance de la classe CompanyFactory
    * @throws SQLException SQLException
    */
@@ -36,19 +35,16 @@ public class CompanyFactory implements AutoCloseable {
   }
 
   /**
-   * Initialise la connexion à la BDD.
+   * Retourne le nombre de lignes dans la table company.
+   * @return nombre le nombre de ligne
    * @throws SQLException
    */
-  private void initConnexion() {
-    String url = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
-    Properties prp = new Properties();
-    prp.put("user", "root");
-    prp.put("password", "");
-    try {
-      this.conn = DriverManager.getConnection(url, prp);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+  public int countCompanies() throws SQLException {
+    Statement stmt = this.conn.createStatement();
+    ResultSet rs = stmt.executeQuery(COUNT);
+    rs.next();
+    int nombre = rs.getInt("rowcount");
+    return nombre;
   }
 
   /**

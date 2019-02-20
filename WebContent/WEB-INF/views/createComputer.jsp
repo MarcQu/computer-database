@@ -1,3 +1,4 @@
+<%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="model.Company"%>
 <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>

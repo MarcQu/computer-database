@@ -1,6 +1,8 @@
 package service;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import dao.CompanyFactory;
 import model.Company;
@@ -26,6 +28,15 @@ public class CompanyService {
     return CompanyService.instance;
   }
 
+  /**
+   * Retourne le nombre de lignes dans la table company.
+   * @return nombre le nombre de ligne
+   * @throws SQLException
+   */
+  public int countCompanies() throws SQLException {
+    return CompanyFactory.getInstance().countCompanies();
+  }
+  
   /**
    * Liste certaines companies contenues dans la table company.
    * @param champs les champs de la table à afficher

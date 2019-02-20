@@ -1,3 +1,4 @@
+<%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="model.Computer"%>
 <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>
@@ -88,6 +89,7 @@
 	                        <td><%=computer.getIntroduced()%></td>
 	                        <td><%=computer.getDiscontinued()%></td>
 	                        <td><%=computer.getCompany()%></td>
+							<%session.setAttribute("id", computer.getId());%>	                    
 	                    </tr>
 					<%	} %>
                 </tbody>
@@ -125,6 +127,5 @@
 <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
-
 </body>
 </html>

@@ -1,6 +1,8 @@
 package service;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import dao.ComputerFactory;
 import model.Computer;
@@ -18,6 +20,15 @@ public class ComputerService {
       ComputerService.instance = new ComputerService();
     }
     return ComputerService.instance;
+  }
+
+  /**
+   * Retourne le nombre de lignes dans la table computer.
+   * @return nombre le nombre de ligne
+   * @throws SQLException
+   */
+  public int countComputers() throws SQLException {
+    return ComputerFactory.getInstance().countComputers();
   }
 
   /**
