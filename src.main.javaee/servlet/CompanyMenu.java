@@ -40,7 +40,6 @@ public class CompanyMenu extends HttpServlet {
       request.setAttribute("nombreCompanies", companies.size());
       session.setAttribute("companies", companies);
       
-      
       int nombre = Controler.getInstance().countCompanies();
     } catch (SQLException e) {
       e.printStackTrace();

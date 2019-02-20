@@ -1,4 +1,4 @@
-<%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="model.Company"%>
 <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>
@@ -50,14 +50,13 @@
                     </tr>
                 </thead>
                 <!-- Browse attribute computers -->
-                <tbody id="results">       
-					<%ArrayList<Company> companies = (ArrayList<Company>)session.getAttribute("companies");
-					for (Company company : companies) { %>
+                <tbody id="results">
+                	<c:forEach var="company" items="${companies}">
 						<tr>
-	                        <td><%=company.getId()%></td>
-	                        <td><%=company.getName()%></td>
+	                        <td>${company.id}</td>
+	                        <td>${company.name}</td>
 						</tr>
-					<% } %>
+                	</c:forEach>
                 </tbody>
             </table>
         </div>
