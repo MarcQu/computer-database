@@ -14,7 +14,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/Computer-database/ComputerMenu"> Application - Computer Database </a>
+            <a class="navbar-brand" href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page}"> Application - Computer Database </a>
         </div>
     </header>
     <section id="main">
@@ -45,7 +45,7 @@
                                 <label for="companyId">Company</label>
                                 <select class="form-control" id="companyId" name="companyId">
 				                	<c:forEach var="company" items="${companies}">
-										<option value=<c:out value="${company.id}"/>><c:out value="${company.name}"/></option>										
+										<option value="${company.id}"><c:out value="${company.name}"/></option>										
 				                	</c:forEach>                              
 								</select>
                             </div>            
@@ -53,7 +53,7 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Edit" class="btn btn-primary">
                             or
-                            <a href="/Computer-database/ComputerMenu" class="btn btn-default">Cancel</a>
+                            <a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page}" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

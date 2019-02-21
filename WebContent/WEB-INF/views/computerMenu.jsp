@@ -53,9 +53,9 @@
                         <th class="editMode" style="width: 60px; height: 22px;">
                             <input type="checkbox" id="selectall" /> 
                             <span style="vertical-align: top;">
-                                 -  <a href="#" id="deleteSelected" onclick="$.fn.deleteSelected();">
-                                        <i class="fa fa-trash-o fa-lg"></i>
-                                    </a>
+	                            <a href="/Computer-database/DeleteComputer?nombre=${nombre}&page=${page}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteComputer();">
+	                                <i class="fa fa-trash-o fa-lg"></i>
+	                            </a>
                             </span>
                         </th>
                         <th>
@@ -80,10 +80,10 @@
                 	<c:forEach var="computer" items="${computers}">
 	                    <tr>
 	                        <td class="editMode">
-	                            <input type="checkbox" name="cb" class="cb" value="0">
+	                            <input type="checkbox" name="cb" class="cb" value="${computer.id}">
 	                        </td>
 	                        <td>
-	                            <a href="/Computer-database/UpdateComputer?computerId=<c:out value="${computer.id}"/>" onclick=""><c:out value="${computer.name}"/></a>
+	                            <a href="/Computer-database/UpdateComputer?computerId=${computer.id}" onclick=""><c:out value="${computer.name}"/></a>
 	                        </td>
 	                        <td><c:out value="${computer.introduced}"/></td>
 	                        <td><c:out value="${computer.discontinued}"/></td>
@@ -98,32 +98,61 @@
     <footer class="navbar-fixed-bottom">
         <div class="container text-center">
             <ul class="pagination">
-                <li>
-                    <a href="#" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                  </a>
-              </li>
-              <li><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li>
-                <a href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-
+	            <c:if test="${page > 1}">
+	                <li>
+	                    <a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page-1}" aria-label="Previous">
+	                      <span aria-hidden="true">&laquo;</span>
+	                    </a>
+	                </li>
+				</c:if>
+                <c:forEach var="page" begin="1" end="${pages}" step="1">
+                    <li><a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page}">${page}</a></li>
+                </c:forEach>
+     	        <c:if test="${page < pages}">
+	                <li>
+		               <a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page+1}" aria-label="Next">
+		                   <span aria-hidden="true">&raquo;</span>
+		               </a>
+	            	</li>     	        
+                </c:if>
+        	</ul>
         <div class="btn-group btn-group-sm pull-right" role="group" >
-            <button type="button" class="btn btn-default">10</button>
-            <button type="button" class="btn btn-default">50</button>
-            <button type="button" class="btn btn-default">100</button>
+            <button type="button" class="btn btn-default">
+            	<a href="/Computer-database/ComputerMenu?nombre=10&page=1" onclick="">
+            		10
+            	</a>
+            </button>
+            <button type="button" class="btn btn-default">
+            	<a href="/Computer-database/ComputerMenu?nombre=50&page=1" onclick="">
+            		50
+            	</a>
+            </button>
+            <button type="button" class="btn btn-default">
+            	<a href="/Computer-database/ComputerMenu?nombre=100&page=1" onclick="">
+            		100
+            	</a>
+            </button>
         </div>
-
     </footer>
 <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
+<script src="jquery.js"></script>
+<script>
+	function deleteComputer(){
+		var computers = $("input.cb");
+		var selected = [];
+		for(var i = 0; i < computers.length; i++){
+			if (computers[i].checked) {
+				selected.push(computers[i].value);
+			}
+		}
+		if(selected.length > 0){
+			document.getElementById("deleteSelected").href = document.getElementById("deleteSelected").href+"&selected="+selected;
+		} else {
+			document.getElementById("deleteSelected").href = document.getElementById("deleteSelected").href;
+		}
+	}
+</script>
 </body>
 </html>

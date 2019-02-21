@@ -12,15 +12,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controler.Controler;
-import model.Company;
+import model.Computer;
 
 /**
- * Servlet implementation class Company.
+ * Servlet implementation class DeleteComputer
  */
-@WebServlet("/CompanyMenu")
-public class CompanyMenu extends HttpServlet {
+@WebServlet("/DeleteComputer")
+public class DeleteComputer extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  public static final String VUE = "/WEB-INF/views/companyMenu.jsp";
+  public static final String VUE = "/WEB-INF/views/computerMenu.jsp";
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -35,19 +35,32 @@ public class CompanyMenu extends HttpServlet {
       HttpSession session = request.getSession();
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreCompanies = Controler.getInstance().countCompanies();
+      int nombreComputers = Controler.getInstance().countComputers();
+
+      String selected = request.getParameter("selected");
+      String[] selectedComputers = selected.split(",");
+      ArrayList<String> champsSelected = new ArrayList<String>();
+      champsSelected.add("id");
+      for (String computer : selectedComputers) {
+         Controler.getInstance().deleteComputer(computer, "", "", "", "", champsSelected);
+      }
       
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre*(page-1), champs);
-      request.setAttribute("nombreCompanies", nombreCompanies);
-      request.setAttribute("companies", companies);
+      champs.add("introduced");
+      champs.add("discontinued");
+      champs.add("company_id");
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre*(page-1), champs);
+      request.setAttribute("nombreComputers", nombreComputers);
+      request.setAttribute("computers", computers);
       
-      int pages = Controler.getInstance().countCompanies()/nombre + 1;
+
+      int pages = Controler.getInstance().countComputers()/nombre + 1;
       session.setAttribute("nombre", nombre);
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);
+      
     } catch (SQLException e) {
       e.printStackTrace();
     }
