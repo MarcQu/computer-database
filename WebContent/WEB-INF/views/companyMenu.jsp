@@ -15,7 +15,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href=/Computer-database/CompanyMenu> Application - Company Database </a>
+            <a class="navbar-brand" href="index.jsp"> Application - Company Database </a>
         </div>
     </header>
 
