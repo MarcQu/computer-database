@@ -84,12 +84,11 @@
 	                            <input type="checkbox" name="cb" class="cb" value="0">
 	                        </td>
 	                        <td>
-	                            <a href="/Computer-database/UpdateComputer" onclick=""><%=computer.getName()%></a>
+	                            <a href="/Computer-database/UpdateComputer?computerId=<%=computer.getId()%>" onclick=""><%=computer.getName()%></a>
 	                        </td>
 	                        <td><%=computer.getIntroduced()%></td>
 	                        <td><%=computer.getDiscontinued()%></td>
 	                        <td><%=computer.getCompany()%></td>
-							<%session.setAttribute("id", computer.getId());%>	                    
 	                    </tr>
 					<%	} %>
                 </tbody>
