@@ -32,14 +32,13 @@ public class UpdateComputer extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      HttpSession session = request.getSession();
       String computerId = request.getParameter("computerId");
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
-      session.setAttribute("companies", companies);
-      session.setAttribute("computerId", computerId);
+      request.setAttribute("companies", companies);
+      request.setAttribute("computerId", computerId);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -55,8 +54,7 @@ public class UpdateComputer extends HttpServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    HttpSession session = request.getSession();
-    String computerId = (String)session.getAttribute("computerId");
+    String computerId = (String) request.getAttribute("computerId");
     System.out.println(computerId);
     String name = request.getParameter("computerName");
     String introduced = "";

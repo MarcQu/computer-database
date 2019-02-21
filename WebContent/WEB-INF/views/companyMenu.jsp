@@ -22,7 +22,7 @@
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                ${nombreCompanies} Companies found
+                <c:out value="${nombreCompanies}"/> Companies found
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
@@ -53,8 +53,8 @@
                 <tbody id="results">
                 	<c:forEach var="company" items="${companies}">
 						<tr>
-	                        <td>${company.id}</td>
-	                        <td>${company.name}</td>
+	                        <td><c:out value="${company.id}"/></td>
+	                        <td><c:out value="${company.name}"/></td>
 						</tr>
                 	</c:forEach>
                 </tbody>

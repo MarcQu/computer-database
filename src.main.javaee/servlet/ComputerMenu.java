@@ -32,16 +32,16 @@ public class ComputerMenu extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      HttpSession session = request.getSession();
+//      HttpSession session = request.getSession();
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
       champs.add("introduced");
       champs.add("discontinued");
       champs.add("company_id");
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(10, 0, champs);
+      ArrayList<Computer> computers = Controler.getInstance().listComputersAll(champs);
       request.setAttribute("nombreComputers", computers.size());
-      session.setAttribute("computers", computers);
+      request.setAttribute("computers", computers);
     } catch (SQLException e) {
       e.printStackTrace();
     }

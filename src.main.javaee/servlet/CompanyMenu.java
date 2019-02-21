@@ -9,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import controler.Controler;
 import model.Company;
@@ -32,15 +31,12 @@ public class CompanyMenu extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      HttpSession session = request.getSession();
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
       request.setAttribute("nombreCompanies", companies.size());
-      session.setAttribute("companies", companies);
-      
-      int nombre = Controler.getInstance().countCompanies();
+      request.setAttribute("companies", companies);
     } catch (SQLException e) {
       e.printStackTrace();
     }

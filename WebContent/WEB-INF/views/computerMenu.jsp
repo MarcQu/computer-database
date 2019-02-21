@@ -22,7 +22,7 @@
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                ${nombreComputers} Computers found
+                <c:out value="${nombreComputers}"/> Computers found
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
@@ -77,20 +77,19 @@
                 </thead>
                 <!-- Browse attribute computers -->
                 <tbody id="results">
-					<%ArrayList<Computer> computers = (ArrayList<Computer>)session.getAttribute("computers");
-					for (Computer computer : computers) { %>
+                	<c:forEach var="computer" items="${computers}">
 	                    <tr>
 	                        <td class="editMode">
 	                            <input type="checkbox" name="cb" class="cb" value="0">
 	                        </td>
 	                        <td>
-	                            <a href="/Computer-database/UpdateComputer?computerId=<%=computer.getId()%>" onclick=""><%=computer.getName()%></a>
+	                            <a href="/Computer-database/UpdateComputer?computerId=<c:out value="${computer.id}"/>" onclick=""><c:out value="${computer.name}"/></a>
 	                        </td>
-	                        <td><%=computer.getIntroduced()%></td>
-	                        <td><%=computer.getDiscontinued()%></td>
-	                        <td><%=computer.getCompany()%></td>
+	                        <td><c:out value="${computer.introduced}"/></td>
+	                        <td><c:out value="${computer.discontinued}"/></td>
+	                        <td><c:out value="${computer.company.id}"/></td>
 	                    </tr>
-					<%	} %>
+                	</c:forEach>
                 </tbody>
             </table>
         </div>

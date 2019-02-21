@@ -40,10 +40,9 @@
                             <div class="form-group">
                                 <label for="companyId">Company</label>
                                 <select class="form-control" id="companyId" name="companyId" >
-									<%ArrayList<Company> companies = (ArrayList<Company>)session.getAttribute("companies");
-									for (Company company : companies) { %>
-										<option value=<%=company.getId()%>><%=company.getName()%></option>
-									<% } %>
+				                	<c:forEach var="company" items="${companies}">
+										<option value=<c:out value="${company.id}"/>><c:out value="${company.name}"/></option>										
+				                	</c:forEach>
                                 </select>
                             </div>                  
                         </fieldset>

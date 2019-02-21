@@ -32,12 +32,11 @@ public class CreateComputer extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      HttpSession session = request.getSession();
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
-      session.setAttribute("companies", companies);
+      request.setAttribute("companies", companies);
     } catch (SQLException e) {
       e.printStackTrace();
     }

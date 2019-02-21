@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <div class="label label-default pull-right">
-                        id: <%=session.getAttribute("computerId")%>	
+                        id: <c:out value="${computerId}"/>	
                     </div>
                     <h1>Edit Computer</h1>
 
@@ -44,10 +44,9 @@
                             <div class="form-group">
                                 <label for="companyId">Company</label>
                                 <select class="form-control" id="companyId" name="companyId">
-									<%ArrayList<Company> companies = (ArrayList<Company>)session.getAttribute("companies");
-									for (Company company : companies) { %>
-										<option value=<%=company.getId()%>><%=company.getName()%></option>
-									<% } %>                                
+				                	<c:forEach var="company" items="${companies}">
+										<option value=<c:out value="${company.id}"/>><c:out value="${company.name}"/></option>										
+				                	</c:forEach>                              
 								</select>
                             </div>            
                         </fieldset>
