@@ -35,7 +35,6 @@ public class DeleteComputer extends HttpServlet {
       HttpSession session = request.getSession();
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreComputers = Controler.getInstance().countComputers();
 
       String selected = request.getParameter("selected");
       String[] selectedComputers = selected.split(",");
@@ -52,7 +51,6 @@ public class DeleteComputer extends HttpServlet {
       champs.add("discontinued");
       champs.add("company_id");
       ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre*(page-1), champs);
-      request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computers);
       
 
@@ -61,6 +59,8 @@ public class DeleteComputer extends HttpServlet {
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);
       
+      int nombreComputers = Controler.getInstance().countComputers();
+      request.setAttribute("nombreComputers", nombreComputers);
     } catch (SQLException e) {
       e.printStackTrace();
     }
