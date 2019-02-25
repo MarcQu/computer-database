@@ -9,10 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import controler.Controler;
 import model.Company;
+import model.Computer;
 
 /**
  * Servlet implementation class UpdateComputer.
@@ -33,12 +33,17 @@ public class UpdateComputer extends HttpServlet {
       throws ServletException, IOException {
     try {
       String computerId = request.getParameter("computerId");
+      Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
-      request.setAttribute("companies", companies);
       request.setAttribute("computerId", computerId);
+      request.setAttribute("name", computer.getName());
+      request.setAttribute("introduced", computer.getIntroduced());
+      request.setAttribute("discontinued", computer.getDiscontinued());
+      request.setAttribute("companyComputer", computer.getCompany());
+      request.setAttribute("companies", companies);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -54,37 +59,44 @@ public class UpdateComputer extends HttpServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    String computerId = (String) request.getAttribute("computerId");
-    System.out.println(computerId);
+    String computerId = request.getParameter("computerId");
     String name = request.getParameter("computerName");
-    String introduced = "";
+    StringBuilder introduced = new StringBuilder("");
     if (!"".equals(request.getParameter("introduced"))) {
-      introduced = request.getParameter("introduced") + " 00:00:00";
+      introduced.append(request.getParameter("introduced")).append(" 00:00:00");
     }
-    String discontinued = "";
+    StringBuilder discontinued = new StringBuilder("");
     if (!"".equals(request.getParameter("discontinued"))) {
-      discontinued = request.getParameter("discontinued") + " 00:00:00";
+      discontinued.append(request.getParameter("discontinued")).append(" 00:00:00");
     }
     String companyId = request.getParameter("companyId");
     ArrayList<String> champs = new ArrayList<String>();
     if (name != "") {
       champs.add("name");
     }
-    if (introduced != "") {
+    if (introduced.toString() != "") {
       champs.add("introduced");
     }
-    if (discontinued != "") {
+    if (discontinued.toString() != "") {
       champs.add("discontinued");
     }
-    if (companyId != "") {
-      champs.add("company_id");
-    }
+    champs.add("company_id");
     try {
-      Controler.getInstance().updateComputer(computerId, name, introduced, discontinued, companyId, champs);
+      Controler.getInstance().updateComputer(computerId, name, introduced.toString(), discontinued.toString(), companyId, champs);
+      Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
+      champs = new ArrayList<String>();
+      champs.add("id");
+      champs.add("name");
+      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
+      request.setAttribute("computerId", computerId);
+      request.setAttribute("name", computer.getName());
+      request.setAttribute("introduced", computer.getIntroduced());
+      request.setAttribute("discontinued", computer.getDiscontinued());
+      request.setAttribute("companyComputer", computer.getCompany());
+      request.setAttribute("companies", companies);
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    request.setAttribute("introduced", introduced);
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
 }

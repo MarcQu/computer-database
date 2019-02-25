@@ -27,25 +27,28 @@
                     <h1>Edit Computer</h1>
 
                     <form action="/Computer-database/UpdateComputer" method="POST">
-                        <input type="hidden" value="0" id="id"/> <!-- TODO: Change this value with the computer id -->
+                        <input type="hidden" value="${computerId}" id="computerId" name="computerId"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">
+                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${name}">
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="Introduced date">
+                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="Introduced date" value="${introduced}">
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date">
+                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date" value="${discontinued}">
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>
                                 <select class="form-control" id="companyId" name="companyId">
+                                	<option value="${companyComputer.id}"><c:out value="${companyComputer.name}"/></option>										
 				                	<c:forEach var="company" items="${companies}">
-										<option value="${company.id}"><c:out value="${company.name}"/></option>										
+										<c:if test="${companyComputer.id != company.id}">
+											<option value="${company.id}"><c:out value="${company.name}"/></option>										
+										</c:if>
 				                	</c:forEach>                              
 								</select>
                             </div>            

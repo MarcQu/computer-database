@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controler.Controler;
+import dto.ComputerTO;
 import model.Computer;
 
 /**
@@ -43,12 +44,13 @@ public class ComputerMenu extends HttpServlet {
       champs.add("introduced");
       champs.add("discontinued");
       champs.add("company_id");
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre*(page-1), champs);
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), champs);
+      ArrayList<ComputerTO> computersTO = Controler.getInstance().getComputerData(computers);
       request.setAttribute("nombreComputers", nombreComputers);
-      request.setAttribute("computers", computers);
-      
+      request.setAttribute("computers", computersTO);
 
-      int pages = Controler.getInstance().countComputers()/nombre + 1;
+
+      int pages = Controler.getInstance().countComputers() / nombre + 1;
       session.setAttribute("nombre", nombre);
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);

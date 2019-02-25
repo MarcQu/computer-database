@@ -15,7 +15,7 @@ import controler.Controler;
 import model.Computer;
 
 /**
- * Servlet implementation class DeleteComputer
+ * Servlet implementation class DeleteComputer.
  */
 @WebServlet("/DeleteComputer")
 public class DeleteComputer extends HttpServlet {
@@ -43,22 +43,22 @@ public class DeleteComputer extends HttpServlet {
       for (String computer : selectedComputers) {
          Controler.getInstance().deleteComputer(computer, "", "", "", "", champsSelected);
       }
-      
+
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
       champs.add("introduced");
       champs.add("discontinued");
       champs.add("company_id");
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre*(page-1), champs);
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), champs);
       request.setAttribute("computers", computers);
-      
 
-      int pages = Controler.getInstance().countComputers()/nombre + 1;
+
+      int pages = Controler.getInstance().countComputers() / nombre + 1;
       session.setAttribute("nombre", nombre);
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);
-      
+
       int nombreComputers = Controler.getInstance().countComputers();
       request.setAttribute("nombreComputers", nombreComputers);
     } catch (SQLException e) {

@@ -2,6 +2,7 @@ package dao;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -58,11 +59,11 @@ public class ComputerFactoryTest {
    */
   @Test
   public void showComputerDetailsTest() throws SQLException {
-    ArrayList<Computer> computers = this.computerFactory.showComputerDetails(5);
+    ArrayList<Computer> computers = this.computerFactory.showComputerDetails("5");
     Computer computer = computers.get(0);
     assertEquals(5, (int) computer.getId());
     assertEquals("CM-5", computer.getName());
-    assertEquals(Timestamp.valueOf("1991-01-01 00:00:00"), computer.getIntroduced());
+    assertEquals(new Date(Timestamp.valueOf("1991-01-01 00:00:00").getTime()), computer.getIntroduced());
     assertEquals(null, computer.getDiscontinued());
     assertEquals(2, (int) computer.getCompany().getId());
   }
@@ -77,14 +78,14 @@ public class ComputerFactoryTest {
     champs.add("introduced");
 
     this.computerFactory.updateComputer("1", "", "1991-01-01 00:00:00", "", "", champs);
-    ArrayList<Computer> computers = this.computerFactory.showComputerDetails(1);
+    ArrayList<Computer> computers = this.computerFactory.showComputerDetails("1");
     Computer computer = computers.get(0);
-    assertEquals(Timestamp.valueOf("1991-01-01 00:00:00"), computer.getIntroduced());
+    assertEquals(new Date(Timestamp.valueOf("1991-01-01 00:00:00").getTime()), computer.getIntroduced());
 
     this.computerFactory.updateComputer("1", "", "1990-10-10 00:00:00", "", "", champs);
-    computers = this.computerFactory.showComputerDetails(1);
+    computers = this.computerFactory.showComputerDetails("1");
     computer = computers.get(0);
-    assertEquals(Timestamp.valueOf("1990-10-10 00:00:00"), computer.getIntroduced());
+    assertEquals(new Date(Timestamp.valueOf("1990-10-10 00:00:00").getTime()), computer.getIntroduced());
   }
 
   /**

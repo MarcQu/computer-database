@@ -7,17 +7,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import model.Company;
 import model.Computer;
+import dto.ComputerTO;
 
 public class ComputerFactory implements AutoCloseable {
   private Connection conn;
   private static ComputerFactory instance = null;
-  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
+  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B2";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer";
-
+  private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer, company WHERE computer.company_id = company.id AND computer.id = ";
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
    * @throws SQLException SQLException
@@ -41,7 +41,7 @@ public class ComputerFactory implements AutoCloseable {
   /**
    * Retourne le nombre de lignes dans la table computer.
    * @return nombre le nombre de ligne
-   * @throws SQLException
+   * @throws SQLException SQLException
    */
   public int countComputers() throws SQLException {
     Statement stmt = this.conn.createStatement();
@@ -63,13 +63,12 @@ public class ComputerFactory implements AutoCloseable {
       throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     Statement stmt = this.conn.createStatement();
-    Scanner scanner = new Scanner(System.in);
-    String query = "SELECT ";
+    StringBuilder query = new StringBuilder("SELECT ");
     for (int i = 0; i < champs.size() - 1; i++) {
-      query += champs.get(i) + ", ";
+      query.append(champs.get(i)).append(", ");
     }
-    query += champs.get(champs.size() - 1) + " FROM computer LIMIT " + nombre + " OFFSET " + offset;
-    ResultSet rs = stmt.executeQuery(query);
+    query.append(champs.get(champs.size() - 1)).append(" FROM computer LIMIT ").append(nombre).append(" OFFSET ").append(offset);
+    ResultSet rs = stmt.executeQuery(query.toString());
     while (rs.next()) {
       Computer computer = new Computer();
       for (int i = 0; i < champs.size(); i++) {
@@ -83,12 +82,14 @@ public class ComputerFactory implements AutoCloseable {
             break;
           case "introduced":
             if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-              computer.setIntroduced(Timestamp.valueOf(rs.getString(champs.get(i))));
+              Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+              computer.setIntroduced(stamp);
             }
             break;
           case "discontinued":
             if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-              computer.setDiscontinued(Timestamp.valueOf(rs.getString(champs.get(i))));
+              Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+              computer.setDiscontinued(stamp);
             }
             break;
           case "company_id":
@@ -113,13 +114,12 @@ public class ComputerFactory implements AutoCloseable {
   public ArrayList<Computer> listComputersAll(ArrayList<String> champs) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     Statement stmt = this.conn.createStatement();
-    Scanner scanner = new Scanner(System.in);
-    String query = "SELECT ";
+    StringBuilder query = new StringBuilder("SELECT ");
     for (int i = 0; i < champs.size() - 1; i++) {
-      query += champs.get(i) + ", ";
+      query.append(champs.get(i)).append(", ");
     }
-    query += champs.get(champs.size() - 1) + " FROM computer";
-    ResultSet rs = stmt.executeQuery(query);
+    query.append(champs.get(champs.size() - 1)).append(" FROM computer");
+    ResultSet rs = stmt.executeQuery(query.toString());
     while (rs.next()) {
       Computer computer = new Computer();
       for (int i = 0; i < champs.size(); i++) {
@@ -133,12 +133,14 @@ public class ComputerFactory implements AutoCloseable {
             break;
           case "introduced":
             if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-              computer.setIntroduced(Timestamp.valueOf(rs.getString(champs.get(i))));
+              Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+              computer.setIntroduced(stamp);
             }
             break;
           case "discontinued":
             if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-              computer.setDiscontinued(Timestamp.valueOf(rs.getString(champs.get(i))));
+              Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+              computer.setDiscontinued(stamp);
             }
             break;
           case "company_id":
@@ -160,12 +162,13 @@ public class ComputerFactory implements AutoCloseable {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> showComputerDetails(int numero) throws SQLException {
+  public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     Statement stmt = this.conn.createStatement();
-    String query = "SELECT * FROM computer WHERE id = " + numero;
-    ResultSet rs = stmt.executeQuery(query);
-    String[] champs = {"id", "name", "introduced", "discontinued", "company_id"};
+    StringBuilder query = new StringBuilder(SHOW).append(numero);
+    ResultSet rs = stmt.executeQuery(query.toString());
+    String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
+    Company company = new Company();
     while (rs.next()) {
       Computer computer = new Computer();
       for (int i = 0; i < champs.length; i++) {
@@ -179,22 +182,28 @@ public class ComputerFactory implements AutoCloseable {
             break;
           case "introduced":
             if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
-              computer.setIntroduced(Timestamp.valueOf(rs.getString(champs[i])));
+              Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
+              computer.setIntroduced(stamp);
             }
             break;
           case "discontinued":
             if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
-              computer.setDiscontinued(Timestamp.valueOf(rs.getString(champs[i])));
+              Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
+              computer.setDiscontinued(stamp);
             }
             break;
           case "company_id":
-            computer.setCompany(new Company(Integer.parseInt(rs.getString(champs[i])), ""));
+            company.setId(Integer.parseInt(rs.getString(champs[i])));
+            break;
+          case "company_name":
+            company.setName(rs.getString(champs[i]));
             break;
           default:
             break;
           }
         }
       }
+      computer.setCompany(company);
       computers.add(computer);
     }
     return computers;
@@ -248,12 +257,12 @@ public class ComputerFactory implements AutoCloseable {
    */
   public void updateComputer(String id, String name, String introduced, String discontinued,
       String companyId, ArrayList<String> champs) throws SQLException {
-    String query = "UPDATE computer SET ";
+    StringBuilder query = new StringBuilder("UPDATE computer SET ");
     for (int i = 0; i < champs.size() - 1; i++) {
-      query += champs.get(i) + " = ?, ";
+      query.append(champs.get(i)).append(" = ?, ");
     }
-    query += champs.get(champs.size() - 1) + " = ? WHERE id = ?";
-    PreparedStatement stmt = this.conn.prepareStatement(query);
+    query.append(champs.get(champs.size() - 1)).append(" = ? WHERE id = ?");
+    PreparedStatement stmt = this.conn.prepareStatement(query.toString());
     for (int i = 0; i < champs.size(); i++) {
       switch (champs.get(i)) {
       case "name":
@@ -304,12 +313,12 @@ public class ComputerFactory implements AutoCloseable {
    */
   public void deleteComputer(String id, String name, String introduced, String discontinued,
       String companyId, ArrayList<String> champs) throws SQLException {
-    String query = "DELETE FROM computer WHERE ";
+    StringBuilder query = new StringBuilder("DELETE FROM computer WHERE ");
     for (int i = 0; i < champs.size() - 1; i++) {
-      query += champs.get(i) + " = ? AND ";
+      query.append(champs.get(i)).append(" = ? AND ");
     }
-    query += champs.get(champs.size() - 1) + " = ?";
-    PreparedStatement stmt = this.conn.prepareStatement(query);
+    query.append(champs.get(champs.size() - 1)).append(" = ?");
+    PreparedStatement stmt = this.conn.prepareStatement(query.toString());
     for (int i = 0; i < champs.size(); i++) {
       switch (champs.get(i)) {
       case "id":
@@ -352,6 +361,29 @@ public class ComputerFactory implements AutoCloseable {
       }
     }
     stmt.executeUpdate();
+  }
+
+  /**
+   * Récupère la DTO.
+   * @param computers les ordinateurs
+   * @return computersTO les DTOs
+   */
+  public ArrayList<ComputerTO> getComputerData(ArrayList<Computer> computers) {
+    return createComputerTO(computers);
+  }
+
+  /**
+   * Crée la DTO.
+   * @param computers les ordinateurs
+   * @return computersTO les DTOs
+   */
+  private ArrayList<ComputerTO> createComputerTO(ArrayList<Computer> computers) {
+    ArrayList<ComputerTO> computersTO = new ArrayList<ComputerTO>();
+    for (Computer computer : computers) {
+      ComputerTO computerTO = new ComputerTO(computer);
+      computersTO.add(computerTO);
+    }
+      return computersTO;
   }
 
   @Override

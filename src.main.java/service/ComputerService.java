@@ -1,10 +1,9 @@
 package service;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import dao.ComputerFactory;
+import dto.ComputerTO;
 import model.Computer;
 
 public class ComputerService {
@@ -25,7 +24,7 @@ public class ComputerService {
   /**
    * Retourne le nombre de lignes dans la table computer.
    * @return nombre le nombre de ligne
-   * @throws SQLException
+   * @throws SQLException SQLException
    */
   public int countComputers() throws SQLException {
     return ComputerFactory.getInstance().countComputers();
@@ -60,7 +59,7 @@ public class ComputerService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> showComputerDetails(int numero) throws SQLException {
+  public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
     return ComputerFactory.getInstance().showComputerDetails(numero);
   }
 
@@ -108,5 +107,15 @@ public class ComputerService {
       String companyId, ArrayList<String> champs) throws SQLException {
     ComputerFactory.getInstance().deleteComputer(id, name, introduced, discontinued, companyId,
         champs);
+  }
+
+  /**
+   * Récupère la DTO.
+   * @param computers les ordinateurs
+   * @return computersTO les DTOs
+   * @throws SQLException SQLException
+   */
+  public ArrayList<ComputerTO> getComputerData(ArrayList<Computer> computers) throws SQLException {
+    return ComputerFactory.getInstance().getComputerData(computers);
   }
 }

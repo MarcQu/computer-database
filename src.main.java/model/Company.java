@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Optional;
+
 public class Company {
   private Integer id;
   private String name;
@@ -39,10 +41,12 @@ public class Company {
   @Override
   public String toString() {
     String chaine = "Companie : ";
-    if (this.id != null) {
+    Optional<Integer> optionalId = Optional.ofNullable(this.id);
+    Optional<String> optionalName = Optional.ofNullable(this.name);
+    if (optionalId.isPresent()) {
       chaine += this.id + " ";
     }
-    if (this.name != null) {
+    if (optionalName.isPresent()) {
       chaine += this.name;
     }
     return chaine;

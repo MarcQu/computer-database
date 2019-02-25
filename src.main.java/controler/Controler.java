@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dao.CompanyFactory;
-import dao.ComputerFactory;
+import dto.CompanyTO;
+import dto.ComputerTO;
 import model.Company;
 import model.Computer;
 import service.CompanyService;
@@ -47,7 +47,7 @@ public class Controler {
   /**
    * Retourne le nombre de lignes dans la table company.
    * @return nombre le nombre de ligne
-   * @throws SQLException
+   * @throws SQLException SQLException
    */
   public int countCompanies() throws SQLException {
     return CompanyService.getInstance().countCompanies();
@@ -79,12 +79,12 @@ public class Controler {
   /**
    * Retourne le nombre de lignes dans la table computer.
    * @return nombre le nombre de ligne
-   * @throws SQLException
+   * @throws SQLException SQLException
    */
   public int countComputers() throws SQLException {
     return ComputerService.getInstance().countComputers();
   }
-  
+
   /**
    * Liste certains ordinateurs contenus dans la table computer.
    * @param champs les champs de la table à afficher
@@ -114,7 +114,7 @@ public class Controler {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> showComputerDetails(int numero) throws SQLException {
+  public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
     return ComputerService.getInstance().showComputerDetails(numero);
   }
 
@@ -162,5 +162,25 @@ public class Controler {
       String companyId, ArrayList<String> champs) throws SQLException {
     ComputerService.getInstance().deleteComputer(id, name, introduced, discontinued, companyId,
         champs);
+  }
+
+  /**
+   * Récupère la DTO.
+   * @param computers les ordinateurs
+   * @return computersTO les DTOs
+   * @throws SQLException SQLException
+   */
+  public ArrayList<ComputerTO> getComputerData(ArrayList<Computer> computers) throws SQLException {
+    return ComputerService.getInstance().getComputerData(computers);
+  }
+
+  /**
+   * Récupère la DTO.
+   * @param companies les compagnies
+   * @return companiesTO les DTOs
+   * @throws SQLException SQLException
+   */
+  public ArrayList<CompanyTO> getCompanyData(ArrayList<Company> companies) throws SQLException {
+    return CompanyService.getInstance().getCompanyData(companies);
   }
 }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controler.Controler;
+import dto.CompanyTO;
 import model.Company;
 
 /**
@@ -36,15 +37,16 @@ public class CompanyMenu extends HttpServlet {
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
       int nombreCompanies = Controler.getInstance().countCompanies();
-      
+
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("id");
       champs.add("name");
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre*(page-1), champs);
+      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), champs);
+      ArrayList<CompanyTO> companiesTO = Controler.getInstance().getCompanyData(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
-      request.setAttribute("companies", companies);
-      
-      int pages = Controler.getInstance().countCompanies()/nombre + 1;
+      request.setAttribute("companies", companiesTO);
+
+      int pages = Controler.getInstance().countCompanies() / nombre + 1;
       session.setAttribute("nombre", nombre);
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);

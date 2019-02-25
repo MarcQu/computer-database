@@ -1,12 +1,14 @@
 package model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Optional;
 
 public class Computer {
   private Integer id;
   private String name;
-  private Timestamp introduced;
-  private Timestamp discontinued;
+  private Date introduced;
+  private Date discontinued;
   private Company company;
 
   /**
@@ -23,7 +25,7 @@ public class Computer {
    * @param discontinued la date d'interruption de l'ordinateur
    * @param company      la companie de l'ordinateur
    */
-  public Computer(Integer id, String name, Timestamp introduced, Timestamp discontinued,
+  public Computer(Integer id, String name, Date introduced, Date discontinued,
       Company company) {
     this.id = id;
     this.name = name;
@@ -40,11 +42,11 @@ public class Computer {
     return this.name;
   }
 
-  public Timestamp getIntroduced() {
+  public Date getIntroduced() {
     return this.introduced;
   }
 
-  public Timestamp getDiscontinued() {
+  public Date getDiscontinued() {
     return this.discontinued;
   }
 
@@ -60,12 +62,22 @@ public class Computer {
     this.name = name;
   }
 
+  /**
+   * Set la date d'introduction de Timestamp à Date.
+   * @param introduced la date d'introduction
+   */
   public void setIntroduced(Timestamp introduced) {
-    this.introduced = introduced;
+    Date date = new Date(introduced.getTime());
+    this.introduced = date;
   }
 
+  /**
+   * Set la date d'interruption de Timestamp à Date.
+   * @param discontinued la date d'interruption
+   */
   public void setDiscontinued(Timestamp discontinued) {
-    this.discontinued = discontinued;
+    Date date = new Date(discontinued.getTime());
+    this.discontinued = date;
   }
 
   public void setCompany(Company company) {
@@ -75,20 +87,25 @@ public class Computer {
   @Override
   public String toString() {
     String chaine = "Computer : ";
-    if (this.id != null) {
+    Optional<Integer> optionalId = Optional.ofNullable(this.id);
+    Optional<String> optionalName = Optional.ofNullable(this.name);
+    Optional<Date> optionalIntroduced = Optional.ofNullable(this.introduced);
+    Optional<Date> optionalDiscontinued = Optional.ofNullable(this.discontinued);
+    Optional<Company> optionalCompany = Optional.ofNullable(this.company);
+    if (optionalId.isPresent()) {
       chaine += this.id + " ";
     }
-    if (this.name != null) {
+    if (optionalName.isPresent()) {
       chaine += this.name + " ";
     }
-    if (this.introduced != null) {
+    if (optionalIntroduced.isPresent()) {
       chaine += this.introduced + " ";
     }
-    if (this.discontinued != null) {
+    if (optionalDiscontinued.isPresent()) {
       chaine += this.discontinued + " ";
     }
-    if (this.company != null) {
-      chaine += this.company.getId();
+    if (optionalCompany.isPresent()) {
+      chaine += this.company;
     }
     return chaine;
   }
