@@ -78,7 +78,7 @@
                 <!-- Browse attribute computers -->
                 <tbody id="results">
                 	<c:forEach var="computer" items="${computers}">
-	                    <tr>
+	                    <tr id="companiesList">
 	                        <td class="editMode">
 	                            <input type="checkbox" name="cb" class="cb" value="${computer.id}">
 	                        </td>
