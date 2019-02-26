@@ -95,7 +95,7 @@
         </div>
     </section>
 
-    <footer class="navbar-fixed-bottom">
+    <footer class="navbar-fixed-bottom" style="height:auto;">
         <div class="container text-center">
             <ul class="pagination">
 	            <c:if test="${page > 1}">
