@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -68,7 +69,23 @@ public class CreateComputer extends HttpServlet {
       champs.add("name");
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
       request.setAttribute("companies", companies);
-      Controler.getInstance().createComputer(name, introduced.toString(), discontinued.toString(), companyId);
+
+      String errorName = "";
+      String errorDate = "";
+      String success = "";
+      if ("".equals(name)) {
+        errorName = "Le nom ne doit pas être vide";
+      }
+      if (!"".equals(introduced.toString()) && !"".equals(discontinued.toString()) && Timestamp.valueOf(introduced.toString()).after(Timestamp.valueOf(discontinued.toString()))) {
+        errorDate = "La date d'introduction doit être antérieur à la date d'interruption";
+      }
+      if (errorName == "" && errorDate == "") {
+        Controler.getInstance().createComputer(name, introduced.toString(), discontinued.toString(), companyId);
+        success = "Succès de la création";
+      }
+      request.setAttribute("errorName", errorName);
+      request.setAttribute("errorDate", errorDate);
+      request.setAttribute("success", success);
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
     } catch (SQLException e) {

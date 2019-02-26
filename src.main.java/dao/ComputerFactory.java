@@ -15,7 +15,7 @@ import dto.ComputerTO;
 public class ComputerFactory implements AutoCloseable {
   private Connection conn;
   private static ComputerFactory instance = null;
-  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B2";
+  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer";
   private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer, company WHERE computer.company_id = company.id AND computer.id = ";
   /**

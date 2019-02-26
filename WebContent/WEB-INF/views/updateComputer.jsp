@@ -25,13 +25,18 @@
                         id: <c:out value="${computerId}"/>	
                     </div>
                     <h1>Edit Computer</h1>
-
+					<c:if test="${success != ''}">
+						<label id="success">${success}</label>
+					</c:if>
                     <form action="/Computer-database/UpdateComputer" method="POST">
                         <input type="hidden" value="${computerId}" id="computerId" name="computerId"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${name}">
+                                <c:if test="${errorName != ''}">
+                                	<label id="error">${errorName}</label>
+                                </c:if>                            
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
@@ -40,6 +45,9 @@
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
                                 <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date" value="${discontinued}">
+                                <c:if test="${errorDate != ''}">
+                                	<label id="error">${errorDate}</label>                            
+                                </c:if>                             
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>

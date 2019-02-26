@@ -2,6 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -70,6 +71,7 @@ public class UpdateComputer extends HttpServlet {
       discontinued.append(request.getParameter("discontinued")).append(" 00:00:00");
     }
     String companyId = request.getParameter("companyId");
+
     ArrayList<String> champs = new ArrayList<String>();
     if (name != "") {
       champs.add("name");
@@ -82,7 +84,19 @@ public class UpdateComputer extends HttpServlet {
     }
     champs.add("company_id");
     try {
-      Controler.getInstance().updateComputer(computerId, name, introduced.toString(), discontinued.toString(), companyId, champs);
+      String errorName = "";
+      String errorDate = "";
+      String success = "";
+      if ("".equals(name)) {
+        errorName = "Le nom ne doit pas être vide";
+      }
+      if (!"".equals(introduced.toString()) && !"".equals(discontinued.toString()) && Timestamp.valueOf(introduced.toString()).after(Timestamp.valueOf(discontinued.toString()))) {
+        errorDate = "La date d'introduction doit être antérieur à la date d'interruption";
+      }
+      if (errorName == "" && errorDate == "") {
+        Controler.getInstance().updateComputer(computerId, name, introduced.toString(), discontinued.toString(), companyId, champs);
+        success = "Succès de la mise à jour";
+      }
       Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
       champs = new ArrayList<String>();
       champs.add("id");
@@ -94,6 +108,9 @@ public class UpdateComputer extends HttpServlet {
       request.setAttribute("discontinued", computer.getDiscontinued());
       request.setAttribute("companyComputer", computer.getCompany());
       request.setAttribute("companies", companies);
+      request.setAttribute("errorName", errorName);
+      request.setAttribute("errorDate", errorDate);
+      request.setAttribute("success", success);
     } catch (SQLException e) {
       e.printStackTrace();
     }

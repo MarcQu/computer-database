@@ -12,7 +12,7 @@ import dto.CompanyTO;
 public class CompanyFactory implements AutoCloseable {
   private Connection conn;
   private static CompanyFactory instance = null;
-  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B2";
+  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company";
   /**
    * CompanyFactory contient les méthodes spécifiques à la table company.
