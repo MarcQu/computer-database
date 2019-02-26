@@ -3,16 +3,20 @@ package dto;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Optional;
 
 import model.Computer;
 import model.Company;
 
 public class ComputerTO implements Serializable {
   private static final long serialVersionUID = 1L;
+  private static final DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-mm-dd");
   private Integer id;
   private String name;
-  private Date introduced;
-  private Date discontinued;
+  private String introduced;
+  private String discontinued;
   private Company company;
 
   /**
@@ -28,8 +32,14 @@ public class ComputerTO implements Serializable {
   public ComputerTO(Computer computer) {
     this.id = computer.getId();
     this.name = computer.getName();
-    this.introduced = computer.getIntroduced();
-    this.discontinued = computer.getDiscontinued();
+    Optional<String> optionalIntroduced = Optional.ofNullable(this.introduced);
+    Optional<String> optionalDiscontinued = Optional.ofNullable(this.discontinued);
+    if (optionalIntroduced.isPresent()) {
+      this.introduced = DATEFORMAT.format(computer.getIntroduced());
+    }
+    if (optionalDiscontinued.isPresent()) {
+      this.discontinued = DATEFORMAT.format(computer.getDiscontinued());
+    }
     this.company = computer.getCompany();
   }
 
@@ -41,11 +51,11 @@ public class ComputerTO implements Serializable {
     return this.name;
   }
 
-  public Date getIntroduced() {
+  public String getIntroduced() {
     return this.introduced;
   }
 
-  public Date getDiscontinued() {
+  public String getDiscontinued() {
     return this.discontinued;
   }
 
@@ -67,7 +77,10 @@ public class ComputerTO implements Serializable {
    */
   public void setIntroduced(Timestamp introduced) {
     Date date = new Date(introduced.getTime());
-    this.introduced = date;
+    Optional<Date> optionalIntroduced = Optional.ofNullable(date);
+    if (optionalIntroduced.isPresent()) {
+      this.introduced = DATEFORMAT.format(date);
+    }
   }
 
   /**
@@ -76,7 +89,10 @@ public class ComputerTO implements Serializable {
    */
   public void setDiscontinued(Timestamp discontinued) {
     Date date = new Date(discontinued.getTime());
-    this.discontinued = date;
+    Optional<Date> optionalDiscontinued = Optional.ofNullable(date);
+    if (optionalDiscontinued.isPresent()) {
+      this.discontinued = DATEFORMAT.format(date);
+    }
   }
 
   public void setCompany(Company company) {

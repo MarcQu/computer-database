@@ -35,7 +35,7 @@
                                 <label for="computerName">Computer name</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${name}">
                                 <c:if test="${errorName != ''}">
-                                	<label id="error">${errorName}</label>
+                                	<label id="errorName">${errorName}</label>
                                 </c:if>                            
                             </div>
                             <div class="form-group">
@@ -46,7 +46,7 @@
                                 <label for="discontinued">Discontinued date</label>
                                 <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date" value="${discontinued}">
                                 <c:if test="${errorDate != ''}">
-                                	<label id="error">${errorDate}</label>                            
+                                	<label id="errorDate">${errorDate}</label>                            
                                 </c:if>                             
                             </div>
                             <div class="form-group">

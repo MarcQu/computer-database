@@ -52,7 +52,7 @@
                 <!-- Browse attribute computers -->
                 <tbody id="results">
                 	<c:forEach var="company" items="${companies}">
-						<tr>
+						<tr id="companiesList">
 	                        <td><c:out value="${company.id}"/></td>
 	                        <td><c:out value="${company.name}"/></td>
 						</tr>
@@ -84,21 +84,9 @@
                 </c:if>                
         	</ul>
         <div class="btn-group btn-group-sm pull-right" role="group" >
-            <button type="button" class="btn btn-default">
-            	<a href="/Computer-database/CompanyMenu?nombre=10&page=1" onclick="">
-            		10
-            	</a>
-            </button>
-            <button type="button" class="btn btn-default">
-            	<a href="/Computer-database/CompanyMenu?nombre=50&page=1" onclick="">
-            		50
-            	</a>
-            </button>            
-            <button type="button" class="btn btn-default">
-            	<a href="/Computer-database/CompanyMenu?nombre=100&page=1" onclick="">
-            		100
-            	</a>
-            </button>
+            <a href="/Computer-database/CompanyMenu?nombre=10&page=1" onclick="" class="btn btn-default" role="button">10</a>
+            <a href="/Computer-database/CompanyMenu?nombre=50&page=1" onclick="" class="btn btn-default" role="button">50</a>         
+           	<a href="/Computer-database/CompanyMenu?nombre=100&page=1" onclick="" class="btn btn-default" role="button">100</a>
         </div>
     </footer>
 <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
