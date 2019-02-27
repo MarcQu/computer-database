@@ -12,7 +12,7 @@ import model.Company;
 
 public class ComputerTO implements Serializable {
   private static final long serialVersionUID = 1L;
-  private static final DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-mm-dd");
+  private static final DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
   private String id;
   private String name;
   private String introduced;
