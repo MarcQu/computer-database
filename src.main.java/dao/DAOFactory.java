@@ -1,5 +1,8 @@
 package dao;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,24 +13,23 @@ public class DAOFactory implements AutoCloseable {
 
   /**
    * DAOFactory contient les méthodes spécifiques pour initier la connexion à la base de données.
-   * @param url l'url de la base de données
-   * @throws SQLException SQLException
+   * @throws IOException IOException
    */
-  public DAOFactory(String url) throws SQLException {
-    this.initConnexion(url);
+  public DAOFactory() throws IOException {
+    this.initConnexion();
   }
 
   /**
    * Initialise la connexion à la BDD.
-   * @param url l'url de la base de données
-   * @throws SQLException
+   * @throws IOException IOException
    */
-  public void initConnexion(String url) {
+  public void initConnexion() throws IOException {
     Properties prp = new Properties();
-    prp.put("user", "root");
-    prp.put("password", "network");
+    String path = "D:\\Eclipse-workspace\\Computer-database\\src.main.java\\dao\\dao.properties";
+    InputStream input = new FileInputStream(path);
+    prp.load(input);
     try {
-      this.conn = DriverManager.getConnection(url, prp);
+      this.conn = DriverManager.getConnection(prp.getProperty("url"), prp.getProperty("login"), prp.getProperty("password"));
     } catch (SQLException e) {
       e.printStackTrace();
     }

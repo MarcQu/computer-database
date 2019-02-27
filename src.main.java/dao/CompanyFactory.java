@@ -38,7 +38,7 @@ public class CompanyFactory {
    */
   public int countCompanies() throws SQLException {
     int nombre = 0;
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       Statement stmt = factory.getConnection().createStatement();
       ResultSet rs = stmt.executeQuery(COUNT);
       rs.next();
@@ -60,7 +60,7 @@ public class CompanyFactory {
   public ArrayList<Company> listCompanies(int nombre, int offset, ArrayList<String> champs)
       throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       Statement stmt = factory.getConnection().createStatement();
       StringBuilder query = new StringBuilder("SELECT ");
       for (int i = 0; i < champs.size() - 1; i++) {
@@ -100,7 +100,7 @@ public class CompanyFactory {
    */
   public ArrayList<Company> listCompaniesAll(ArrayList<String> champs) throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       Statement stmt = factory.getConnection().createStatement();
       StringBuilder query = new StringBuilder("SELECT ");
       for (int i = 0; i < champs.size() - 1; i++) {

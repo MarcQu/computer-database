@@ -45,7 +45,7 @@ public class ComputerFactory {
    */
   public int countComputers() throws SQLException {
     int nombre = 0;
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       Statement stmt = factory.getConnection().createStatement();
       ResultSet rs = stmt.executeQuery(COUNT);
       rs.next();
@@ -67,7 +67,7 @@ public class ComputerFactory {
   public ArrayList<Computer> listComputers(int nombre, int offset, ArrayList<String> champs)
       throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       Statement stmt = factory.getConnection().createStatement();
       StringBuilder query = new StringBuilder("SELECT ");
       for (int i = 0; i < champs.size() - 1; i++) {
@@ -122,7 +122,7 @@ public class ComputerFactory {
    */
   public ArrayList<Computer> listComputersAll(ArrayList<String> champs) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       Statement stmt = factory.getConnection().createStatement();
       StringBuilder query = new StringBuilder("SELECT ");
       for (int i = 0; i < champs.size() - 1; i++) {
@@ -177,7 +177,7 @@ public class ComputerFactory {
    */
   public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       Statement stmt = factory.getConnection().createStatement();
       StringBuilder query = new StringBuilder(SHOW).append(numero);
       ResultSet rs = stmt.executeQuery(query.toString());
@@ -237,7 +237,7 @@ public class ComputerFactory {
    */
   public void createComputer(String name, String introduced, String discontinued, String companyId)
       throws SQLException, IllegalArgumentException {
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(UPDATE);
       if ("".equals(name)) {
         stmt.setString(1, null);
@@ -282,7 +282,7 @@ public class ComputerFactory {
       query.append(champs.get(i)).append(" = ?, ");
     }
     query.append(champs.get(champs.size() - 1)).append(" = ? WHERE id = ?");
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(query.toString());
       for (int i = 0; i < champs.size(); i++) {
         switch (champs.get(i)) {
@@ -342,7 +342,7 @@ public class ComputerFactory {
       query.append(champs.get(i)).append(" = ? AND ");
     }
     query.append(champs.get(champs.size() - 1)).append(" = ?");
-    try (DAOFactory factory = new DAOFactory(URL)) {
+    try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(query.toString());
       for (int i = 0; i < champs.size(); i++) {
         switch (champs.get(i)) {
