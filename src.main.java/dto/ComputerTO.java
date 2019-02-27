@@ -13,7 +13,7 @@ import model.Company;
 public class ComputerTO implements Serializable {
   private static final long serialVersionUID = 1L;
   private static final DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-mm-dd");
-  private Integer id;
+  private String id;
   private String name;
   private String introduced;
   private String discontinued;
@@ -30,10 +30,10 @@ public class ComputerTO implements Serializable {
    * @param computer l'ordinateur
    */
   public ComputerTO(Computer computer) {
-    this.id = computer.getId();
+    this.id = Integer.toString(computer.getId());
     this.name = computer.getName();
-    Optional<String> optionalIntroduced = Optional.ofNullable(this.introduced);
-    Optional<String> optionalDiscontinued = Optional.ofNullable(this.discontinued);
+    Optional<Date> optionalIntroduced = Optional.ofNullable(computer.getIntroduced());
+    Optional<Date> optionalDiscontinued = Optional.ofNullable(computer.getDiscontinued());
     if (optionalIntroduced.isPresent()) {
       this.introduced = DATEFORMAT.format(computer.getIntroduced());
     }
@@ -43,7 +43,7 @@ public class ComputerTO implements Serializable {
     this.company = computer.getCompany();
   }
 
-  public Integer getId() {
+  public String getId() {
     return this.id;
   }
 
@@ -63,7 +63,7 @@ public class ComputerTO implements Serializable {
     return this.company;
   }
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 

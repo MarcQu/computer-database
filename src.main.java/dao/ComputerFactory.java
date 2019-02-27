@@ -1,6 +1,5 @@
 package dao;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,18 +11,19 @@ import model.Company;
 import model.Computer;
 import dto.ComputerTO;
 
-public class ComputerFactory implements AutoCloseable {
-  private Connection conn;
+public class ComputerFactory {
   private static ComputerFactory instance = null;
   private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer";
   private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer, company WHERE computer.company_id = company.id AND computer.id = ";
+  private static final String UPDATE = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
+  private static final String LIST_ALL = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT * FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL LIMIT 10 OFFSET 0";
+
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
    * @throws SQLException SQLException
    */
   private ComputerFactory() throws SQLException {
-    this.conn = DAOFactory.getInstance(URL).getConnection();
   }
 
   /**
@@ -44,10 +44,15 @@ public class ComputerFactory implements AutoCloseable {
    * @throws SQLException SQLException
    */
   public int countComputers() throws SQLException {
-    Statement stmt = this.conn.createStatement();
-    ResultSet rs = stmt.executeQuery(COUNT);
-    rs.next();
-    int nombre = rs.getInt("rowcount");
+    int nombre = 0;
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      Statement stmt = factory.getConnection().createStatement();
+      ResultSet rs = stmt.executeQuery(COUNT);
+      rs.next();
+      nombre = rs.getInt("rowcount");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     return nombre;
   }
 
@@ -62,45 +67,49 @@ public class ComputerFactory implements AutoCloseable {
   public ArrayList<Computer> listComputers(int nombre, int offset, ArrayList<String> champs)
       throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
-    Statement stmt = this.conn.createStatement();
-    StringBuilder query = new StringBuilder("SELECT ");
-    for (int i = 0; i < champs.size() - 1; i++) {
-      query.append(champs.get(i)).append(", ");
-    }
-    query.append(champs.get(champs.size() - 1)).append(" FROM computer LIMIT ").append(nombre).append(" OFFSET ").append(offset);
-    ResultSet rs = stmt.executeQuery(query.toString());
-    while (rs.next()) {
-      Computer computer = new Computer();
-      for (int i = 0; i < champs.size(); i++) {
-        if (rs.getString(champs.get(i)) != null) {
-          switch (champs.get(i)) {
-          case "id":
-            computer.setId(Integer.parseInt(rs.getString(champs.get(i))));
-            break;
-          case "name":
-            computer.setName(rs.getString(champs.get(i)));
-            break;
-          case "introduced":
-            if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-              Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
-              computer.setIntroduced(stamp);
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      Statement stmt = factory.getConnection().createStatement();
+      StringBuilder query = new StringBuilder("SELECT ");
+      for (int i = 0; i < champs.size() - 1; i++) {
+        query.append(champs.get(i)).append(", ");
+      }
+      query.append(champs.get(champs.size() - 1)).append(" FROM computer LIMIT ").append(nombre).append(" OFFSET ").append(offset);
+      ResultSet rs = stmt.executeQuery(query.toString());
+      while (rs.next()) {
+        Computer computer = new Computer();
+        for (int i = 0; i < champs.size(); i++) {
+          if (rs.getString(champs.get(i)) != null) {
+            switch (champs.get(i)) {
+            case "id":
+              computer.setId(Integer.parseInt(rs.getString(champs.get(i))));
+              break;
+            case "name":
+              computer.setName(rs.getString(champs.get(i)));
+              break;
+            case "introduced":
+              if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+                Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+                computer.setIntroduced(stamp);
+              }
+              break;
+            case "discontinued":
+              if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+                Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+                computer.setDiscontinued(stamp);
+              }
+              break;
+            case "company_id":
+              computer.setCompany(new Company(Integer.parseInt(rs.getString(champs.get(i))), ""));
+              break;
+            default:
+              break;
             }
-            break;
-          case "discontinued":
-            if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-              Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
-              computer.setDiscontinued(stamp);
-            }
-            break;
-          case "company_id":
-            computer.setCompany(new Company(Integer.parseInt(rs.getString(champs.get(i))), ""));
-            break;
-          default:
-            break;
           }
         }
+        computers.add(computer);
       }
-      computers.add(computer);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
     return computers;
   }
@@ -113,45 +122,49 @@ public class ComputerFactory implements AutoCloseable {
    */
   public ArrayList<Computer> listComputersAll(ArrayList<String> champs) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
-    Statement stmt = this.conn.createStatement();
-    StringBuilder query = new StringBuilder("SELECT ");
-    for (int i = 0; i < champs.size() - 1; i++) {
-      query.append(champs.get(i)).append(", ");
-    }
-    query.append(champs.get(champs.size() - 1)).append(" FROM computer");
-    ResultSet rs = stmt.executeQuery(query.toString());
-    while (rs.next()) {
-      Computer computer = new Computer();
-      for (int i = 0; i < champs.size(); i++) {
-        if (rs.getString(champs.get(i)) != null) {
-          switch (champs.get(i)) {
-          case "id":
-            computer.setId(Integer.parseInt(rs.getString(champs.get(i))));
-            break;
-          case "name":
-            computer.setName(rs.getString(champs.get(i)));
-            break;
-          case "introduced":
-            if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-              Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
-              computer.setIntroduced(stamp);
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      Statement stmt = factory.getConnection().createStatement();
+      StringBuilder query = new StringBuilder("SELECT ");
+      for (int i = 0; i < champs.size() - 1; i++) {
+        query.append(champs.get(i)).append(", ");
+      }
+      query.append(champs.get(champs.size() - 1)).append(" FROM computer");
+      ResultSet rs = stmt.executeQuery(query.toString());
+      while (rs.next()) {
+        Computer computer = new Computer();
+        for (int i = 0; i < champs.size(); i++) {
+          if (rs.getString(champs.get(i)) != null) {
+            switch (champs.get(i)) {
+            case "id":
+              computer.setId(Integer.parseInt(rs.getString(champs.get(i))));
+              break;
+            case "name":
+              computer.setName(rs.getString(champs.get(i)));
+              break;
+            case "introduced":
+              if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+                Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+                computer.setIntroduced(stamp);
+              }
+              break;
+            case "discontinued":
+              if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+                Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+                computer.setDiscontinued(stamp);
+              }
+              break;
+            case "company_id":
+              computer.setCompany(new Company(Integer.parseInt(rs.getString(champs.get(i))), ""));
+              break;
+            default:
+              break;
             }
-            break;
-          case "discontinued":
-            if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-              Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
-              computer.setDiscontinued(stamp);
-            }
-            break;
-          case "company_id":
-            computer.setCompany(new Company(Integer.parseInt(rs.getString(champs.get(i))), ""));
-            break;
-          default:
-            break;
           }
         }
+        computers.add(computer);
       }
-      computers.add(computer);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
     return computers;
   }
@@ -164,47 +177,51 @@ public class ComputerFactory implements AutoCloseable {
    */
   public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
-    Statement stmt = this.conn.createStatement();
-    StringBuilder query = new StringBuilder(SHOW).append(numero);
-    ResultSet rs = stmt.executeQuery(query.toString());
-    String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
-    Company company = new Company();
-    while (rs.next()) {
-      Computer computer = new Computer();
-      for (int i = 0; i < champs.length; i++) {
-        if (rs.getString(champs[i]) != null) {
-          switch (champs[i]) {
-          case "id":
-            computer.setId(Integer.parseInt(rs.getString(champs[i])));
-            break;
-          case "name":
-            computer.setName(rs.getString(champs[i]));
-            break;
-          case "introduced":
-            if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
-              Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
-              computer.setIntroduced(stamp);
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      Statement stmt = factory.getConnection().createStatement();
+      StringBuilder query = new StringBuilder(SHOW).append(numero);
+      ResultSet rs = stmt.executeQuery(query.toString());
+      String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
+      Company company = new Company();
+      while (rs.next()) {
+        Computer computer = new Computer();
+        for (int i = 0; i < champs.length; i++) {
+          if (rs.getString(champs[i]) != null) {
+            switch (champs[i]) {
+            case "id":
+              computer.setId(Integer.parseInt(rs.getString(champs[i])));
+              break;
+            case "name":
+              computer.setName(rs.getString(champs[i]));
+              break;
+            case "introduced":
+              if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+                Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
+                computer.setIntroduced(stamp);
+              }
+              break;
+            case "discontinued":
+              if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+                Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
+                computer.setDiscontinued(stamp);
+              }
+              break;
+            case "company_id":
+              company.setId(Integer.parseInt(rs.getString(champs[i])));
+              break;
+            case "company_name":
+              company.setName(rs.getString(champs[i]));
+              break;
+            default:
+              break;
             }
-            break;
-          case "discontinued":
-            if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
-              Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
-              computer.setDiscontinued(stamp);
-            }
-            break;
-          case "company_id":
-            company.setId(Integer.parseInt(rs.getString(champs[i])));
-            break;
-          case "company_name":
-            company.setName(rs.getString(champs[i]));
-            break;
-          default:
-            break;
           }
         }
+        computer.setCompany(company);
+        computers.add(computer);
       }
-      computer.setCompany(company);
-      computers.add(computer);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
     return computers;
   }
@@ -220,29 +237,32 @@ public class ComputerFactory implements AutoCloseable {
    */
   public void createComputer(String name, String introduced, String discontinued, String companyId)
       throws SQLException, IllegalArgumentException {
-    String query = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
-    PreparedStatement stmt = this.conn.prepareStatement(query);
-    if ("".equals(name)) {
-      stmt.setString(1, null);
-    } else {
-      stmt.setString(1, name);
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      PreparedStatement stmt = factory.getConnection().prepareStatement(UPDATE);
+      if ("".equals(name)) {
+        stmt.setString(1, null);
+      } else {
+        stmt.setString(1, name);
+      }
+      if ("".equals(introduced)) {
+        stmt.setTimestamp(2, null);
+      } else {
+        stmt.setTimestamp(2, Timestamp.valueOf(introduced));
+      }
+      if ("".equals(discontinued)) {
+        stmt.setTimestamp(3, null);
+      } else {
+        stmt.setTimestamp(3, Timestamp.valueOf(discontinued));
+      }
+      if ("".equals(companyId)) {
+        stmt.setString(4, null);
+      } else {
+        stmt.setInt(4, Integer.parseInt(companyId));
+      }
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-    if ("".equals(introduced)) {
-      stmt.setTimestamp(2, null);
-    } else {
-      stmt.setTimestamp(2, Timestamp.valueOf(introduced));
-    }
-    if ("".equals(discontinued)) {
-      stmt.setTimestamp(3, null);
-    } else {
-      stmt.setTimestamp(3, Timestamp.valueOf(discontinued));
-    }
-    if ("".equals(companyId)) {
-      stmt.setString(4, null);
-    } else {
-      stmt.setInt(4, Integer.parseInt(companyId));
-    }
-    stmt.executeUpdate();
   }
 
   /**
@@ -262,43 +282,47 @@ public class ComputerFactory implements AutoCloseable {
       query.append(champs.get(i)).append(" = ?, ");
     }
     query.append(champs.get(champs.size() - 1)).append(" = ? WHERE id = ?");
-    PreparedStatement stmt = this.conn.prepareStatement(query.toString());
-    for (int i = 0; i < champs.size(); i++) {
-      switch (champs.get(i)) {
-      case "name":
-        if ("".equals(name)) {
-          stmt.setString(i + 1, null);
-        } else {
-          stmt.setString(i + 1, name);
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      PreparedStatement stmt = factory.getConnection().prepareStatement(query.toString());
+      for (int i = 0; i < champs.size(); i++) {
+        switch (champs.get(i)) {
+        case "name":
+          if ("".equals(name)) {
+            stmt.setString(i + 1, null);
+          } else {
+            stmt.setString(i + 1, name);
+          }
+          break;
+        case "introduced":
+          if ("".equals(introduced)) {
+            stmt.setTimestamp(i + 1, null);
+          } else {
+            stmt.setTimestamp(i + 1, Timestamp.valueOf(introduced));
+          }
+          break;
+        case "discontinued":
+          if ("".equals(discontinued)) {
+            stmt.setTimestamp(i + 1, null);
+          } else {
+            stmt.setTimestamp(i + 1, Timestamp.valueOf(discontinued));
+          }
+          break;
+        case "company_id":
+          if ("".equals(companyId)) {
+            stmt.setString(i + 1, null);
+          } else {
+            stmt.setInt(i + 1, Integer.parseInt(companyId));
+          }
+          break;
+        default:
+          break;
         }
-        break;
-      case "introduced":
-        if ("".equals(introduced)) {
-          stmt.setTimestamp(i + 1, null);
-        } else {
-          stmt.setTimestamp(i + 1, Timestamp.valueOf(introduced));
-        }
-        break;
-      case "discontinued":
-        if ("".equals(discontinued)) {
-          stmt.setTimestamp(i + 1, null);
-        } else {
-          stmt.setTimestamp(i + 1, Timestamp.valueOf(discontinued));
-        }
-        break;
-      case "company_id":
-        if ("".equals(companyId)) {
-          stmt.setString(i + 1, null);
-        } else {
-          stmt.setInt(i + 1, Integer.parseInt(companyId));
-        }
-        break;
-      default:
-        break;
       }
+      stmt.setInt(champs.size() + 1, Integer.parseInt(id));
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-    stmt.setInt(champs.size() + 1, Integer.parseInt(id));
-    stmt.executeUpdate();
   }
 
   /**
@@ -318,49 +342,53 @@ public class ComputerFactory implements AutoCloseable {
       query.append(champs.get(i)).append(" = ? AND ");
     }
     query.append(champs.get(champs.size() - 1)).append(" = ?");
-    PreparedStatement stmt = this.conn.prepareStatement(query.toString());
-    for (int i = 0; i < champs.size(); i++) {
-      switch (champs.get(i)) {
-      case "id":
-        if ("".equals(id)) {
-          stmt.setString(i + 1, null);
-        } else {
-          stmt.setInt(i + 1, Integer.parseInt(id));
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      PreparedStatement stmt = factory.getConnection().prepareStatement(query.toString());
+      for (int i = 0; i < champs.size(); i++) {
+        switch (champs.get(i)) {
+        case "id":
+          if ("".equals(id)) {
+            stmt.setString(i + 1, null);
+          } else {
+            stmt.setInt(i + 1, Integer.parseInt(id));
+          }
+          break;
+        case "name":
+          if ("".equals(name)) {
+            stmt.setString(i + 1, null);
+          } else {
+            stmt.setString(i + 1, name);
+          }
+          break;
+        case "introduced":
+          if ("".equals(introduced)) {
+            stmt.setTimestamp(i + 1, null);
+          } else {
+            stmt.setTimestamp(i + 1, Timestamp.valueOf(introduced));
+          }
+          break;
+        case "discontinued":
+          if ("".equals(discontinued)) {
+            stmt.setTimestamp(i + 1, null);
+          } else {
+            stmt.setTimestamp(i + 1, Timestamp.valueOf(discontinued));
+          }
+          break;
+        case "company_id":
+          if ("".equals(companyId)) {
+            stmt.setString(i + 1, null);
+          } else {
+            stmt.setInt(i + 1, Integer.parseInt(companyId));
+          }
+          break;
+        default:
+          break;
         }
-        break;
-      case "name":
-        if ("".equals(name)) {
-          stmt.setString(i + 1, null);
-        } else {
-          stmt.setString(i + 1, name);
-        }
-        break;
-      case "introduced":
-        if ("".equals(introduced)) {
-          stmt.setTimestamp(i + 1, null);
-        } else {
-          stmt.setTimestamp(i + 1, Timestamp.valueOf(introduced));
-        }
-        break;
-      case "discontinued":
-        if ("".equals(discontinued)) {
-          stmt.setTimestamp(i + 1, null);
-        } else {
-          stmt.setTimestamp(i + 1, Timestamp.valueOf(discontinued));
-        }
-        break;
-      case "company_id":
-        if ("".equals(companyId)) {
-          stmt.setString(i + 1, null);
-        } else {
-          stmt.setInt(i + 1, Integer.parseInt(companyId));
-        }
-        break;
-      default:
-        break;
       }
-    }
     stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -384,10 +412,5 @@ public class ComputerFactory implements AutoCloseable {
       computersTO.add(computerTO);
     }
       return computersTO;
-  }
-
-  @Override
-  public void close() throws Exception {
-    this.conn.close();
   }
 }

@@ -5,30 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DAOFactory {
+public class DAOFactory implements AutoCloseable {
   private Connection conn;
-  private static DAOFactory instance = null;
 
   /**
    * DAOFactory contient les méthodes spécifiques pour initier la connexion à la base de données.
    * @param url l'url de la base de données
    * @throws SQLException SQLException
    */
-  private DAOFactory(String url) throws SQLException {
+  public DAOFactory(String url) throws SQLException {
     this.initConnexion(url);
-  }
-
-  /**
-   * Méthode qui retourne l'instance unique de la classe DAOFactory.
-   * @param url l'url de la base de données
-   * @return l'instance de la classe DAOFactory
-   * @throws SQLException SQLException
-   */
-  public static DAOFactory getInstance(String url) throws SQLException {
-    if (DAOFactory.instance == null) {
-      DAOFactory.instance = new DAOFactory(url);
-    }
-    return DAOFactory.instance;
   }
 
   /**
@@ -53,5 +39,10 @@ public class DAOFactory {
    */
   public Connection getConnection() {
     return this.conn;
+  }
+
+  @Override
+  public void close() throws Exception {
+    this.conn.close();
   }
 }

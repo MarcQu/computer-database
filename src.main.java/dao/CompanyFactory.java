@@ -1,6 +1,5 @@
 package dao;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,8 +8,7 @@ import java.util.ArrayList;
 import model.Company;
 import dto.CompanyTO;
 
-public class CompanyFactory implements AutoCloseable {
-  private Connection conn;
+public class CompanyFactory {
   private static CompanyFactory instance = null;
   private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company";
@@ -19,7 +17,6 @@ public class CompanyFactory implements AutoCloseable {
    * @throws SQLException SQLException
    */
   private CompanyFactory() throws SQLException {
-    this.conn = DAOFactory.getInstance(URL).getConnection();
   }
 
   /**
@@ -40,10 +37,15 @@ public class CompanyFactory implements AutoCloseable {
    * @throws SQLException SQLException
    */
   public int countCompanies() throws SQLException {
-    Statement stmt = this.conn.createStatement();
-    ResultSet rs = stmt.executeQuery(COUNT);
-    rs.next();
-    int nombre = rs.getInt("rowcount");
+    int nombre = 0;
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      Statement stmt = factory.getConnection().createStatement();
+      ResultSet rs = stmt.executeQuery(COUNT);
+      rs.next();
+      nombre = rs.getInt("rowcount");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     return nombre;
   }
 
@@ -58,30 +60,34 @@ public class CompanyFactory implements AutoCloseable {
   public ArrayList<Company> listCompanies(int nombre, int offset, ArrayList<String> champs)
       throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
-    Statement stmt = this.conn.createStatement();
-    StringBuilder query = new StringBuilder("SELECT ");
-    for (int i = 0; i < champs.size() - 1; i++) {
-      query.append(champs.get(i)).append(", ");
-    }
-    query.append(champs.get(champs.size() - 1)).append(" FROM company LIMIT ").append(nombre).append(" OFFSET ").append(offset);
-    ResultSet rs = stmt.executeQuery(query.toString());
-    while (rs.next()) {
-      Company company = new Company();
-      for (int i = 0; i < champs.size(); i++) {
-        if (rs.getString(champs.get(i)) != null) {
-          switch (champs.get(i)) {
-          case "id":
-            company.setId(Integer.parseInt(rs.getString(champs.get(i))));
-            break;
-          case "name":
-            company.setName(rs.getString(champs.get(i)));
-            break;
-          default:
-            break;
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      Statement stmt = factory.getConnection().createStatement();
+      StringBuilder query = new StringBuilder("SELECT ");
+      for (int i = 0; i < champs.size() - 1; i++) {
+        query.append(champs.get(i)).append(", ");
+      }
+      query.append(champs.get(champs.size() - 1)).append(" FROM company LIMIT ").append(nombre).append(" OFFSET ").append(offset);
+      ResultSet rs = stmt.executeQuery(query.toString());
+      while (rs.next()) {
+        Company company = new Company();
+        for (int i = 0; i < champs.size(); i++) {
+          if (rs.getString(champs.get(i)) != null) {
+            switch (champs.get(i)) {
+            case "id":
+              company.setId(Integer.parseInt(rs.getString(champs.get(i))));
+              break;
+            case "name":
+              company.setName(rs.getString(champs.get(i)));
+              break;
+            default:
+              break;
+            }
           }
         }
+        companies.add(company);
       }
-      companies.add(company);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
     return companies;
   }
@@ -94,30 +100,34 @@ public class CompanyFactory implements AutoCloseable {
    */
   public ArrayList<Company> listCompaniesAll(ArrayList<String> champs) throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
-    Statement stmt = this.conn.createStatement();
-    StringBuilder query = new StringBuilder("SELECT ");
-    for (int i = 0; i < champs.size() - 1; i++) {
-      query.append(champs.get(i)).append(", ");
-    }
-    query.append(champs.get(champs.size() - 1)).append(" FROM company");
-    ResultSet rs = stmt.executeQuery(query.toString());
-    while (rs.next()) {
-      Company company = new Company();
-      for (int i = 0; i < champs.size(); i++) {
-        if (rs.getString(champs.get(i)) != null) {
-          switch (champs.get(i)) {
-          case "id":
-            company.setId(Integer.parseInt(rs.getString(champs.get(i))));
-            break;
-          case "name":
-            company.setName(rs.getString(champs.get(i)));
-            break;
-          default:
-            break;
+    try (DAOFactory factory = new DAOFactory(URL)) {
+      Statement stmt = factory.getConnection().createStatement();
+      StringBuilder query = new StringBuilder("SELECT ");
+      for (int i = 0; i < champs.size() - 1; i++) {
+        query.append(champs.get(i)).append(", ");
+      }
+      query.append(champs.get(champs.size() - 1)).append(" FROM company");
+      ResultSet rs = stmt.executeQuery(query.toString());
+      while (rs.next()) {
+        Company company = new Company();
+        for (int i = 0; i < champs.size(); i++) {
+          if (rs.getString(champs.get(i)) != null) {
+            switch (champs.get(i)) {
+            case "id":
+              company.setId(Integer.parseInt(rs.getString(champs.get(i))));
+              break;
+            case "name":
+              company.setName(rs.getString(champs.get(i)));
+              break;
+            default:
+              break;
+            }
           }
         }
+        companies.add(company);
       }
-      companies.add(company);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
     return companies;
   }
@@ -143,10 +153,5 @@ public class CompanyFactory implements AutoCloseable {
       companiesTO.add(companyTO);
     }
       return companiesTO;
-  }
-
-  @Override
-  public void close() throws Exception {
-    this.conn.close();
   }
 }

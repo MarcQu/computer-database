@@ -4,13 +4,23 @@
 	<artifactId>Computer-database</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+	<properties>
+		<mavenCompilerVersion>3.8.0</mavenCompilerVersion>
+		<mavenWarVersion>3.2.1</mavenWarVersion>
+		<mavenCheckstyleVersion>3.0.0</mavenCheckstyleVersion>
+		<slf4jVersion>1.6.1</slf4jVersion>
+		<mockitoVersion>2.24.5</mockitoVersion>
+		<javaxElApiVersion>3.0.0</javaxElApiVersion>
+		<javaxElVersion>2.2.6</javaxElVersion>
+		<seleniumVersion>3.141.59</seleniumVersion>
+	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<pluginManagement> 
 			<plugins>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.0</version>
+					<version>${mavenCompilerVersion}</version>
 					<configuration>
 						<source>1.8</source>
 						<target>1.8</target>
@@ -18,7 +28,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>3.2.1</version>
+					<version>${mavenWarVersion}</version>
 					<configuration>
 						<warSourceDirectory>WebContent</warSourceDirectory>
 					</configuration>
@@ -26,7 +36,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>${mavenCheckstyleVersion}</version>
 		            <executions>
 		                <execution>
 		                    <id>validate</id>
@@ -47,9 +57,6 @@
 			</plugins>
 		</pluginManagement> 
 	</build>
-	<properties>
-		<slf4jVersion>1.6.1</slf4jVersion>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -62,40 +69,25 @@
 		    <version>${slf4jVersion}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.mockito</groupId>
-		    <artifactId>mockito-all</artifactId>
-		    <version>1.9.5</version>
-		    <scope>test</scope>
-		</dependency>
-		<dependency>
-		    <groupId>javax.validation</groupId>
-		    <artifactId>validation-api</artifactId>
-		    <version>2.0.0.Final</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.hibernate.validator</groupId>
-		    <artifactId>hibernate-validator</artifactId>
-		    <version>6.0.2.Final</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.hibernate.validator</groupId>
-		    <artifactId>hibernate-validator-annotation-processor</artifactId>
-		    <version>6.0.2.Final</version>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-android</artifactId>
+			<version>${mockitoVersion}</version>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 		    <groupId>javax.el</groupId>
 		    <artifactId>javax.el-api</artifactId>
-		    <version>3.0.0</version>
+		    <version>${javaxElApiVersion}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.glassfish.web</groupId>
 		    <artifactId>javax.el</artifactId>
-		    <version>2.2.6</version>
+		    <version>${javaxElVersion}</version>
 		</dependency>
 	    <dependency>
 	        <groupId>org.seleniumhq.selenium</groupId>
 	        <artifactId>selenium-java</artifactId>
-	        <version>3.141.59</version>
+	        <version>${seleniumVersion}</version>
 	    </dependency>  
 	</dependencies>
 </project>

@@ -53,8 +53,8 @@
                 <tbody id="results">
                 	<c:forEach var="company" items="${companies}">
 						<tr id="companiesList">
-	                        <td><c:out value="${company.id}"/></td>
-	                        <td><c:out value="${company.name}"/></td>
+	                        <td><c:out value="${company.getId()}"/></td>
+	                        <td><c:out value="${company.getName()}"/></td>
 						</tr>
                 	</c:forEach>
                 </tbody>
