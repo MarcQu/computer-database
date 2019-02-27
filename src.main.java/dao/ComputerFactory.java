@@ -13,12 +13,11 @@ import dto.ComputerTO;
 
 public class ComputerFactory {
   private static ComputerFactory instance = null;
-  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer";
-  private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer, company WHERE computer.company_id = company.id AND computer.id = ";
-  private static final String UPDATE = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
-  private static final String LIST_ALL = "SELECT * FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT * FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL LIMIT 10 OFFSET 0";
-
+  private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer, company WHERE computer.company_id = company.id AND computer.id = ?";
+  private static final String CREATE = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
+  private static final String LIST = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL LIMIT ? OFFSET ?";
+  private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
    * @throws SQLException SQLException
@@ -59,53 +58,55 @@ public class ComputerFactory {
   /**
    * Liste quelques ordinateurs contenus dans la table computer.
    * @param nombre nombre de résultat à afficher
-   * @param champs les champs de la table à afficher
    * @param offset l'offset pour la requète sql
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset, ArrayList<String> champs)
+  public ArrayList<Computer> listComputers(int nombre, int offset)
       throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     try (DAOFactory factory = new DAOFactory()) {
-      Statement stmt = factory.getConnection().createStatement();
-      StringBuilder query = new StringBuilder("SELECT ");
-      for (int i = 0; i < champs.size() - 1; i++) {
-        query.append(champs.get(i)).append(", ");
-      }
-      query.append(champs.get(champs.size() - 1)).append(" FROM computer LIMIT ").append(nombre).append(" OFFSET ").append(offset);
-      ResultSet rs = stmt.executeQuery(query.toString());
+      PreparedStatement stmt = factory.getConnection().prepareStatement(LIST);
+      stmt.setInt(1, nombre);
+      stmt.setInt(2, offset);
+      ResultSet rs = stmt.executeQuery();
+      String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
       while (rs.next()) {
         Computer computer = new Computer();
-        for (int i = 0; i < champs.size(); i++) {
-          if (rs.getString(champs.get(i)) != null) {
-            switch (champs.get(i)) {
+        Company company = new Company();
+        for (int i = 0; i < champs.length; i++) {
+          if (rs.getString(champs[i]) != null) {
+            switch (champs[i]) {
             case "id":
-              computer.setId(Integer.parseInt(rs.getString(champs.get(i))));
+              computer.setId(Integer.parseInt(rs.getString(champs[i])));
               break;
             case "name":
-              computer.setName(rs.getString(champs.get(i)));
+              computer.setName(rs.getString(champs[i]));
               break;
             case "introduced":
-              if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-                Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+              if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+                Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
                 computer.setIntroduced(stamp);
               }
               break;
             case "discontinued":
-              if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
-                Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
+              if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+                Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
                 computer.setDiscontinued(stamp);
               }
               break;
             case "company_id":
-              computer.setCompany(new Company(Integer.parseInt(rs.getString(champs.get(i))), ""));
+              company.setId(Integer.parseInt(rs.getString(champs[i])));
+              break;
+            case "company_name":
+              company.setName(rs.getString(champs[i]));
               break;
             default:
               break;
             }
           }
         }
+        computer.setCompany(company);
         computers.add(computer);
       }
     } catch (Exception e) {
@@ -178,12 +179,12 @@ public class ComputerFactory {
   public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     try (DAOFactory factory = new DAOFactory()) {
-      Statement stmt = factory.getConnection().createStatement();
-      StringBuilder query = new StringBuilder(SHOW).append(numero);
-      ResultSet rs = stmt.executeQuery(query.toString());
+      PreparedStatement stmt = factory.getConnection().prepareStatement(SHOW);
+      stmt.setString(1, numero);
+      ResultSet rs = stmt.executeQuery();
       String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
-      Company company = new Company();
       while (rs.next()) {
+        Company company = new Company();
         Computer computer = new Computer();
         for (int i = 0; i < champs.length; i++) {
           if (rs.getString(champs[i]) != null) {
@@ -238,7 +239,7 @@ public class ComputerFactory {
   public void createComputer(String name, String introduced, String discontinued, String companyId)
       throws SQLException, IllegalArgumentException {
     try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt = factory.getConnection().prepareStatement(UPDATE);
+      PreparedStatement stmt = factory.getConnection().prepareStatement(CREATE);
       if ("".equals(name)) {
         stmt.setString(1, null);
       } else {
@@ -328,64 +329,13 @@ public class ComputerFactory {
   /**
    * Supprime un ordinateur de la table computer.
    * @param id           l'id de l'ordinateur à supprimer
-   * @param name         le nom de l'ordinateur à supprimer
-   * @param introduced   la date d'introduction de l'ordinateur à supprimer
-   * @param discontinued la date d'interruption de l'ordinateur à supprimer
-   * @param companyId    l'id de la companie de l'ordinateur à supprimer
-   * @param champs       les champs qui sont prises en compte par la suppression
    * @throws SQLException SQLException
    */
-  public void deleteComputer(String id, String name, String introduced, String discontinued,
-      String companyId, ArrayList<String> champs) throws SQLException {
-    StringBuilder query = new StringBuilder("DELETE FROM computer WHERE ");
-    for (int i = 0; i < champs.size() - 1; i++) {
-      query.append(champs.get(i)).append(" = ? AND ");
-    }
-    query.append(champs.get(champs.size() - 1)).append(" = ?");
+  public void deleteComputer(String id) throws SQLException {
     try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt = factory.getConnection().prepareStatement(query.toString());
-      for (int i = 0; i < champs.size(); i++) {
-        switch (champs.get(i)) {
-        case "id":
-          if ("".equals(id)) {
-            stmt.setString(i + 1, null);
-          } else {
-            stmt.setInt(i + 1, Integer.parseInt(id));
-          }
-          break;
-        case "name":
-          if ("".equals(name)) {
-            stmt.setString(i + 1, null);
-          } else {
-            stmt.setString(i + 1, name);
-          }
-          break;
-        case "introduced":
-          if ("".equals(introduced)) {
-            stmt.setTimestamp(i + 1, null);
-          } else {
-            stmt.setTimestamp(i + 1, Timestamp.valueOf(introduced));
-          }
-          break;
-        case "discontinued":
-          if ("".equals(discontinued)) {
-            stmt.setTimestamp(i + 1, null);
-          } else {
-            stmt.setTimestamp(i + 1, Timestamp.valueOf(discontinued));
-          }
-          break;
-        case "company_id":
-          if ("".equals(companyId)) {
-            stmt.setString(i + 1, null);
-          } else {
-            stmt.setInt(i + 1, Integer.parseInt(companyId));
-          }
-          break;
-        default:
-          break;
-        }
-      }
-    stmt.executeUpdate();
+      PreparedStatement stmt = factory.getConnection().prepareStatement(DELETE);
+      stmt.setString(1, id);
+      stmt.executeUpdate();
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -39,10 +39,7 @@ public class ComputerFactoryTest {
    */
   @Test
   public void listComputersTest() throws SQLException {
-    ArrayList<String> champs = new ArrayList<String>();
-    champs.add("id");
-    champs.add("name");
-    ArrayList<Computer> computers = this.computerFactory.listComputers(10, 0, champs);
+    ArrayList<Computer> computers = this.computerFactory.listComputers(10, 0);
     assertEquals(10, computers.size());
   }
 
@@ -100,17 +97,12 @@ public class ComputerFactoryTest {
    */
   @Test
   public void createDeleteComputer() throws SQLException {
-    ArrayList<String> champs = new ArrayList<String>();
-    champs.add("name");
-
     int expectedCount = this.computerFactory.countComputers() + 1;
     this.computerFactory.createComputer("test", "", "", "");
-    ArrayList<Computer> computers = this.computerFactory.listComputersAll(champs);
-    assertEquals(expectedCount, computers.size());
+    assertEquals(expectedCount, this.computerFactory.countComputers());
 
     expectedCount = this.computerFactory.countComputers() - 1;
-    this.computerFactory.deleteComputer("", "test", "", "", "", champs);
-    computers = this.computerFactory.listComputersAll(champs);
-    assertEquals(expectedCount, computers.size());
+    this.computerFactory.deleteComputer("");
+    assertEquals(expectedCount, this.computerFactory.countComputers());
   }
 }

@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,8 +11,10 @@ import dto.CompanyTO;
 
 public class CompanyFactory {
   private static CompanyFactory instance = null;
-  private static final String URL = "jdbc:mysql://localhost:3306/computer-database-db?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company";
+  private static final String LIST = "SELECT id, name FROM company LIMIT ? OFFSET ?";
+  private static final String LIST_ALL = "SELECT id, name FROM company";
+
   /**
    * CompanyFactory contient les méthodes spécifiques à la table company.
    * @throws SQLException SQLException
@@ -51,39 +54,23 @@ public class CompanyFactory {
 
   /**
    * Liste les companies contenues dans la table company.
-   * @param champs les champs de la table à afficher
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompanies(int nombre, int offset, ArrayList<String> champs)
+  public ArrayList<Company> listCompanies(int nombre, int offset)
       throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
     try (DAOFactory factory = new DAOFactory()) {
-      Statement stmt = factory.getConnection().createStatement();
-      StringBuilder query = new StringBuilder("SELECT ");
-      for (int i = 0; i < champs.size() - 1; i++) {
-        query.append(champs.get(i)).append(", ");
-      }
-      query.append(champs.get(champs.size() - 1)).append(" FROM company LIMIT ").append(nombre).append(" OFFSET ").append(offset);
-      ResultSet rs = stmt.executeQuery(query.toString());
+      PreparedStatement stmt = factory.getConnection().prepareStatement(LIST);
+      stmt.setInt(1, nombre);
+      stmt.setInt(2, offset);
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         Company company = new Company();
-        for (int i = 0; i < champs.size(); i++) {
-          if (rs.getString(champs.get(i)) != null) {
-            switch (champs.get(i)) {
-            case "id":
-              company.setId(Integer.parseInt(rs.getString(champs.get(i))));
-              break;
-            case "name":
-              company.setName(rs.getString(champs.get(i)));
-              break;
-            default:
-              break;
-            }
-          }
-        }
+        company.setId(Integer.parseInt(rs.getString("id")));
+        company.setName(rs.getString("name"));
         companies.add(company);
       }
     } catch (Exception e) {
@@ -94,36 +81,18 @@ public class CompanyFactory {
 
   /**
    * Liste toutes les companies contenues dans la table company.
-   * @param champs les champs de la table à afficher
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompaniesAll(ArrayList<String> champs) throws SQLException {
+  public ArrayList<Company> listCompaniesAll() throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
     try (DAOFactory factory = new DAOFactory()) {
-      Statement stmt = factory.getConnection().createStatement();
-      StringBuilder query = new StringBuilder("SELECT ");
-      for (int i = 0; i < champs.size() - 1; i++) {
-        query.append(champs.get(i)).append(", ");
-      }
-      query.append(champs.get(champs.size() - 1)).append(" FROM company");
-      ResultSet rs = stmt.executeQuery(query.toString());
+      PreparedStatement stmt = factory.getConnection().prepareStatement(LIST_ALL);
+      ResultSet rs = stmt.executeQuery();
       while (rs.next()) {
         Company company = new Company();
-        for (int i = 0; i < champs.size(); i++) {
-          if (rs.getString(champs.get(i)) != null) {
-            switch (champs.get(i)) {
-            case "id":
-              company.setId(Integer.parseInt(rs.getString(champs.get(i))));
-              break;
-            case "name":
-              company.setName(rs.getString(champs.get(i)));
-              break;
-            default:
-              break;
-            }
-          }
-        }
+        company.setId(Integer.parseInt(rs.getString("id")));
+        company.setName(rs.getString("name"));
         companies.add(company);
       }
     } catch (Exception e) {

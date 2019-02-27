@@ -38,17 +38,10 @@ public class ComputerMenu extends HttpServlet {
       int page = Integer.parseInt(request.getParameter("page"));
       int nombreComputers = Controler.getInstance().countComputers();
 
-      ArrayList<String> champs = new ArrayList<String>();
-      champs.add("id");
-      champs.add("name");
-      champs.add("introduced");
-      champs.add("discontinued");
-      champs.add("company_id");
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), champs);
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1));
       ArrayList<ComputerTO> computersTO = Controler.getInstance().getComputerData(computers);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computersTO);
-
 
       int pages = Controler.getInstance().countComputers() / nombre + 1;
       session.setAttribute("nombre", nombre);

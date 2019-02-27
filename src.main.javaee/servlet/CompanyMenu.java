@@ -38,10 +38,7 @@ public class CompanyMenu extends HttpServlet {
       int page = Integer.parseInt(request.getParameter("page"));
       int nombreCompanies = Controler.getInstance().countCompanies();
 
-      ArrayList<String> champs = new ArrayList<String>();
-      champs.add("id");
-      champs.add("name");
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), champs);
+      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1));
       ArrayList<CompanyTO> companiesTO = Controler.getInstance().getCompanyData(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);

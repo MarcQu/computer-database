@@ -38,25 +38,23 @@ public class CompanyService {
 
   /**
    * Liste certaines companies contenues dans la table company.
-   * @param champs les champs de la table à afficher
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompanies(int nombre, int offset, ArrayList<String> champs)
+  public ArrayList<Company> listCompanies(int nombre, int offset)
       throws SQLException {
-    return CompanyFactory.getInstance().listCompanies(nombre, offset, champs);
+    return CompanyFactory.getInstance().listCompanies(nombre, offset);
   }
 
   /**
    * Liste toutes les companies contenues dans la table company.
-   * @param champs les champs de la table à afficher
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompaniesAll(ArrayList<String> champs) throws SQLException {
-    return CompanyFactory.getInstance().listCompaniesAll(champs);
+  public ArrayList<Company> listCompaniesAll() throws SQLException {
+    return CompanyFactory.getInstance().listCompaniesAll();
   }
 
   /**

@@ -32,15 +32,14 @@ public class ComputerService {
 
   /**
    * Liste cetrains ordinateurs contenus dans la table computer.
-   * @param champs les champs de la table à afficher
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
    * @return le liste de certains ordinateurs
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset, ArrayList<String> champs)
+  public ArrayList<Computer> listComputers(int nombre, int offset)
       throws SQLException {
-    return ComputerFactory.getInstance().listComputers(nombre, offset, champs);
+    return ComputerFactory.getInstance().listComputers(nombre, offset);
   }
 
   /**
@@ -95,18 +94,11 @@ public class ComputerService {
 
   /**
    * Supprime un ordinateur de la table computer.
-   * @param id           l'id de l'ordinateur à supprimer
-   * @param name         le nom de l'ordinateur à supprimer
-   * @param introduced   la date d'introduction de l'ordinateur à supprimer
-   * @param discontinued la date d'interruption de l'ordinateur à supprimer
-   * @param companyId    l'id de la companie de l'ordinateur à supprimer
-   * @param champs       les champs qui sont prises en compte par la suppression
+   * @param id l'id de l'ordinateur à supprimer
    * @throws SQLException SQLException
    */
-  public void deleteComputer(String id, String name, String introduced, String discontinued,
-      String companyId, ArrayList<String> champs) throws SQLException {
-    ComputerFactory.getInstance().deleteComputer(id, name, introduced, discontinued, companyId,
-        champs);
+  public void deleteComputer(String id) throws SQLException {
+    ComputerFactory.getInstance().deleteComputer(id);
   }
 
   /**

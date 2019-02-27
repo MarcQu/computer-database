@@ -35,10 +35,7 @@ public class UpdateComputer extends HttpServlet {
     try {
       String computerId = request.getParameter("computerId");
       Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
-      ArrayList<String> champs = new ArrayList<String>();
-      champs.add("id");
-      champs.add("name");
-      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
+      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("computerId", computerId);
       request.setAttribute("name", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());
@@ -98,10 +95,7 @@ public class UpdateComputer extends HttpServlet {
         success = "Succès de la mise à jour";
       }
       Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
-      champs = new ArrayList<String>();
-      champs.add("id");
-      champs.add("name");
-      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
+      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("computerId", computerId);
       request.setAttribute("name", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());

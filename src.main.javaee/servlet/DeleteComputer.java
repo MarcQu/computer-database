@@ -38,21 +38,12 @@ public class DeleteComputer extends HttpServlet {
 
       String selected = request.getParameter("selected");
       String[] selectedComputers = selected.split(",");
-      ArrayList<String> champsSelected = new ArrayList<String>();
-      champsSelected.add("id");
       for (String computer : selectedComputers) {
-         Controler.getInstance().deleteComputer(computer, "", "", "", "", champsSelected);
+         Controler.getInstance().deleteComputer(computer);
       }
 
-      ArrayList<String> champs = new ArrayList<String>();
-      champs.add("id");
-      champs.add("name");
-      champs.add("introduced");
-      champs.add("discontinued");
-      champs.add("company_id");
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), champs);
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1));
       request.setAttribute("computers", computers);
-
 
       int pages = Controler.getInstance().countComputers() / nombre + 1;
       session.setAttribute("nombre", nombre);

@@ -32,10 +32,7 @@ public class CreateComputer extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      ArrayList<String> champs = new ArrayList<String>();
-      champs.add("id");
-      champs.add("name");
-      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
+      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
     } catch (SQLException e) {
       e.printStackTrace();
@@ -64,10 +61,7 @@ public class CreateComputer extends HttpServlet {
       }
       String companyId = request.getParameter("companyId");
 
-      ArrayList<String> champs = new ArrayList<String>();
-      champs.add("id");
-      champs.add("name");
-      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll(champs);
+      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
 
       String errorName = "";

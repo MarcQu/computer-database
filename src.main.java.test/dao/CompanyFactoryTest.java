@@ -38,10 +38,7 @@ public class CompanyFactoryTest {
    */
   @Test
   public void listCompaniesTest() throws SQLException {
-    ArrayList<String> champs = new ArrayList<String>();
-    champs.add("id");
-    champs.add("name");
-    ArrayList<Company> companies = this.companyFactory.listCompanies(10, 0, champs);
+    ArrayList<Company> companies = this.companyFactory.listCompanies(10, 0);
     assertEquals(10, companies.size());
   }
 
@@ -51,10 +48,7 @@ public class CompanyFactoryTest {
    */
   @Test
   public void listCompaniesAllTest() throws SQLException {
-    ArrayList<String> champs = new ArrayList<String>();
-    champs.add("id");
-    champs.add("name");
-    ArrayList<Company> companies = this.companyFactory.listCompaniesAll(champs);
+    ArrayList<Company> companies = this.companyFactory.listCompaniesAll();
     assertEquals(this.companyFactory.countCompanies(), companies.size());
   }
 }

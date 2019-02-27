@@ -87,7 +87,7 @@
 	                        </td>
 	                        <td><c:out value="${computer.getIntroduced()}"/></td>
 	                        <td><c:out value="${computer.getDiscontinued()}"/></td>
-	                        <td><c:out value="${computer.getCompany().getId()}"/></td>
+	                        <td><c:out value="${computer.getCompany().getName()}"/></td>
 	                    </tr>
                 	</c:forEach>
                 </tbody>
