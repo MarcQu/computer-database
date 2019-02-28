@@ -13,10 +13,12 @@ import dto.ComputerTO;
 
 public class ComputerFactory {
   private static ComputerFactory instance = null;
-  private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer";
+  private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM computer";
+  private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer WHERE name like ?";
   private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer, company WHERE computer.company_id = company.id AND computer.id = ?";
   private static final String CREATE = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
   private static final String LIST = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL LIMIT ? OFFSET ?";
+  private static final String SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.name LIKE ? LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
@@ -39,14 +41,21 @@ public class ComputerFactory {
 
   /**
    * Retourne le nombre de lignes dans la table computer.
+   * @param search le paramètre de la recherche
    * @return nombre le nombre de ligne
    * @throws SQLException SQLException
    */
-  public int countComputers() throws SQLException {
+  public int countComputers(String search) throws SQLException {
     int nombre = 0;
     try (DAOFactory factory = new DAOFactory()) {
-      Statement stmt = factory.getConnection().createStatement();
-      ResultSet rs = stmt.executeQuery(COUNT);
+      PreparedStatement stmt;
+      if ("%null%".equals(search)) {
+        stmt = factory.getConnection().prepareStatement(COUNT_ALL);
+      } else {
+        stmt = factory.getConnection().prepareStatement(COUNT);
+        stmt.setString(1, search);
+      }
+      ResultSet rs = stmt.executeQuery();
       rs.next();
       nombre = rs.getInt("rowcount");
     } catch (Exception e) {
@@ -59,16 +68,26 @@ public class ComputerFactory {
    * Liste quelques ordinateurs contenus dans la table computer.
    * @param nombre nombre de résultat à afficher
    * @param offset l'offset pour la requète sql
+   * @param search le paramètre de la recherche
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset)
+  public ArrayList<Computer> listComputers(int nombre, int offset, String search)
       throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt = factory.getConnection().prepareStatement(LIST);
-      stmt.setInt(1, nombre);
-      stmt.setInt(2, offset);
+      PreparedStatement stmt;
+      if ("%null%".equals(search)) {
+        stmt = factory.getConnection().prepareStatement(LIST);
+        stmt.setInt(1, nombre);
+        stmt.setInt(2, offset);
+      } else {
+        stmt = factory.getConnection().prepareStatement(SEARCH);
+        stmt.setString(1, search);
+        stmt.setString(2, search);
+        stmt.setInt(3, nombre);
+        stmt.setInt(4, offset);
+      }
       ResultSet rs = stmt.executeQuery();
       String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
       while (rs.next()) {

@@ -46,23 +46,25 @@ public class Controler {
 
   /**
    * Retourne le nombre de lignes dans la table company.
+   * @param search le paramètre de la recherche
    * @return nombre le nombre de ligne
    * @throws SQLException SQLException
    */
-  public int countCompanies() throws SQLException {
-    return CompanyService.getInstance().countCompanies();
+  public int countCompanies(String search) throws SQLException {
+    return CompanyService.getInstance().countCompanies(search);
   }
 
   /**
    * Liste certraines companies contenues dans la table company.
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
+   * @param search le paramètre de la recherche
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompanies(int nombre, int offset)
+  public ArrayList<Company> listCompanies(int nombre, int offset, String search)
       throws SQLException {
-    return CompanyService.getInstance().listCompanies(nombre, offset);
+    return CompanyService.getInstance().listCompanies(nombre, offset, search);
   }
 
   /**
@@ -76,23 +78,25 @@ public class Controler {
 
   /**
    * Retourne le nombre de lignes dans la table computer.
+   * @param search le paramètre de la recherche
    * @return nombre le nombre de ligne
    * @throws SQLException SQLException
    */
-  public int countComputers() throws SQLException {
-    return ComputerService.getInstance().countComputers();
+  public int countComputers(String search) throws SQLException {
+    return ComputerService.getInstance().countComputers(search);
   }
 
   /**
    * Liste certains ordinateurs contenus dans la table computer.
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
+   * @param search le paramètre de la recherche
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset)
+  public ArrayList<Computer> listComputers(int nombre, int offset, String search)
       throws SQLException {
-    return ComputerService.getInstance().listComputers(nombre, offset);
+    return ComputerService.getInstance().listComputers(nombre, offset, search);
   }
 
   /**

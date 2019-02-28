@@ -34,19 +34,21 @@ public class CompanyMenu extends HttpServlet {
       throws ServletException, IOException {
     try {
       HttpSession session = request.getSession();
+      String search = request.getParameter("search");
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreCompanies = Controler.getInstance().countCompanies();
+      int nombreCompanies = Controler.getInstance().countCompanies(new StringBuilder("%").append(search).append("%").toString());
 
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1));
+      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), new StringBuilder("%").append(search).append("%").toString());
       ArrayList<CompanyTO> companiesTO = Controler.getInstance().getCompanyData(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);
 
-      int pages = Controler.getInstance().countCompanies() / nombre + 1;
+      int pages = nombreCompanies / nombre + 1;
       session.setAttribute("nombre", nombre);
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);
+      request.setAttribute("search", search);
     } catch (SQLException e) {
       e.printStackTrace();
     }

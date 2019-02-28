@@ -23,23 +23,25 @@ public class ComputerService {
 
   /**
    * Retourne le nombre de lignes dans la table computer.
+   * @param search le paramètre de la recherche
    * @return nombre le nombre de ligne
    * @throws SQLException SQLException
    */
-  public int countComputers() throws SQLException {
-    return ComputerFactory.getInstance().countComputers();
+  public int countComputers(String search) throws SQLException {
+    return ComputerFactory.getInstance().countComputers(search);
   }
 
   /**
    * Liste cetrains ordinateurs contenus dans la table computer.
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
+   * @param search le paramètre de la recherche
    * @return le liste de certains ordinateurs
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset)
+  public ArrayList<Computer> listComputers(int nombre, int offset, String search)
       throws SQLException {
-    return ComputerFactory.getInstance().listComputers(nombre, offset);
+    return ComputerFactory.getInstance().listComputers(nombre, offset, search);
   }
 
   /**

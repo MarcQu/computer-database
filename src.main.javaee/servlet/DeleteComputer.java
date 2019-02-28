@@ -33,8 +33,10 @@ public class DeleteComputer extends HttpServlet {
       throws ServletException, IOException {
     try {
       HttpSession session = request.getSession();
+      String search = request.getParameter("search");
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
+      int nombreComputers = Controler.getInstance().countComputers(new StringBuilder("%").append(search).append("%").toString());
 
       String selected = request.getParameter("selected");
       String[] selectedComputers = selected.split(",");
@@ -42,15 +44,15 @@ public class DeleteComputer extends HttpServlet {
          Controler.getInstance().deleteComputer(computer);
       }
 
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1));
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), new StringBuilder("%").append(search).append("%").toString());
       request.setAttribute("computers", computers);
 
-      int pages = Controler.getInstance().countComputers() / nombre + 1;
+      int pages = nombreComputers / nombre + 1;
       session.setAttribute("nombre", nombre);
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);
+      request.setAttribute("search", search);
 
-      int nombreComputers = Controler.getInstance().countComputers();
       request.setAttribute("nombreComputers", nombreComputers);
     } catch (SQLException e) {
       e.printStackTrace();

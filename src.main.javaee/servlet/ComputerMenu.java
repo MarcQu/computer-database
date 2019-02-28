@@ -34,19 +34,23 @@ public class ComputerMenu extends HttpServlet {
       throws ServletException, IOException {
     try {
       HttpSession session = request.getSession();
+      String search = request.getParameter("search");
       int nombre = Integer.parseInt(request.getParameter("nombre"));
+      System.out.println(nombre);
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreComputers = Controler.getInstance().countComputers();
+      System.out.println(page);
+      int nombreComputers = Controler.getInstance().countComputers(new StringBuilder("%").append(search).append("%").toString());
 
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1));
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), new StringBuilder("%").append(search).append("%").toString());
       ArrayList<ComputerTO> computersTO = Controler.getInstance().getComputerData(computers);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computersTO);
 
-      int pages = Controler.getInstance().countComputers() / nombre + 1;
+      int pages = nombreComputers / nombre + 1;
       session.setAttribute("nombre", nombre);
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);
+      request.setAttribute("search", search);
     } catch (SQLException e) {
       e.printStackTrace();
     }

@@ -26,10 +26,11 @@
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="#" method="GET" class="form-inline">
-                        <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" />
-                        <input type="submit" id="searchsubmit" value="Filter by name"
-                        class="btn btn-primary" />
+                    <form id="searchForm" action="/Computer-database/CompanyMenu" method="GET" class="form-inline">
+                        <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" value="${search}" />
+                        <input type="hidden" name="nombre" value="10" />
+                        <input type="hidden" name="page" value="1" />
+                        <input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
                     </form>
                 </div>
             </div>
@@ -67,26 +68,26 @@
             <ul class="pagination">
 	            <c:if test="${page > 1}">
 	                <li>
-	                    <a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page-1}" aria-label="Previous">
+	                    <a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page-1}&search=${search}" aria-label="Previous">
 	                      <span aria-hidden="true">&laquo;</span>
 	                    </a>
 	                </li>
 				</c:if>
                 <c:forEach var="page" begin="1" end="${pages}" step="1">
-                    <li><a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}">${page}</a></li>
+                    <li><a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}&search=${search}">${page}</a></li>
                 </c:forEach>
      	        <c:if test="${page < pages}">
 	                <li>
-		               <a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page+1}" aria-label="Next">
+		               <a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page+1}&search=${search}" aria-label="Next">
 		                   <span aria-hidden="true">&raquo;</span>
 		               </a>
 	            	</li>   	        
                 </c:if>                
         	</ul>
         <div class="btn-group btn-group-sm pull-right" role="group" >
-            <a href="/Computer-database/CompanyMenu?nombre=10&page=1" onclick="" class="btn btn-default" role="button">10</a>
-            <a href="/Computer-database/CompanyMenu?nombre=50&page=1" onclick="" class="btn btn-default" role="button">50</a>         
-           	<a href="/Computer-database/CompanyMenu?nombre=100&page=1" onclick="" class="btn btn-default" role="button">100</a>
+            <a href="/Computer-database/CompanyMenu?nombre=10&page=1&search=${search}" onclick="" class="btn btn-default" role="button">10</a>
+            <a href="/Computer-database/CompanyMenu?nombre=50&page=1&search=${search}" onclick="" class="btn btn-default" role="button">50</a>         
+           	<a href="/Computer-database/CompanyMenu?nombre=100&page=1&search=${search}" onclick="" class="btn btn-default" role="button">100</a>
         </div>
     </footer>
 <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>

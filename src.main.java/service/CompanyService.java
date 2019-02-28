@@ -29,23 +29,25 @@ public class CompanyService {
 
   /**
    * Retourne le nombre de lignes dans la table company.
+   * @param search le paramètre de la recherche
    * @return nombre le nombre de ligne
    * @throws SQLException SQLException
    */
-  public int countCompanies() throws SQLException {
-    return CompanyFactory.getInstance().countCompanies();
+  public int countCompanies(String search) throws SQLException {
+    return CompanyFactory.getInstance().countCompanies(search);
   }
 
   /**
    * Liste certaines companies contenues dans la table company.
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
+   * @param search le paramètre de la recherche
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompanies(int nombre, int offset)
+  public ArrayList<Company> listCompanies(int nombre, int offset, String search)
       throws SQLException {
-    return CompanyFactory.getInstance().listCompanies(nombre, offset);
+    return CompanyFactory.getInstance().listCompanies(nombre, offset, search);
   }
 
   /**
