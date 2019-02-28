@@ -28,7 +28,7 @@ public class ComputerMenu extends HttpServlet {
    * @param request la requète
    * @param response la réponse
    * @throws ServletException ServletException
-   * @throws IOException      IOException
+   * @throws IOException IOException
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
@@ -36,9 +36,7 @@ public class ComputerMenu extends HttpServlet {
       HttpSession session = request.getSession();
       String search = request.getParameter("search");
       int nombre = Integer.parseInt(request.getParameter("nombre"));
-      System.out.println(nombre);
       int page = Integer.parseInt(request.getParameter("page"));
-      System.out.println(page);
       int nombreComputers = Controler.getInstance().countComputers(new StringBuilder("%").append(search).append("%").toString());
 
       ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), new StringBuilder("%").append(search).append("%").toString());

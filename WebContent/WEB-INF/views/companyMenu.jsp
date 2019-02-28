@@ -33,15 +33,30 @@
                         <input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
                     </form>
                 </div>
+                <div class="pull-right">
+                    <a class="btn btn-success" id="addCompany" href="/Computer-database/CreateCompany">Add Company</a> 
+                    <a class="btn btn-default" id="editCompany" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
+                </div>
             </div>
         </div>
 
+        <form id="deleteForm" action="#" method="POST">
+            <input type="hidden" name="selection" value="">
+        </form>
         <div class="container" style="margin-top: 10px;">
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <!-- Variable declarations for passing labels as parameters -->
                         <!-- Table header for Computer Name -->
+                        <th class="editMode" style="width: 60px; height: 22px;">
+                            <input type="checkbox" id="selectall" /> 
+                            <span style="vertical-align: top;">
+	                            <a href="/Computer-database/DeleteComputer?nombre=${nombre}&page=${page}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteComputer();">
+	                                <i class="fa fa-trash-o fa-lg"></i>
+	                            </a>
+                            </span>
+                        </th>
                         <th>
                             Company id
                         </th>

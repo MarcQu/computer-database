@@ -60,6 +60,16 @@ public class CompanyService {
   }
 
   /**
+   * Ajoute une compagnie dans la table company.
+   * @param name         le nom de la compagnie à ajouter
+   * @throws SQLException             SQLException
+   * @throws IllegalArgumentException IllegalArgumentException
+   */
+  public void createCompany(String name) throws SQLException, IllegalArgumentException {
+    CompanyFactory.getInstance().createCompany(name);
+  }
+
+  /**
    * Récupère la DTO.
    * @param companies les compagnies
    * @return companiesTO les DTOs

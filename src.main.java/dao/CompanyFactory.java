@@ -12,6 +12,7 @@ public class CompanyFactory {
   private static CompanyFactory instance = null;
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM company";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like ?";
+  private static final String CREATE = "INSERT INTO company(name) values(?)";
   private static final String LIST = "SELECT id, name FROM company LIMIT ? OFFSET ?";
   private static final String SEARCH = "SELECT id, name FROM company WHERE name LIKE ? LIMIT ? OFFSET ?";
   private static final String LIST_ALL = "SELECT id, name FROM company";
@@ -116,6 +117,26 @@ public class CompanyFactory {
       e.printStackTrace();
     }
     return companies;
+  }
+
+  /**
+   * Ajoute une compagnie dans la table company.
+   * @param name         le nom de la compagnie à ajouter
+   * @throws SQLException             SQLException
+   * @throws IllegalArgumentException IllegalArgumentException
+   */
+  public void createCompany(String name) throws SQLException, IllegalArgumentException {
+    try (DAOFactory factory = new DAOFactory()) {
+      PreparedStatement stmt = factory.getConnection().prepareStatement(CREATE);
+      if ("".equals(name)) {
+        stmt.setString(1, null);
+      } else {
+        stmt.setString(1, name);
+      }
+      stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**
