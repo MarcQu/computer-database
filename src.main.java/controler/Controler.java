@@ -77,6 +77,16 @@ public class Controler {
   }
 
   /**
+   * Affiche les informations d'une companie contenu dans la table company.
+   * @param numero l'id de la compagnie à afficher
+   * @return companies la liste des resultats de la requète
+   * @throws SQLException SQLException
+   */
+  public ArrayList<Company> showCompanyDetails(String numero) throws SQLException {
+    return CompanyService.getInstance().showCompanyDetails(numero);
+  }
+
+  /**
    * Ajoute une compagnie dans la table company.
    * @param name         le nom de la compagnie à ajouter
    * @throws SQLException             SQLException
@@ -84,6 +94,17 @@ public class Controler {
    */
   public void createCompany(String name) throws SQLException, IllegalArgumentException {
     CompanyService.getInstance().createCompany(name);
+  }
+
+  /**
+   * Met à jour une compagnie dans la table company.
+   * @param id           l'id de la compagnie à mettre à jour
+   * @param name         le nom de la compagnie à mettre à jour
+   * @param champs       les champs qui sont prises en compte par la mise à jour
+   * @throws SQLException SQLException
+   */
+  public void updateCompany(String id, String name, ArrayList<String> champs) throws SQLException {
+    CompanyService.getInstance().updateCompany(id, name, champs);
   }
 
   /**

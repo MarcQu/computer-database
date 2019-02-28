@@ -22,7 +22,11 @@
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                <c:out value="${nombreCompanies}"/> Companies found
+                <c:out value="${nombreCompanies}"/>
+                <c:choose>
+                	<c:when test="${nombreCompanies > 1}">Companies found</c:when>
+                	<c:otherwise>Company found</c:otherwise>
+                </c:choose>
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
@@ -48,17 +52,14 @@
                 <thead>
                     <tr>
                         <!-- Variable declarations for passing labels as parameters -->
-                        <!-- Table header for Computer Name -->
+                        <!-- Table header for Company Name -->
                         <th class="editMode" style="width: 60px; height: 22px;">
                             <input type="checkbox" id="selectall" /> 
                             <span style="vertical-align: top;">
-	                            <a href="/Computer-database/DeleteComputer?nombre=${nombre}&page=${page}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteComputer();">
+	                            <a href="/Computer-database/DeleteCompany?nombre=${nombre}&page=${page}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteCompany();">
 	                                <i class="fa fa-trash-o fa-lg"></i>
 	                            </a>
                             </span>
-                        </th>
-                        <th>
-                            Company id
                         </th>
                         <th>
                             Company name
@@ -68,9 +69,13 @@
                 <!-- Browse attribute computers -->
                 <tbody id="results">
                 	<c:forEach var="company" items="${companies}">
-						<tr id="companiesList">
-	                        <td><c:out value="${company.getId()}"/></td>
-	                        <td><c:out value="${company.getName()}"/></td>
+						<tr>
+	                        <td class="editMode">
+	                            <input type="checkbox" name="cb" class="cb" value="${company.getId()}">
+	                        </td>
+	                        <td>
+	                            <a href="/Computer-database/UpdateCompany?companyId=${company.getId()}" onclick=""><c:out value="${company.getName()}"/></a>
+	                        </td>
 						</tr>
                 	</c:forEach>
                 </tbody>

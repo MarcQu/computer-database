@@ -22,7 +22,11 @@
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                <c:out value="${nombreComputers}"/> Computers found
+                <c:out value="${nombreComputers}"/>
+                <c:choose>
+                	<c:when test="${nombreComputers > 1}">Computers found</c:when>
+                	<c:otherwise>Computer found</c:otherwise>
+                </c:choose>
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
@@ -77,7 +81,7 @@
                 <!-- Browse attribute computers -->
                 <tbody id="results">
                 	<c:forEach var="computer" items="${computers}">
-	                    <tr id="companiesList">
+	                    <tr>
 	                        <td class="editMode">
 	                            <input type="checkbox" name="cb" class="cb" value="${computer.getId()}">
 	                        </td>

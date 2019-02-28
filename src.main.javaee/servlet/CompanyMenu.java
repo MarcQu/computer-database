@@ -37,9 +37,9 @@ public class CompanyMenu extends HttpServlet {
       String search = request.getParameter("search");
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreCompanies = Controler.getInstance().countCompanies(new StringBuilder("%").append(search).append("%").toString());
+      int nombreCompanies = Controler.getInstance().countCompanies(search);
 
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), new StringBuilder("%").append(search).append("%").toString());
+      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search);
       ArrayList<CompanyTO> companiesTO = Controler.getInstance().getCompanyData(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);

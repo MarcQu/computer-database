@@ -37,9 +37,9 @@ public class ComputerMenu extends HttpServlet {
       String search = request.getParameter("search");
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreComputers = Controler.getInstance().countComputers(new StringBuilder("%").append(search).append("%").toString());
+      int nombreComputers = Controler.getInstance().countComputers(search);
 
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), new StringBuilder("%").append(search).append("%").toString());
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), search);
       ArrayList<ComputerTO> computersTO = Controler.getInstance().getComputerData(computers);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computersTO);

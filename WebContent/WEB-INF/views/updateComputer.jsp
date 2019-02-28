@@ -33,7 +33,7 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${name}">
+                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${computerName}">
                                 <c:if test="${errorName != ''}">
                                 	<label id="errorName">${errorName}</label>
                                 </c:if>                            

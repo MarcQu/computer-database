@@ -37,7 +37,7 @@ public class UpdateComputer extends HttpServlet {
       Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("computerId", computerId);
-      request.setAttribute("name", computer.getName());
+      request.setAttribute("computerName", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());
       request.setAttribute("discontinued", computer.getDiscontinued());
       request.setAttribute("companyComputer", computer.getCompany());
@@ -58,7 +58,7 @@ public class UpdateComputer extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String computerId = request.getParameter("computerId");
-    String name = request.getParameter("computerName");
+    String computerName = request.getParameter("computerName");
     StringBuilder introduced = new StringBuilder("");
     if (!"".equals(request.getParameter("introduced"))) {
       introduced.append(request.getParameter("introduced")).append(" 00:00:00");
@@ -70,7 +70,7 @@ public class UpdateComputer extends HttpServlet {
     String companyId = request.getParameter("companyId");
 
     ArrayList<String> champs = new ArrayList<String>();
-    if (name != "") {
+    if (computerName != "") {
       champs.add("name");
     }
     if (introduced.toString() != "") {
@@ -84,20 +84,20 @@ public class UpdateComputer extends HttpServlet {
       String errorName = "";
       String errorDate = "";
       String success = "";
-      if ("".equals(name)) {
+      if ("".equals(computerName)) {
         errorName = "Le nom ne doit pas être vide";
       }
       if (!"".equals(introduced.toString()) && !"".equals(discontinued.toString()) && Timestamp.valueOf(introduced.toString()).after(Timestamp.valueOf(discontinued.toString()))) {
         errorDate = "La date d'introduction doit être antérieur à la date d'interruption";
       }
       if (errorName == "" && errorDate == "") {
-        Controler.getInstance().updateComputer(computerId, name, introduced.toString(), discontinued.toString(), companyId, champs);
+        Controler.getInstance().updateComputer(computerId, computerName, introduced.toString(), discontinued.toString(), companyId, champs);
         success = "Succès de la mise à jour";
       }
       Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
-      request.setAttribute("computerId", computerId);
-      request.setAttribute("name", computer.getName());
+      request.setAttribute("computerId", computer.getId());
+      request.setAttribute("computerName", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());
       request.setAttribute("discontinued", computer.getDiscontinued());
       request.setAttribute("companyComputer", computer.getCompany());
