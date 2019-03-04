@@ -56,7 +56,7 @@
                         <th class="editMode" style="width: 60px; height: 22px;">
                             <input type="checkbox" id="selectall" /> 
                             <span style="vertical-align: top;">
-	                            <a href="/Computer-database/DeleteCompany?nombre=${nombre}&page=${page}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteCompany();">
+	                            <a href="/Computer-database/DeleteCompany?nombre=${nombre}&page=${page}&search=${search}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteCompany();">
 	                                <i class="fa fa-trash-o fa-lg"></i>
 	                            </a>
                             </span>
@@ -113,6 +113,21 @@
 <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
-
+<script>
+	function deleteCompany(){
+		var companies = $("input.cb");
+		var selected = [];
+		for(var i = 0; i < companies.length; i++){
+			if (companies[i].checked) {
+				selected.push(companies[i].value);
+			}
+		}
+		if(selected.length > 0){
+			document.getElementById("deleteSelected").href = document.getElementById("deleteSelected").href+"&selected="+selected;
+		} else {
+			document.getElementById("deleteSelected").href = document.getElementById("deleteSelected").href;
+		}
+	}
+</script>
 </body>
 </html>

@@ -17,7 +17,7 @@ public class ComputerFactory {
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer WHERE name like ?";
   private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id = ?";
   private static final String CREATE = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
-  private static final String LIST = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL ORDER BY name ASC LIMIT ? OFFSET ?";
+  private static final String LIST = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL LIMIT ? OFFSET ?";
   private static final String SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   /**
@@ -49,7 +49,7 @@ public class ComputerFactory {
     int nombre = 0;
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt;
-      if (search == null) {
+      if (search == null || "".equals(search)) {
         stmt = factory.getConnection().prepareStatement(COUNT_ALL);
       } else {
         stmt = factory.getConnection().prepareStatement(COUNT);
@@ -77,7 +77,7 @@ public class ComputerFactory {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt;
-      if (search == null) {
+      if (search == null || "".equals(search)) {
         stmt = factory.getConnection().prepareStatement(LIST);
         stmt.setInt(1, nombre);
         stmt.setInt(2, offset);

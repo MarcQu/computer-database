@@ -56,7 +56,7 @@
                         <th class="editMode" style="width: 60px; height: 22px;">
                             <input type="checkbox" id="selectall" /> 
                             <span style="vertical-align: top;">
-	                            <a href="/Computer-database/DeleteComputer?nombre=${nombre}&page=${page}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteComputer();">
+	                            <a href="/Computer-database/DeleteComputer?nombre=${nombre}&page=${page}&search=${search}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteComputer();">
 	                                <i class="fa fa-trash-o fa-lg"></i>
 	                            </a>
                             </span>

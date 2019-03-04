@@ -12,16 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import controler.Controler;
-import dto.ComputerTO;
-import model.Computer;
+import dto.CompanyTO;
+import model.Company;
 
 /**
- * Servlet implementation class DeleteComputer.
+ * Servlet implementation class DeleteCompany.
  */
-@WebServlet("/DeleteComputer")
-public class DeleteComputer extends HttpServlet {
+@WebServlet("/DeleteCompany")
+public class DeleteCompany extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  public static final String VUE = "/WEB-INF/views/computerMenu.jsp";
+  public static final String VUE = "/WEB-INF/views/companyMenu.jsp";
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,18 +39,18 @@ public class DeleteComputer extends HttpServlet {
       int page = Integer.parseInt(request.getParameter("page"));
 
       String selected = request.getParameter("selected");
-      String[] selectedComputers = selected.split(",");
-      for (String computer : selectedComputers) {
-         Controler.getInstance().deleteComputer(computer);
+      String[] selectedCompanies = selected.split(",");
+      for (String company : selectedCompanies) {
+         Controler.getInstance().deleteCompany(company);
       }
 
-      int nombreComputers = Controler.getInstance().countComputers(search);
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), search);
-      ArrayList<ComputerTO> computersTO = Controler.getInstance().getComputerData(computers);
-      request.setAttribute("nombreComputers", nombreComputers);
-      request.setAttribute("computers", computersTO);
+      int nombreCompanies = Controler.getInstance().countCompanies(search);
+      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search);
+      ArrayList<CompanyTO> companiesTO = Controler.getInstance().getCompanyData(companies);
+      request.setAttribute("nombreCompanies", nombreCompanies);
+      request.setAttribute("companies", companiesTO);
 
-      int pages = nombreComputers / nombre + 1;
+      int pages = nombreCompanies / nombre + 1;
       session.setAttribute("nombre", nombre);
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);

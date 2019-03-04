@@ -91,6 +91,15 @@ public class CompanyService {
   }
 
   /**
+   * Supprime une companie de la table company.
+   * @param id l'id de la compagnie à supprimer
+   * @throws SQLException SQLException
+   */
+  public void deleteCompany(String id) throws SQLException {
+    CompanyFactory.getInstance().deleteCompany(id);
+  }
+
+  /**
    * Récupère la DTO.
    * @param companies les compagnies
    * @return companiesTO les DTOs

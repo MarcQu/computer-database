@@ -108,6 +108,15 @@ public class Controler {
   }
 
   /**
+   * Supprime une companie de la table company.
+   * @param id l'id de la compagnie à supprimer
+   * @throws SQLException SQLException
+   */
+  public void deleteCompany(String id) throws SQLException {
+    CompanyService.getInstance().deleteCompany(id);
+  }
+
+  /**
    * Retourne le nombre de lignes dans la table computer.
    * @param search le paramètre de la recherche
    * @return nombre le nombre de ligne

@@ -14,9 +14,11 @@ public class CompanyFactory {
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like ?";
   private static final String SHOW = "SELECT id, name FROM company WHERE id = ?";
   private static final String CREATE = "INSERT INTO company(name) values(?)";
-  private static final String LIST = "SELECT id, name FROM company ORDER BY name ASC LIMIT ? OFFSET ?";
+  private static final String LIST = "SELECT id, name FROM company LIMIT ? OFFSET ?";
   private static final String SEARCH = "SELECT id, name FROM company WHERE name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
-  private static final String LIST_ALL = "SELECT id, name FROM company ORDER BY name ASC";
+  private static final String LIST_ALL = "SELECT id, name FROM company";
+  private static final String DELETE = "DELETE FROM company WHERE id = ?";
+  private static final String DELETE_COMPUTERS = "DELETE FROM computer WHERE company_id = ?";
 
   /**
    * CompanyFactory contient les méthodes spécifiques à la table company.
@@ -47,7 +49,7 @@ public class CompanyFactory {
     int nombre = 0;
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt;
-      if (search == null) {
+      if (search == null || "".equals(search)) {
         stmt = factory.getConnection().prepareStatement(COUNT_ALL);
       } else {
         stmt = factory.getConnection().prepareStatement(COUNT);
@@ -75,7 +77,7 @@ public class CompanyFactory {
     ArrayList<Company> companies = new ArrayList<Company>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt;
-      if (search == null) {
+      if (search == null || "".equals(search)) {
         stmt = factory.getConnection().prepareStatement(LIST);
         stmt.setInt(1, nombre);
         stmt.setInt(2, offset);
@@ -207,6 +209,27 @@ public class CompanyFactory {
       }
       stmt.setInt(champs.size() + 1, Integer.parseInt(id));
       stmt.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Supprime une companie de la table company.
+   * @param id l'id de la compagnie à supprimer
+   * @throws SQLException SQLException
+   */
+  public void deleteCompany(String id) throws SQLException {
+    try (DAOFactory factory = new DAOFactory()) {
+      factory.getConnection().setAutoCommit(false);
+      PreparedStatement stmtComputers = factory.getConnection().prepareStatement(DELETE_COMPUTERS);
+      stmtComputers.setString(1, id);
+      stmtComputers.executeUpdate();
+      PreparedStatement stmt = factory.getConnection().prepareStatement(DELETE);
+      stmt.setString(1, id);
+      stmt.executeUpdate();
+      factory.getConnection().commit();
+      factory.getConnection().setAutoCommit(true);
     } catch (Exception e) {
       e.printStackTrace();
     }
