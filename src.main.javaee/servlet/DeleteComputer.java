@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import controler.Controler;
 import dto.ComputerTO;
+import mapper.ComputerMapper;
 import model.Computer;
 
 /**
@@ -40,14 +41,16 @@ public class DeleteComputer extends HttpServlet {
       int page = Integer.parseInt(request.getParameter("page"));
 
       String selected = request.getParameter("selected");
-      String[] selectedComputers = selected.split(",");
-      for (String computer : selectedComputers) {
-         Controler.getInstance().deleteComputer(computer);
+      if (selected != null) {
+        String[] selectedComputers = selected.split(",");
+        for (String computer : selectedComputers) {
+           Controler.getInstance().deleteComputer(computer);
+        }
       }
 
       int nombreComputers = Controler.getInstance().countComputers(search);
       ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
-      ArrayList<ComputerTO> computersTO = Controler.getInstance().getComputerData(computers);
+      ArrayList<ComputerTO> computersTO = ComputerMapper.getInstance().getComputerData(computers);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computersTO);
 

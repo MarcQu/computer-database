@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import controler.Controler;
 import dto.CompanyTO;
+import mapper.CompanyMapper;
 import model.Company;
 
 /**
@@ -41,14 +42,16 @@ public class DeleteCompany extends HttpServlet {
       int page = Integer.parseInt(request.getParameter("page"));
 
       String selected = request.getParameter("selected");
-      String[] selectedCompanies = selected.split(",");
-      for (String company : selectedCompanies) {
-         Controler.getInstance().deleteCompany(company);
+      if (selected != null) {
+        String[] selectedCompanies = selected.split(",");
+        for (String company : selectedCompanies) {
+           Controler.getInstance().deleteCompany(company);
+        }
       }
 
       int nombreCompanies = Controler.getInstance().countCompanies(search);
       ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
-      ArrayList<CompanyTO> companiesTO = Controler.getInstance().getCompanyData(companies);
+      ArrayList<CompanyTO> companiesTO = CompanyMapper.getInstance().getCompanyData(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);
 

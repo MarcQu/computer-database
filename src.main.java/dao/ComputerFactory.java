@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import model.Company;
 import model.Computer;
-import dto.ComputerTO;
 
 public class ComputerFactory {
   private static ComputerFactory instance = null;
@@ -370,28 +369,5 @@ public class ComputerFactory {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
-
-  /**
-   * Récupère la DTO.
-   * @param computers les ordinateurs
-   * @return computersTO les DTOs
-   */
-  public ArrayList<ComputerTO> getComputerData(ArrayList<Computer> computers) {
-    return createComputerTO(computers);
-  }
-
-  /**
-   * Crée la DTO.
-   * @param computers les ordinateurs
-   * @return computersTO les DTOs
-   */
-  private ArrayList<ComputerTO> createComputerTO(ArrayList<Computer> computers) {
-    ArrayList<ComputerTO> computersTO = new ArrayList<ComputerTO>();
-    for (Computer computer : computers) {
-      ComputerTO computerTO = new ComputerTO(computer);
-      computersTO.add(computerTO);
-    }
-      return computersTO;
   }
 }

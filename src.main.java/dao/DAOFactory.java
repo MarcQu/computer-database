@@ -9,7 +9,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOFactory implements AutoCloseable {
   private HikariConfig config = new HikariConfig("D:\\Eclipse-workspace\\Computer-database\\src.main.resources\\datasource.properties");
-  private HikariDataSource datasource = new HikariDataSource(config);
+  private HikariDataSource datasource;
   private Connection conn;
 
   /**
@@ -35,7 +35,9 @@ public class DAOFactory implements AutoCloseable {
 //      e.printStackTrace();
 //    }
     try {
-      this.conn = datasource.getConnection();
+      this.config.setMaximumPoolSize(10);
+      this.datasource = new HikariDataSource(this.config);
+      this.conn = this.datasource.getConnection();
     } catch (SQLException e) {
       e.printStackTrace();
     }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import controler.Controler;
 import dto.CompanyTO;
+import mapper.CompanyMapper;
 import model.Company;
 
 /**
@@ -42,7 +43,7 @@ public class CompanyMenu extends HttpServlet {
       int nombreCompanies = Controler.getInstance().countCompanies(search);
 
       ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
-      ArrayList<CompanyTO> companiesTO = Controler.getInstance().getCompanyData(companies);
+      ArrayList<CompanyTO> companiesTO = CompanyMapper.getInstance().getCompanyData(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);
 

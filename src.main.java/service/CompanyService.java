@@ -3,7 +3,6 @@ package service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import dao.CompanyFactory;
-import dto.CompanyTO;
 import model.Company;
 
 public class CompanyService {
@@ -98,15 +97,5 @@ public class CompanyService {
    */
   public void deleteCompany(String id) throws SQLException {
     CompanyFactory.getInstance().deleteCompany(id);
-  }
-
-  /**
-   * Récupère la DTO.
-   * @param companies les compagnies
-   * @return companiesTO les DTOs
-   * @throws SQLException SQLException
-   */
-  public ArrayList<CompanyTO> getCompanyData(ArrayList<Company> companies) throws SQLException {
-    return CompanyFactory.getInstance().getCompanyData(companies);
   }
 }

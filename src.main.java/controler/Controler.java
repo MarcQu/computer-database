@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dto.CompanyTO;
-import dto.ComputerTO;
 import model.Company;
 import model.Computer;
 import service.CompanyService;
@@ -198,25 +196,5 @@ public class Controler {
    */
   public void deleteComputer(String id) throws SQLException {
     ComputerService.getInstance().deleteComputer(id);
-  }
-
-  /**
-   * Récupère la DTO.
-   * @param computers les ordinateurs
-   * @return computersTO les DTOs
-   * @throws SQLException SQLException
-   */
-  public ArrayList<ComputerTO> getComputerData(ArrayList<Computer> computers) throws SQLException {
-    return ComputerService.getInstance().getComputerData(computers);
-  }
-
-  /**
-   * Récupère la DTO.
-   * @param companies les compagnies
-   * @return companiesTO les DTOs
-   * @throws SQLException SQLException
-   */
-  public ArrayList<CompanyTO> getCompanyData(ArrayList<Company> companies) throws SQLException {
-    return CompanyService.getInstance().getCompanyData(companies);
   }
 }

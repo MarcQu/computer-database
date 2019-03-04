@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import model.Company;
-import dto.CompanyTO;
 
 public class CompanyFactory {
   private static CompanyFactory instance = null;
@@ -244,28 +243,5 @@ public class CompanyFactory {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
-
-  /**
-   * Récupère la DTO.
-   * @param companies les compagnies
-   * @return companiesTO les DTOs
-   */
-  public ArrayList<CompanyTO> getCompanyData(ArrayList<Company> companies) {
-    return createCompanyTO(companies);
-  }
-
-  /**
-   * Crée la DTO.
-   * @param companies les com
-   * @return companiesTO les DTOs
-   */
-  private ArrayList<CompanyTO> createCompanyTO(ArrayList<Company> companies) {
-    ArrayList<CompanyTO> companiesTO = new ArrayList<CompanyTO>();
-    for (Company company : companies) {
-      CompanyTO companyTO = new CompanyTO(company);
-      companiesTO.add(companyTO);
-    }
-      return companiesTO;
   }
 }

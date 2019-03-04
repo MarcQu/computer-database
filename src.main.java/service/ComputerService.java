@@ -3,7 +3,6 @@ package service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import dao.ComputerFactory;
-import dto.ComputerTO;
 import model.Computer;
 
 public class ComputerService {
@@ -102,15 +101,5 @@ public class ComputerService {
    */
   public void deleteComputer(String id) throws SQLException {
     ComputerFactory.getInstance().deleteComputer(id);
-  }
-
-  /**
-   * Récupère la DTO.
-   * @param computers les ordinateurs
-   * @return computersTO les DTOs
-   * @throws SQLException SQLException
-   */
-  public ArrayList<ComputerTO> getComputerData(ArrayList<Computer> computers) throws SQLException {
-    return ComputerFactory.getInstance().getComputerData(computers);
   }
 }
