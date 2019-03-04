@@ -1,14 +1,15 @@
 package dao;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DAOFactory implements AutoCloseable {
+  private HikariConfig config = new HikariConfig("D:\\Eclipse-workspace\\Computer-database\\src.main.resources\\datasource.properties");
+  private HikariDataSource datasource = new HikariDataSource(config);
   private Connection conn;
 
   /**
@@ -23,13 +24,18 @@ public class DAOFactory implements AutoCloseable {
    * Initialise la connexion à la BDD.
    * @throws IOException IOException
    */
-  public void initConnexion() throws IOException {
-    Properties prp = new Properties();
-    String path = "D:\\Eclipse-workspace\\Computer-database\\src.main.java\\dao\\dao.properties";
-    InputStream input = new FileInputStream(path);
-    prp.load(input);
+  private void initConnexion() throws IOException {
+//    Properties prp = new Properties();
+//    String path = "D:\\Eclipse-workspace\\Computer-database\\src.main.resources\\dao.properties";
+//    InputStream input = new FileInputStream(path);
+//    prp.load(input);
+//    try {
+//      this.conn = DriverManager.getConnection(prp.getProperty("url"), prp.getProperty("login"), prp.getProperty("password"));
+//    } catch (SQLException e) {
+//      e.printStackTrace();
+//    }
     try {
-      this.conn = DriverManager.getConnection(prp.getProperty("url"), prp.getProperty("login"), prp.getProperty("password"));
+      this.conn = datasource.getConnection();
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -46,5 +52,6 @@ public class DAOFactory implements AutoCloseable {
   @Override
   public void close() throws Exception {
     this.conn.close();
+    this.datasource.close();
   }
 }
