@@ -35,6 +35,8 @@ public class DeleteCompany extends HttpServlet {
     try {
       HttpSession session = request.getSession();
       String search = request.getParameter("search");
+      String sort = request.getParameter("sort");
+
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
 
@@ -45,7 +47,7 @@ public class DeleteCompany extends HttpServlet {
       }
 
       int nombreCompanies = Controler.getInstance().countCompanies(search);
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search);
+      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
       ArrayList<CompanyTO> companiesTO = Controler.getInstance().getCompanyData(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);
@@ -55,6 +57,7 @@ public class DeleteCompany extends HttpServlet {
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);
       request.setAttribute("search", search);
+      request.setAttribute("sort", sort);
     } catch (SQLException e) {
       e.printStackTrace();
     }

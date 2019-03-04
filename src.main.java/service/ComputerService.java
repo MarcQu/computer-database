@@ -36,12 +36,13 @@ public class ComputerService {
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
    * @param search le paramètre de la recherche
+   * @param sort le sens de triage
    * @return le liste de certains ordinateurs
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset, String search)
+  public ArrayList<Computer> listComputers(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return ComputerFactory.getInstance().listComputers(nombre, offset, search);
+    return ComputerFactory.getInstance().listComputers(nombre, offset, search, sort);
   }
 
   /**

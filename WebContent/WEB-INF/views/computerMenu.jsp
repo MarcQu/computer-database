@@ -56,13 +56,21 @@
                         <th class="editMode" style="width: 60px; height: 22px;">
                             <input type="checkbox" id="selectall" /> 
                             <span style="vertical-align: top;">
-	                            <a href="/Computer-database/DeleteComputer?nombre=${nombre}&page=${page}&search=${search}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteComputer();">
+	                            <a href="/Computer-database/DeleteComputer?nombre=${nombre}&page=${page}&search=${search}&sort=${sort}" id="deleteSelected" onclick="$.fn.deleteSelected();deleteComputer();">
 	                                <i class="fa fa-trash-o fa-lg"></i>
 	                            </a>
                             </span>
                         </th>
                         <th>
                             Computer name
+                            <c:choose>
+                            	<c:when test="${sort eq 'desc'}">
+                            		<a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page}&search=${search}&sort=asc" onclick="" class="fa fa-fw fa-sort"></a>
+                            	</c:when>
+                            	<c:otherwise>
+                            		<a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page}&search=${search}&sort=desc" onclick="" class="fa fa-fw fa-sort"></a>                            		
+                            	</c:otherwise>
+                            </c:choose>
                         </th>
                         <th>
                             Introduced date
@@ -86,7 +94,7 @@
 	                            <input type="checkbox" name="cb" class="cb" value="${computer.getId()}">
 	                        </td>
 	                        <td>
-	                            <a href="/Computer-database/UpdateComputer?computerId=${computer.getId()}" onclick=""><c:out value="${computer.getName()}"/></a>
+	                            <a href="/Computer-database/UpdateComputer?computerId=${computer.getId()}&search=${search}&sort=${sort}" onclick=""><c:out value="${computer.getName()}"/></a>
 	                        </td>
 	                        <td><c:out value="${computer.getIntroduced()}"/></td>
 	                        <td><c:out value="${computer.getDiscontinued()}"/></td>
@@ -103,26 +111,26 @@
             <ul class="pagination">
 	            <c:if test="${page > 1}">
 	                <li>
-	                    <a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page-1}&search=${search}" aria-label="Previous">
+	                    <a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page-1}&search=${search}&sort=${sort}" aria-label="Previous">
 	                      <span aria-hidden="true">&laquo;</span>
 	                    </a>
 	                </li>
 				</c:if>
                 <c:forEach var="page" begin="1" end="${pages}" step="1">
-                    <li><a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page}&search=${search}">${page}</a></li>
+                    <li><a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page}&search=${search}&sort=${sort}">${page}</a></li>
                 </c:forEach>
      	        <c:if test="${page < pages}">
 	                <li>
-		               <a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page+1}&search=${search}" aria-label="Next">
+		               <a href="/Computer-database/ComputerMenu?nombre=${nombre}&page=${page+1}&search=${search}&sort=${sort}" aria-label="Next">
 		                   <span aria-hidden="true">&raquo;</span>
 		               </a>
 	            	</li>     	        
                 </c:if>
         	</ul>
         <div class="btn-group btn-group-sm pull-right" role="group" >
-            <a href="/Computer-database/ComputerMenu?nombre=10&page=1&search=${search}" onclick="" class="btn btn-default" role="button">10</a>
-            <a href="/Computer-database/ComputerMenu?nombre=50&page=1&search=${search}" onclick="" class="btn btn-default" role="button">50</a>
-            <a href="/Computer-database/ComputerMenu?nombre=100&page=1&search=${search}" onclick="" class="btn btn-default" role="button">100</a>
+            <a href="/Computer-database/ComputerMenu?nombre=10&page=1&search=${search}&sort=${sort}" onclick="" class="btn btn-default">10</a>
+            <a href="/Computer-database/ComputerMenu?nombre=50&page=1&search=${search}&sort=${sort}" onclick="" class="btn btn-default">50</a>
+            <a href="/Computer-database/ComputerMenu?nombre=100&page=1&search=${search}&sort=${sort}" onclick="" class="btn btn-default">100</a>
         </div>
     </footer>
 <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
@@ -140,8 +148,6 @@
 		}
 		if(selected.length > 0){
 			document.getElementById("deleteSelected").href = document.getElementById("deleteSelected").href+"&selected="+selected;
-		} else {
-			document.getElementById("deleteSelected").href = document.getElementById("deleteSelected").href;
 		}
 	}
 </script>

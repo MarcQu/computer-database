@@ -25,8 +25,8 @@
                     <h1>Accueil</h1>
                     <br/>
                     <h3>Séléctioner une table : </h3>
-					<h3><a href="/Computer-database/CompanyMenu?nombre=10&page=1">Company</a></h3>
-					<h3><a href="/Computer-database/ComputerMenu?nombre=10&page=1">Computer</a></h3>
+					<h3><a href="/Computer-database/CompanyMenu?nombre=10&page=1&sort=asc">Company</a></h3>
+					<h3><a href="/Computer-database/ComputerMenu?nombre=10&page=1&sort=asc">Computer</a></h3>
                 </div>
             </div>
         </div>

@@ -38,7 +38,7 @@ public class CompanyFactoryTest {
    */
   @Test
   public void listCompaniesTest() throws SQLException {
-    ArrayList<Company> companies = this.companyFactory.listCompanies(10, 0, "");
+    ArrayList<Company> companies = this.companyFactory.listCompanies(10, 0, "", "");
     assertEquals(10, companies.size());
   }
 

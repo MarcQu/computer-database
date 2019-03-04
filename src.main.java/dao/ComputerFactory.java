@@ -17,8 +17,10 @@ public class ComputerFactory {
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer WHERE name like ?";
   private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id = ?";
   private static final String CREATE = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
-  private static final String LIST = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL LIMIT ? OFFSET ?";
-  private static final String SEARCH = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
+  private static final String LIST_ASC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL ORDER BY name ASC LIMIT ? OFFSET ?";
+  private static final String LIST_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL ORDER BY name DESC LIMIT ? OFFSET ?";
+  private static final String SEARCH_ASC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
+  private static final String SEARCH_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.name LIKE ? ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
@@ -69,20 +71,29 @@ public class ComputerFactory {
    * @param nombre nombre de résultat à afficher
    * @param offset l'offset pour la requète sql
    * @param search le paramètre de la recherche
+   * @param sort le sens de triage
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset, String search)
+  public ArrayList<Computer> listComputers(int nombre, int offset, String search, String sort)
       throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt;
       if (search == null || "".equals(search)) {
-        stmt = factory.getConnection().prepareStatement(LIST);
+        if ("desc".equals(sort)) {
+          stmt = factory.getConnection().prepareStatement(LIST_DESC);
+        } else {
+          stmt = factory.getConnection().prepareStatement(LIST_ASC);
+        }
         stmt.setInt(1, nombre);
         stmt.setInt(2, offset);
       } else {
-        stmt = factory.getConnection().prepareStatement(SEARCH);
+        if ("desc".equals(sort)) {
+          stmt = factory.getConnection().prepareStatement(SEARCH_DESC);
+        } else {
+          stmt = factory.getConnection().prepareStatement(SEARCH_ASC);
+        }
         stmt.setString(1, new StringBuilder("%").append(search).append("%").toString());
         stmt.setString(2, new StringBuilder("%").append(search).append("%").toString());
         stmt.setInt(3, nombre);
@@ -201,7 +212,6 @@ public class ComputerFactory {
       PreparedStatement stmt = factory.getConnection().prepareStatement(SHOW);
       stmt.setString(1, numero);
       stmt.setString(2, numero);
-      System.out.println(stmt);
       ResultSet rs = stmt.executeQuery();
       String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
       while (rs.next()) {

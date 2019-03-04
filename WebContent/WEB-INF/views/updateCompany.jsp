@@ -14,7 +14,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}"> Application - Company Database </a>
+            <a class="navbar-brand" href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}&search=${search}&sort=${sort}"> Application - Company Database </a>
         </div>
     </header>
     <section id="main">
@@ -42,7 +42,7 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Edit" class="btn btn-primary">
                             or
-                            <a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}" class="btn btn-default">Cancel</a>
+                            <a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}&search=${search}&sort=${sort}" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

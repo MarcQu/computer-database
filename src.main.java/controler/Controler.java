@@ -59,12 +59,13 @@ public class Controler {
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
    * @param search le paramètre de la recherche
+   * @param sort le sens de triage
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompanies(int nombre, int offset, String search)
+  public ArrayList<Company> listCompanies(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return CompanyService.getInstance().listCompanies(nombre, offset, search);
+    return CompanyService.getInstance().listCompanies(nombre, offset, search, sort);
   }
 
   /**
@@ -131,12 +132,13 @@ public class Controler {
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
    * @param search le paramètre de la recherche
+   * @param sort le sens de triage
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset, String search)
+  public ArrayList<Computer> listComputers(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return ComputerService.getInstance().listComputers(nombre, offset, search);
+    return ComputerService.getInstance().listComputers(nombre, offset, search, sort);
   }
 
   /**

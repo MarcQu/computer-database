@@ -32,9 +32,13 @@ public class UpdateCompany extends HttpServlet {
       throws ServletException, IOException {
     try {
       String companyId = request.getParameter("companyId");
+      String search = request.getParameter("search");
+      String sort = request.getParameter("sort");
       Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
       request.setAttribute("companyId", companyId);
       request.setAttribute("companyName", company.getName());
+      request.setAttribute("search", search);
+      request.setAttribute("sort", sort);
     } catch (SQLException e) {
       e.printStackTrace();
     }

@@ -35,11 +35,12 @@ public class ComputerMenu extends HttpServlet {
     try {
       HttpSession session = request.getSession();
       String search = request.getParameter("search");
+      String sort = request.getParameter("sort");
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
       int nombreComputers = Controler.getInstance().countComputers(search);
 
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), search);
+      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
       ArrayList<ComputerTO> computersTO = Controler.getInstance().getComputerData(computers);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computersTO);
@@ -49,6 +50,7 @@ public class ComputerMenu extends HttpServlet {
       session.setAttribute("page", page);
       request.setAttribute("pages", pages);
       request.setAttribute("search", search);
+      request.setAttribute("sort", sort);
     } catch (SQLException e) {
       e.printStackTrace();
     }

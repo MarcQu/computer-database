@@ -34,6 +34,8 @@ public class UpdateComputer extends HttpServlet {
       throws ServletException, IOException {
     try {
       String computerId = request.getParameter("computerId");
+      String search = request.getParameter("search");
+      String sort = request.getParameter("sort");
       Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("computerId", computerId);
@@ -42,6 +44,8 @@ public class UpdateComputer extends HttpServlet {
       request.setAttribute("discontinued", computer.getDiscontinued());
       request.setAttribute("companyComputer", computer.getCompany());
       request.setAttribute("companies", companies);
+      request.setAttribute("search", search);
+      request.setAttribute("sort", sort);
     } catch (SQLException e) {
       e.printStackTrace();
     }

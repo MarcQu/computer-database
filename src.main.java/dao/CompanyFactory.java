@@ -14,8 +14,10 @@ public class CompanyFactory {
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like ?";
   private static final String SHOW = "SELECT id, name FROM company WHERE id = ?";
   private static final String CREATE = "INSERT INTO company(name) values(?)";
-  private static final String LIST = "SELECT id, name FROM company LIMIT ? OFFSET ?";
-  private static final String SEARCH = "SELECT id, name FROM company WHERE name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
+  private static final String LIST_ASC = "SELECT id, name FROM company ORDER BY name ASC LIMIT ? OFFSET ?";
+  private static final String LIST_DESC = "SELECT id, name FROM company ORDER BY name DESC LIMIT ? OFFSET ?";
+  private static final String SEARCH_ASC = "SELECT id, name FROM company WHERE name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
+  private static final String SEARCH_DESC = "SELECT id, name FROM company WHERE name LIKE ? ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String LIST_ALL = "SELECT id, name FROM company";
   private static final String DELETE = "DELETE FROM company WHERE id = ?";
   private static final String DELETE_COMPUTERS = "DELETE FROM computer WHERE company_id = ?";
@@ -69,20 +71,29 @@ public class CompanyFactory {
    * @param nombre le nombre de résultats à afficher
    * @param offset l'offset pour la requète sql
    * @param search le paramètre de la recherche
+   * @param sort le sens de triage
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompanies(int nombre, int offset, String search)
+  public ArrayList<Company> listCompanies(int nombre, int offset, String search, String sort)
       throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt;
       if (search == null || "".equals(search)) {
-        stmt = factory.getConnection().prepareStatement(LIST);
+        if ("desc".equals(sort)) {
+          stmt = factory.getConnection().prepareStatement(LIST_DESC);
+        } else {
+          stmt = factory.getConnection().prepareStatement(LIST_ASC);
+        }
         stmt.setInt(1, nombre);
         stmt.setInt(2, offset);
       } else {
-        stmt = factory.getConnection().prepareStatement(SEARCH);
+        if ("desc".equals(sort)) {
+          stmt = factory.getConnection().prepareStatement(SEARCH_DESC);
+        } else {
+          stmt = factory.getConnection().prepareStatement(SEARCH_ASC);
+        }
         stmt.setString(1, new StringBuilder("%").append(search).append("%").toString());
         stmt.setInt(2, nombre);
         stmt.setInt(3, offset);

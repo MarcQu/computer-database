@@ -39,7 +39,7 @@ public class ComputerFactoryTest {
    */
   @Test
   public void listComputersTest() throws SQLException {
-    ArrayList<Computer> computers = this.computerFactory.listComputers(10, 0, null);
+    ArrayList<Computer> computers = this.computerFactory.listComputers(10, 0, null, "");
     assertEquals(10, computers.size());
   }
 
