@@ -2,18 +2,27 @@ package service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import dao.ComputerFactory;
 import model.Computer;
 
 public class ComputerService {
   private static ComputerService instance  = null;
+  private ComputerFactory computerFactory;
+  /**
+   * Constructeur vide de la classe CompanyService.
+   * @throws SQLException SQLException
+   */
+  private ComputerService() throws SQLException {
+    this.computerFactory = ComputerFactory.getInstance();
+  }
 
   /**
    * Méthode qui retourne l' unique de la classe ComputerService.
    * @return l' de la classe ComputerService
-   * @throws SQLException
+   * @throws SQLException SQLException
    */
-  public static ComputerService getInstance() {
+  public static ComputerService getInstance() throws SQLException {
     if (ComputerService.instance == null) {
       ComputerService.instance = new ComputerService();
     }
@@ -27,7 +36,7 @@ public class ComputerService {
    * @throws SQLException SQLException
    */
   public int countComputers(String search) throws SQLException {
-    return ComputerFactory.getInstance().countComputers(search);
+    return this.computerFactory.countComputers(search);
   }
 
   /**
@@ -41,7 +50,7 @@ public class ComputerService {
    */
   public ArrayList<Computer> listComputers(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return ComputerFactory.getInstance().listComputers(nombre, offset, search, sort);
+    return this.computerFactory.listComputers(nombre, offset, search, sort);
   }
 
   /**
@@ -51,7 +60,7 @@ public class ComputerService {
    * @throws SQLException SQLException
    */
   public ArrayList<Computer> listComputersAll(ArrayList<String> champs) throws SQLException {
-    return ComputerFactory.getInstance().listComputersAll(champs);
+    return this.computerFactory.listComputersAll(champs);
   }
 
   /**
@@ -61,7 +70,7 @@ public class ComputerService {
    * @throws SQLException SQLException
    */
   public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
-    return ComputerFactory.getInstance().showComputerDetails(numero);
+    return this.computerFactory.showComputerDetails(numero);
   }
 
   /**
@@ -75,7 +84,7 @@ public class ComputerService {
    */
   public void createComputer(String name, String introduced, String discontinued, String companyId)
       throws SQLException, IllegalArgumentException {
-    ComputerFactory.getInstance().createComputer(name, introduced, discontinued, companyId);
+    this.computerFactory.createComputer(name, introduced, discontinued, companyId);
   }
 
   /**
@@ -90,7 +99,7 @@ public class ComputerService {
    */
   public void updateComputer(String id, String name, String introduced, String discontinued,
       String companyId, ArrayList<String> champs) throws SQLException {
-    ComputerFactory.getInstance().updateComputer(id, name, introduced, discontinued, companyId,
+    this.computerFactory.updateComputer(id, name, introduced, discontinued, companyId,
         champs);
   }
 
@@ -100,6 +109,6 @@ public class ComputerService {
    * @throws SQLException SQLException
    */
   public void deleteComputer(String id) throws SQLException {
-    ComputerFactory.getInstance().deleteComputer(id);
+    this.computerFactory.deleteComputer(id);
   }
 }

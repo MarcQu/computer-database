@@ -10,19 +10,24 @@ import service.ComputerService;
 
 public class Controler {
   private static Controler instance = null;
+  private CompanyService companyService;
+  private ComputerService computerService;
 
   /**
    * Constructeur vide privée classe Controler.
+   * @throws SQLException SQLException
    */
-  private Controler() {
+  private Controler() throws SQLException {
+    this.companyService = CompanyService.getInstance();
+    this.computerService = ComputerService.getInstance();
   }
 
   /**
    * Méthode qui retourne l'instance unique de la classe Controler.
    * @return l'instance de la classe Controler
-   * @throws SQLException
+   * @throws SQLException SQLException
    */
-  public static Controler getInstance() {
+  public static Controler getInstance() throws SQLException {
     if (Controler.instance == null) {
       Controler.instance = new Controler();
     }
@@ -36,7 +41,7 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public int countCompanies(String search) throws SQLException {
-    return CompanyService.getInstance().countCompanies(search);
+    return this.companyService.countCompanies(search);
   }
 
   /**
@@ -50,7 +55,7 @@ public class Controler {
    */
   public ArrayList<Company> listCompanies(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return CompanyService.getInstance().listCompanies(nombre, offset, search, sort);
+    return this.companyService.listCompanies(nombre, offset, search, sort);
   }
 
   /**
@@ -59,7 +64,7 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public ArrayList<Company> listCompaniesAll() throws SQLException {
-    return CompanyService.getInstance().listCompaniesAll();
+    return this.companyService.listCompaniesAll();
   }
 
   /**
@@ -69,7 +74,7 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public ArrayList<Company> showCompanyDetails(String numero) throws SQLException {
-    return CompanyService.getInstance().showCompanyDetails(numero);
+    return this.companyService.showCompanyDetails(numero);
   }
 
   /**
@@ -79,7 +84,7 @@ public class Controler {
    * @throws IllegalArgumentException IllegalArgumentException
    */
   public void createCompany(String name) throws SQLException, IllegalArgumentException {
-    CompanyService.getInstance().createCompany(name);
+    this.companyService.createCompany(name);
   }
 
   /**
@@ -90,7 +95,7 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public void updateCompany(String id, String name, ArrayList<String> champs) throws SQLException {
-    CompanyService.getInstance().updateCompany(id, name, champs);
+    this.companyService.updateCompany(id, name, champs);
   }
 
   /**
@@ -99,7 +104,7 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public void deleteCompany(String id) throws SQLException {
-    CompanyService.getInstance().deleteCompany(id);
+    this.companyService.deleteCompany(id);
   }
 
   /**
@@ -109,7 +114,7 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public int countComputers(String search) throws SQLException {
-    return ComputerService.getInstance().countComputers(search);
+    return this.computerService.countComputers(search);
   }
 
   /**
@@ -123,7 +128,7 @@ public class Controler {
    */
   public ArrayList<Computer> listComputers(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return ComputerService.getInstance().listComputers(nombre, offset, search, sort);
+    return this.computerService.listComputers(nombre, offset, search, sort);
   }
 
   /**
@@ -133,7 +138,7 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public ArrayList<Computer> listComputersAll(ArrayList<String> champs) throws SQLException {
-    return ComputerService.getInstance().listComputersAll(champs);
+    return this.computerService.listComputersAll(champs);
   }
 
   /**
@@ -143,7 +148,7 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
-    return ComputerService.getInstance().showComputerDetails(numero);
+    return this.computerService.showComputerDetails(numero);
   }
 
   /**
@@ -157,7 +162,7 @@ public class Controler {
    */
   public void createComputer(String name, String introduced, String discontinued, String companyId)
       throws SQLException, IllegalArgumentException {
-    ComputerService.getInstance().createComputer(name, introduced, discontinued, companyId);
+    this.computerService.createComputer(name, introduced, discontinued, companyId);
   }
 
   /**
@@ -172,7 +177,7 @@ public class Controler {
    */
   public void updateComputer(String id, String name, String introduced, String discontinued,
       String companyId, ArrayList<String> champs) throws SQLException {
-    ComputerService.getInstance().updateComputer(id, name, introduced, discontinued, companyId,
+    this.computerService.updateComputer(id, name, introduced, discontinued, companyId,
         champs);
   }
 
@@ -182,6 +187,6 @@ public class Controler {
    * @throws SQLException SQLException
    */
   public void deleteComputer(String id) throws SQLException {
-    ComputerService.getInstance().deleteComputer(id);
+    this.computerService.deleteComputer(id);
   }
 }

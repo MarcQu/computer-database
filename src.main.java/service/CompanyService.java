@@ -7,19 +7,22 @@ import model.Company;
 
 public class CompanyService {
   private static CompanyService instance = null;
+  private CompanyFactory companyFactory;
 
   /**
    * Constructeur vide de la classe CompanyService.
+   * @throws SQLException SQLException
    */
-  private CompanyService() {
+  private CompanyService() throws SQLException {
+    this.companyFactory = CompanyFactory.getInstance();
   }
 
   /**
    * Méthode qui retourne l'instance unique de la classe CompanyService.
    * @return l'instance de la classe CompanyService
-   * @throws SQLException
+   * @throws SQLException SQLException
    */
-  public static CompanyService getInstance() {
+  public static CompanyService getInstance() throws SQLException {
     if (CompanyService.instance == null) {
       CompanyService.instance = new CompanyService();
     }
@@ -33,7 +36,7 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   public int countCompanies(String search) throws SQLException {
-    return CompanyFactory.getInstance().countCompanies(search);
+    return this.companyFactory.countCompanies(search);
   }
 
   /**
@@ -47,7 +50,7 @@ public class CompanyService {
    */
   public ArrayList<Company> listCompanies(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return CompanyFactory.getInstance().listCompanies(nombre, offset, search, sort);
+    return this.companyFactory.listCompanies(nombre, offset, search, sort);
   }
 
   /**
@@ -56,7 +59,7 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   public ArrayList<Company> listCompaniesAll() throws SQLException {
-    return CompanyFactory.getInstance().listCompaniesAll();
+    return this.companyFactory.listCompaniesAll();
   }
 
   /**
@@ -66,7 +69,7 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   public ArrayList<Company> showCompanyDetails(String numero) throws SQLException {
-    return CompanyFactory.getInstance().showCompanyDetails(numero);
+    return this.companyFactory.showCompanyDetails(numero);
   }
 
   /**
@@ -76,7 +79,7 @@ public class CompanyService {
    * @throws IllegalArgumentException IllegalArgumentException
    */
   public void createCompany(String name) throws SQLException, IllegalArgumentException {
-    CompanyFactory.getInstance().createCompany(name);
+    this.companyFactory.createCompany(name);
   }
 
   /**
@@ -87,7 +90,7 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   public void updateCompany(String id, String name, ArrayList<String> champs) throws SQLException {
-    CompanyFactory.getInstance().updateCompany(id, name, champs);
+    this.companyFactory.updateCompany(id, name, champs);
   }
 
   /**
@@ -96,6 +99,6 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   public void deleteCompany(String id) throws SQLException {
-    CompanyFactory.getInstance().deleteCompany(id);
+    this.companyFactory.deleteCompany(id);
   }
 }
