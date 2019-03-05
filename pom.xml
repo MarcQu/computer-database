@@ -15,6 +15,44 @@
 		<seleniumVersion>3.141.59</seleniumVersion>
 		<hikariCPVersion>3.3.1</hikariCPVersion>
 	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4jVersion}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-log4j12</artifactId>
+		    <version>${slf4jVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-android</artifactId>
+			<version>${mockitoVersion}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+		    <groupId>javax.el</groupId>
+		    <artifactId>javax.el-api</artifactId>
+		    <version>${javaxElApiVersion}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.glassfish.web</groupId>
+		    <artifactId>javax.el</artifactId>
+		    <version>${javaxElVersion}</version>
+		</dependency>
+	    <dependency>
+	        <groupId>org.seleniumhq.selenium</groupId>
+	        <artifactId>selenium-java</artifactId>
+	        <version>${seleniumVersion}</version>
+	    </dependency>
+		<dependency>
+		    <groupId>com.zaxxer</groupId>
+		    <artifactId>HikariCP</artifactId>
+		    <version>${hikariCPVersion}</version>
+		</dependency>
+	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<pluginManagement> 
@@ -58,42 +96,4 @@
 			</plugins>
 		</pluginManagement> 
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4jVersion}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-log4j12</artifactId>
-		    <version>${slf4jVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-android</artifactId>
-			<version>${mockitoVersion}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-		    <groupId>javax.el</groupId>
-		    <artifactId>javax.el-api</artifactId>
-		    <version>${javaxElApiVersion}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.glassfish.web</groupId>
-		    <artifactId>javax.el</artifactId>
-		    <version>${javaxElVersion}</version>
-		</dependency>
-	    <dependency>
-	        <groupId>org.seleniumhq.selenium</groupId>
-	        <artifactId>selenium-java</artifactId>
-	        <version>${seleniumVersion}</version>
-	    </dependency>
-		<dependency>
-		    <groupId>com.zaxxer</groupId>
-		    <artifactId>HikariCP</artifactId>
-		    <version>${hikariCPVersion}</version>
-		</dependency>
-	</dependencies>
 </project>

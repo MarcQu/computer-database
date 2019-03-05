@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.LoggerFactory;
+
 import controler.Controler;
+import dao.ComputerFactory;
 import model.Company;
 import model.Computer;
 import validator.Validator;
@@ -47,7 +50,7 @@ public class UpdateComputer extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
@@ -110,7 +113,7 @@ public class UpdateComputer extends HttpServlet {
       request.setAttribute("errorDate", errorDate);
       request.setAttribute("success", success);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }

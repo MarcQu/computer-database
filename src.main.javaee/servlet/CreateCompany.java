@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.LoggerFactory;
+
 import controler.Controler;
+import dao.ComputerFactory;
 import validator.Validator;
 
 /**
@@ -56,9 +59,9 @@ public class CreateCompany extends HttpServlet {
       request.setAttribute("errorName", errorName);
       request.setAttribute("success", success);
     } catch (IllegalArgumentException e) {
-      e.printStackTrace();
+      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
     } catch (SQLException e) {
-      e.printStackTrace();
+      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }

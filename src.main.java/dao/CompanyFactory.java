@@ -5,6 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import model.Company;
 
 public class CompanyFactory {
@@ -20,12 +23,14 @@ public class CompanyFactory {
   private static final String LIST_ALL = "SELECT id, name FROM company";
   private static final String DELETE = "DELETE FROM company WHERE id = ?";
   private static final String DELETE_COMPUTERS = "DELETE FROM computer WHERE company_id = ?";
+  private Logger logger;
 
   /**
    * CompanyFactory contient les méthodes spécifiques à la table company.
    * @throws SQLException SQLException
    */
   private CompanyFactory() throws SQLException {
+    this.logger = LoggerFactory.getLogger(CompanyFactory.class);
   }
 
   /**
@@ -60,7 +65,7 @@ public class CompanyFactory {
       rs.next();
       nombre = rs.getInt("rowcount");
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
     return nombre;
   }
@@ -105,7 +110,7 @@ public class CompanyFactory {
         companies.add(company);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
     return companies;
   }
@@ -127,7 +132,7 @@ public class CompanyFactory {
         companies.add(company);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
     return companies;
   }
@@ -164,7 +169,7 @@ public class CompanyFactory {
         companies.add(company);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
     return companies;
   }
@@ -185,7 +190,7 @@ public class CompanyFactory {
       }
       stmt.executeUpdate();
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
   }
 
@@ -220,7 +225,7 @@ public class CompanyFactory {
       stmt.setInt(champs.size() + 1, Integer.parseInt(id));
       stmt.executeUpdate();
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
   }
 
@@ -241,7 +246,7 @@ public class CompanyFactory {
       factory.getConnection().commit();
       factory.getConnection().setAutoCommit(true);
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
   }
 }

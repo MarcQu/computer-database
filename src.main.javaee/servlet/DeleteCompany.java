@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.LoggerFactory;
+
 import controler.Controler;
+import dao.ComputerFactory;
 import dto.CompanyTO;
 import mapper.CompanyMapper;
 import model.Company;
@@ -62,7 +65,7 @@ public class DeleteCompany extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }

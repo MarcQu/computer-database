@@ -3,9 +3,6 @@ package controler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import model.Company;
 import model.Computer;
 import service.CompanyService;
@@ -13,13 +10,11 @@ import service.ComputerService;
 
 public class Controler {
   private static Controler instance = null;
-  private Logger logger;
 
   /**
    * Constructeur vide privée classe Controler.
    */
   private Controler() {
-    this.logger = LoggerFactory.getLogger(Controler.class);
   }
 
   /**
@@ -32,14 +27,6 @@ public class Controler {
       Controler.instance = new Controler();
     }
     return Controler.instance;
-  }
-
-  /**
-   * Retourne le logger de la factory.
-   * @return logger
-   */
-  public Logger getLogger() {
-    return this.logger;
   }
 
   /**

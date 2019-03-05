@@ -7,6 +7,9 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import model.Company;
 import model.Computer;
 
@@ -21,11 +24,14 @@ public class ComputerFactory {
   private static final String SEARCH_ASC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
   private static final String SEARCH_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.name LIKE ? ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
+  private Logger logger;
+
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
    * @throws SQLException SQLException
    */
   private ComputerFactory() throws SQLException {
+    this.logger = LoggerFactory.getLogger(ComputerFactory.class);
   }
 
   /**
@@ -60,7 +66,7 @@ public class ComputerFactory {
       rs.next();
       nombre = rs.getInt("rowcount");
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
     return nombre;
   }
@@ -139,7 +145,7 @@ public class ComputerFactory {
         computers.add(computer);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
     return computers;
   }
@@ -194,7 +200,7 @@ public class ComputerFactory {
         computers.add(computer);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
     return computers;
   }
@@ -252,7 +258,7 @@ public class ComputerFactory {
         computers.add(computer);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
     return computers;
   }
@@ -292,7 +298,7 @@ public class ComputerFactory {
       }
       stmt.executeUpdate();
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
   }
 
@@ -352,7 +358,7 @@ public class ComputerFactory {
       stmt.setInt(champs.size() + 1, Integer.parseInt(id));
       stmt.executeUpdate();
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
   }
 
@@ -367,7 +373,7 @@ public class ComputerFactory {
       stmt.setString(1, id);
       stmt.executeUpdate();
     } catch (Exception e) {
-      e.printStackTrace();
+      this.logger.error(e.toString());
     }
   }
 }

@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.LoggerFactory;
+
 import controler.Controler;
+import dao.ComputerFactory;
 import model.Company;
 import validator.Validator;
 
@@ -35,7 +38,7 @@ public class CreateComputer extends HttpServlet {
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
     } catch (SQLException e) {
-      e.printStackTrace();
+      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
@@ -81,9 +84,9 @@ public class CreateComputer extends HttpServlet {
       request.setAttribute("errorDate", errorDate);
       request.setAttribute("success", success);
     } catch (IllegalArgumentException e) {
-      e.printStackTrace();
+      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
     } catch (SQLException e) {
-      e.printStackTrace();
+      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
