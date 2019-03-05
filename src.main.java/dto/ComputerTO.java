@@ -1,10 +1,9 @@
 package dto;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import model.Computer;
@@ -12,7 +11,7 @@ import model.Company;
 
 public class ComputerTO implements Serializable {
   private static final long serialVersionUID = 1L;
-  private static final DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd");
+  private static final DateTimeFormatter DATEFORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private String id;
   private String name;
   private String introduced;
@@ -32,8 +31,8 @@ public class ComputerTO implements Serializable {
   public ComputerTO(Computer computer) {
     this.id = Integer.toString(computer.getId());
     this.name = computer.getName();
-    Optional<Date> optionalIntroduced = Optional.ofNullable(computer.getIntroduced());
-    Optional<Date> optionalDiscontinued = Optional.ofNullable(computer.getDiscontinued());
+    Optional<LocalDate> optionalIntroduced = Optional.ofNullable(computer.getIntroduced());
+    Optional<LocalDate> optionalDiscontinued = Optional.ofNullable(computer.getDiscontinued());
     if (optionalIntroduced.isPresent()) {
       this.introduced = DATEFORMAT.format(computer.getIntroduced());
     }
@@ -76,8 +75,8 @@ public class ComputerTO implements Serializable {
    * @param introduced la date d'introduction
    */
   public void setIntroduced(Timestamp introduced) {
-    Date date = new Date(introduced.getTime());
-    Optional<Date> optionalIntroduced = Optional.ofNullable(date);
+    LocalDate date = introduced.toLocalDateTime().toLocalDate();
+    Optional<LocalDate> optionalIntroduced = Optional.ofNullable(date);
     if (optionalIntroduced.isPresent()) {
       this.introduced = DATEFORMAT.format(date);
     }
@@ -88,8 +87,8 @@ public class ComputerTO implements Serializable {
    * @param discontinued la date d'interruption
    */
   public void setDiscontinued(Timestamp discontinued) {
-    Date date = new Date(discontinued.getTime());
-    Optional<Date> optionalDiscontinued = Optional.ofNullable(date);
+    LocalDate date = discontinued.toLocalDateTime().toLocalDate();
+    Optional<LocalDate> optionalDiscontinued = Optional.ofNullable(date);
     if (optionalDiscontinued.isPresent()) {
       this.discontinued = DATEFORMAT.format(date);
     }
