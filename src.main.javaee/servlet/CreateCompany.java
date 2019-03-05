@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import controler.Controler;
+import validator.Validator;
 
 /**
  * Servlet implementation class CreateCompany.
@@ -45,7 +46,7 @@ public class CreateCompany extends HttpServlet {
 
       String errorName = "";
       String success = "";
-      if ("".equals(name)) {
+      if (Validator.getInstance().validateName(name)) {
         errorName = "Le nom ne doit pas être vide";
       }
       if (errorName == "") {

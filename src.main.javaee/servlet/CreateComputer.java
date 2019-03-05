@@ -2,7 +2,6 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import controler.Controler;
 import model.Company;
+import validator.Validator;
 
 /**
  * Servlet implementation class CreateComputer.
@@ -67,10 +67,10 @@ public class CreateComputer extends HttpServlet {
       String errorName = "";
       String errorDate = "";
       String success = "";
-      if ("".equals(name)) {
+      if (Validator.getInstance().validateName(name)) {
         errorName = "Le nom ne doit pas être vide";
       }
-      if (!"".equals(introduced.toString()) && !"".equals(discontinued.toString()) && Timestamp.valueOf(introduced.toString()).after(Timestamp.valueOf(discontinued.toString()))) {
+      if (Validator.getInstance().validateDate(introduced.toString(), discontinued.toString())) {
         errorDate = "La date d'introduction doit être antérieur à la date d'interruption";
       }
       if (errorName == "" && errorDate == "") {

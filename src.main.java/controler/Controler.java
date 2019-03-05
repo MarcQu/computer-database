@@ -16,7 +16,7 @@ public class Controler {
   private Logger logger;
 
   /**
-   * Constructeur vide classe Controler.
+   * Constructeur vide privée classe Controler.
    */
   private Controler() {
     this.logger = LoggerFactory.getLogger(Controler.class);
