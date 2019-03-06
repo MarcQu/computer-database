@@ -30,7 +30,8 @@ public class ComputerFactoryTest {
     prp.put("user", "root");
     prp.put("password", "network");
     this.daoFactory = Mockito.mock(DAOFactory.class);
-    Mockito.when(this.daoFactory.getConnection()).thenReturn(DriverManager.getConnection(URL, prp));    this.computerFactory = ComputerFactory.getInstance();
+    Mockito.when(this.daoFactory.getConnection()).thenReturn(DriverManager.getConnection(URL, prp));
+    this.computerFactory = ComputerFactory.getInstance();
   }
 
   /**

@@ -53,7 +53,7 @@ public class DeleteComputer extends HttpServlet {
 
       int nombreComputers = Controler.getInstance().countComputers(search);
       ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
-      ArrayList<ComputerTO> computersTO = ComputerMapper.getInstance().getComputerData(computers);
+      ArrayList<ComputerTO> computersTO = ComputerMapper.getInstance().getComputerTO(computers);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computersTO);
 

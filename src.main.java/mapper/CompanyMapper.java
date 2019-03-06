@@ -33,13 +33,22 @@ public class CompanyMapper {
    * @param companies les compagnies
    * @return companiesTO les DTOs
    */
-  public ArrayList<CompanyTO> getCompanyData(ArrayList<Company> companies) {
+  public ArrayList<CompanyTO> getCompanyTO(ArrayList<Company> companies) {
     return createCompanyTO(companies);
   }
 
   /**
+   * Récupère les compagnies.
+   * @param companiesTO les DTOs
+   * @return companies les compagnies
+   */
+  public ArrayList<Company> getCompany(ArrayList<CompanyTO> companiesTO) {
+    return createCompany(companiesTO);
+  }
+
+  /**
    * Crée les DTOs.
-   * @param companies les com
+   * @param companies les compagnies
    * @return companiesTO les DTOs
    */
   private ArrayList<CompanyTO> createCompanyTO(ArrayList<Company> companies) {
@@ -49,5 +58,19 @@ public class CompanyMapper {
       companiesTO.add(companyTO);
     }
       return companiesTO;
+  }
+
+  /**
+   * Crée les compagnies.
+   * @param companiesTO les DTOs
+   * @return companies les compagnies
+   */
+  private ArrayList<Company> createCompany(ArrayList<CompanyTO> companiesTO) {
+    ArrayList<Company> companies = new ArrayList<Company>();
+    for (CompanyTO companyTO : companiesTO) {
+      Company company = new Company(companyTO.getId(), companyTO.getName());
+      companies.add(company);
+    }
+      return companies;
   }
 }

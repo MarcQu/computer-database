@@ -1,6 +1,7 @@
 package mapper;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import dto.ComputerTO;
@@ -33,8 +34,17 @@ public class ComputerMapper {
    * @param computers les ordinateurs
    * @return computersTO les DTOs
    */
-  public ArrayList<ComputerTO> getComputerData(ArrayList<Computer> computers) {
+  public ArrayList<ComputerTO> getComputerTO(ArrayList<Computer> computers) {
     return createComputerTO(computers);
+  }
+
+  /**
+   * Récupère les computers.
+   * @param computersTO les DTOs
+   * @return computers les ordinateurs
+   */
+  public ArrayList<Computer> getComputer(ArrayList<ComputerTO> computersTO) {
+    return createComputer(computersTO);
   }
 
   /**
@@ -49,5 +59,24 @@ public class ComputerMapper {
       computersTO.add(computerTO);
     }
       return computersTO;
+  }
+
+  /**
+   * Crée les computers.
+   * @param computersTO les DTOs
+   * @return computers les ordinateurs
+   */
+  private ArrayList<Computer> createComputer(ArrayList<ComputerTO> computersTO) {
+    ArrayList<Computer> computers = new ArrayList<Computer>();
+    for (ComputerTO computerTO : computersTO) {
+      Computer computer = new Computer();
+      computer.setId(computerTO.getId());
+      computer.setName(computerTO.getName());
+      computer.setIntroduced(Timestamp.valueOf(computerTO.getIntroduced()));
+      computer.setDiscontinued(Timestamp.valueOf(computerTO.getDiscontinued()));
+      computer.setCompany(computerTO.getCompany());
+      computersTO.add(computerTO);
+    }
+      return computers;
   }
 }

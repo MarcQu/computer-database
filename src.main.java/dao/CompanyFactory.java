@@ -1,5 +1,6 @@
 package dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -139,15 +140,15 @@ public class CompanyFactory {
 
   /**
    * Affiche les informations d'une companie contenu dans la table company.
-   * @param numero l'id de la compagnie à afficher
+   * @param id l'id de la compagnie à afficher
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> showCompanyDetails(String numero) throws SQLException {
+  public ArrayList<Company> showCompanyDetails(String id) throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(SHOW);
-      stmt.setString(1, numero);
+      stmt.setString(1, id);
       ResultSet rs = stmt.executeQuery();
       String[] champs = {"id", "name"};
       while (rs.next()) {
@@ -235,17 +236,20 @@ public class CompanyFactory {
    * @throws SQLException SQLException
    */
   public void deleteCompany(String id) throws SQLException {
+    Connection conn = null;
     try (DAOFactory factory = new DAOFactory()) {
-      factory.getConnection().setAutoCommit(false);
-      PreparedStatement stmtComputers = factory.getConnection().prepareStatement(DELETE_COMPUTERS);
+      conn = factory.getConnection();
+      conn.setAutoCommit(false);
+      PreparedStatement stmtComputers = conn.prepareStatement(DELETE_COMPUTERS);
       stmtComputers.setString(1, id);
       stmtComputers.executeUpdate();
-      PreparedStatement stmt = factory.getConnection().prepareStatement(DELETE);
+      PreparedStatement stmt = conn.prepareStatement(DELETE);
       stmt.setString(1, id);
       stmt.executeUpdate();
-      factory.getConnection().commit();
-      factory.getConnection().setAutoCommit(true);
+      conn.commit();
+      conn.setAutoCommit(true);
     } catch (Exception e) {
+      conn.rollback();
       this.logger.error(e.toString());
     }
   }

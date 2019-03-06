@@ -54,8 +54,8 @@ public class Computer {
     return this.company;
   }
 
-  public void setId(Integer id) {
-    this.id = id;
+  public void setId(String id) {
+    this.id = Integer.parseInt(id);
   }
 
   public void setName(String name) {

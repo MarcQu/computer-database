@@ -113,7 +113,7 @@ public class ComputerFactory {
           if (rs.getString(champs[i]) != null) {
             switch (champs[i]) {
             case "id":
-              computer.setId(Integer.parseInt(rs.getString(champs[i])));
+              computer.setId(rs.getString(champs[i]));
               break;
             case "name":
               computer.setName(rs.getString(champs[i]));
@@ -172,7 +172,7 @@ public class ComputerFactory {
           if (rs.getString(champs.get(i)) != null) {
             switch (champs.get(i)) {
             case "id":
-              computer.setId(Integer.parseInt(rs.getString(champs.get(i))));
+              computer.setId(rs.getString(champs.get(i)));
               break;
             case "name":
               computer.setName(rs.getString(champs.get(i)));
@@ -207,16 +207,16 @@ public class ComputerFactory {
 
   /**
    * Affiche les informations d'un ordinateur contenu dans la table computer.
-   * @param numero l'id de l'ordinateur à afficher
+   * @param id l'id de l'ordinateur à afficher
    * @return computers la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> showComputerDetails(String numero) throws SQLException {
+  public ArrayList<Computer> showComputerDetails(String id) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(SHOW);
-      stmt.setString(1, numero);
-      stmt.setString(2, numero);
+      stmt.setString(1, id);
+      stmt.setString(2, id);
       ResultSet rs = stmt.executeQuery();
       String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
       while (rs.next()) {
@@ -226,7 +226,7 @@ public class ComputerFactory {
           if (rs.getString(champs[i]) != null) {
             switch (champs[i]) {
             case "id":
-              computer.setId(Integer.parseInt(rs.getString(champs[i])));
+              computer.setId(rs.getString(champs[i]));
               break;
             case "name":
               computer.setName(rs.getString(champs[i]));

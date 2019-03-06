@@ -54,7 +54,7 @@ public class DeleteCompany extends HttpServlet {
 
       int nombreCompanies = Controler.getInstance().countCompanies(search);
       ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
-      ArrayList<CompanyTO> companiesTO = CompanyMapper.getInstance().getCompanyData(companies);
+      ArrayList<CompanyTO> companiesTO = CompanyMapper.getInstance().getCompanyTO(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);
 

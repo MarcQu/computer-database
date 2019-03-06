@@ -40,7 +40,7 @@ public class CreateCompany extends HttpServlet {
    * @param request la requète
    * @param response la réponse
    * @throws ServletException ServletException
-   * @throws IOException      IOException
+   * @throws IOException IOException
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
