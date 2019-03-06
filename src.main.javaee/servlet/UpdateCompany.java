@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import controler.Controler;
 import exception.EmptyNameException;
+import exception.SpecialCharacterException;
 import model.Company;
 import validator.Validator;
 
@@ -64,6 +65,7 @@ public class UpdateCompany extends HttpServlet {
     String companyId = request.getParameter("companyId");
     String companyName = request.getParameter("companyName");
     try {
+      Validator.getInstance().validateField(companyName);
       Validator.getInstance().validateName(companyName);
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("name");
@@ -80,6 +82,16 @@ public class UpdateCompany extends HttpServlet {
         request.setAttribute("companyId", company.getId());
         request.setAttribute("companyName", company.getName());
         request.setAttribute("errorName", "Le nom ne doit pas être vide");
+        logger.error(e.toString());
+      } catch (SQLException e1) {
+        logger.error(e1.toString());
+      }
+    } catch (SpecialCharacterException e) {
+      try {
+        Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
+        request.setAttribute("companyId", company.getId());
+        request.setAttribute("companyName", company.getName());
+        request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
         logger.error(e.toString());
       } catch (SQLException e1) {
         logger.error(e1.toString());

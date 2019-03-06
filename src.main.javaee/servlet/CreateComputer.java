@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import controler.Controler;
 import exception.DateException;
 import exception.EmptyNameException;
+import exception.SpecialCharacterException;
 import model.Company;
 import validator.Validator;
 
@@ -70,6 +71,10 @@ public class CreateComputer extends HttpServlet {
     try {
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
+      Validator.getInstance().validateField(name);
+      Validator.getInstance().validateField(introduced.toString());
+      Validator.getInstance().validateField(discontinued.toString());
+      Validator.getInstance().validateField(companyId);
       Validator.getInstance().validateName(name);
       Validator.getInstance().validateDate(introduced.toString(), discontinued.toString());
       Controler.getInstance().createComputer(name, introduced.toString(), discontinued.toString(), companyId);
@@ -81,6 +86,9 @@ public class CreateComputer extends HttpServlet {
       logger.error(e.toString());
     } catch (DateException e) {
       request.setAttribute("errorDate", "La date d'introduction doit être antérieur à la date d'interruption");
+      logger.error(e.toString());
+    } catch (SpecialCharacterException e) {
+      request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
       logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);

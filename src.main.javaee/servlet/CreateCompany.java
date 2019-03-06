@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import controler.Controler;
 import exception.EmptyNameException;
+import exception.SpecialCharacterException;
 import validator.Validator;
 
 /**
@@ -48,6 +49,7 @@ public class CreateCompany extends HttpServlet {
     Logger logger = LoggerFactory.getLogger(CreateCompany.class);
     try {
       String name = request.getParameter("companyName");
+      Validator.getInstance().validateField(name);
       Validator.getInstance().validateName(name);
       Controler.getInstance().createCompany(name);
       request.setAttribute("success", "Succès de la création");
@@ -55,6 +57,9 @@ public class CreateCompany extends HttpServlet {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
       request.setAttribute("errorName", "Le nom ne doit pas être vide");
+      logger.error(e.toString());
+    } catch (SpecialCharacterException e) {
+      request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
       logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);

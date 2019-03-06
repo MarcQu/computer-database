@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import controler.Controler;
 import exception.DateException;
 import exception.EmptyNameException;
+import exception.SpecialCharacterException;
 import model.Company;
 import model.Computer;
 import validator.Validator;
@@ -95,6 +96,11 @@ public class UpdateComputer extends HttpServlet {
     try {
       ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
+      Validator.getInstance().validateField(computerId);
+      Validator.getInstance().validateField(computerName);
+      Validator.getInstance().validateField(introduced.toString());
+      Validator.getInstance().validateField(discontinued.toString());
+      Validator.getInstance().validateField(companyId);
       Validator.getInstance().validateName(computerName);
       Validator.getInstance().validateDate(introduced.toString(), discontinued.toString());
       Controler.getInstance().updateComputer(computerId, computerName, introduced.toString(), discontinued.toString(), companyId, champs);
@@ -130,6 +136,19 @@ public class UpdateComputer extends HttpServlet {
         request.setAttribute("discontinued", computer.getDiscontinued());
         request.setAttribute("companyComputer", computer.getCompany());
         request.setAttribute("errorDate", "La date d'introduction doit être antérieur à la date d'interruption");
+        logger.error(e.toString());
+      } catch (SQLException e1) {
+        logger.error(e1.toString());
+      }
+    } catch (SpecialCharacterException e) {
+      try {
+        Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
+        request.setAttribute("computerId", computer.getId());
+        request.setAttribute("computerName", computer.getName());
+        request.setAttribute("introduced", computer.getIntroduced());
+        request.setAttribute("discontinued", computer.getDiscontinued());
+        request.setAttribute("companyComputer", computer.getCompany());
+        request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
         logger.error(e.toString());
       } catch (SQLException e1) {
         logger.error(e1.toString());

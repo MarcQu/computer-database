@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 import exception.DateException;
 import exception.EmptyNameException;
+import exception.SpecialCharacterException;
 
 public class Validator {
   private static Validator instance = null;
@@ -47,6 +48,17 @@ public class Validator {
   public void validateDate(String introduced, String discontinued) throws DateException {
     if (!"".equals(introduced) && !"".equals(discontinued) && Timestamp.valueOf(introduced).after(Timestamp.valueOf(discontinued))) {
       throw new DateException("La date d'introduction doit être antérieur à la date d'interruption");
+    }
+  }
+
+  /**
+   * Method qui valide si un champ ne possède pas de caractère spécial.
+   * @param champ le champ
+   * @throws SpecialCharacterException SpecialCharacterException
+   */
+  public void validateField(String champ) throws SpecialCharacterException {
+    if (champ.matches(".*;.*") || champ.matches(".*\".*") || champ.matches(".*#.*")) {
+      throw new SpecialCharacterException("Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
     }
   }
 }
