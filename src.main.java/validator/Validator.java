@@ -3,6 +3,9 @@ package validator;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+import exception.DateException;
+import exception.EmptyNameException;
+
 public class Validator {
   private static Validator instance = null;
 
@@ -27,27 +30,23 @@ public class Validator {
   /**
    * Method qui valide si le champ name est non vide.
    * @param name le nom
-   * @return valid le boolean
+   * @throws EmptyNameException EmptyNameException
    */
-  public boolean validateName(String name) {
-    boolean valid = false;
+  public void validateName(String name) throws EmptyNameException {
     if ("".equals(name)) {
-      valid = true;
+      throw new EmptyNameException("Le nom ne doit pas être vide");
     }
-    return valid;
   }
 
   /**
    * Method qui valide si la date d'introduction est antérieur à la date d'interruption.
    * @param introduced la date d'introduction
    * @param discontinued la date d'interruption
-   * @return valid le boolean
+   * @throws DateException DateException
    */
-  public boolean validateDate(String introduced, String discontinued) {
-    boolean valid = false;
+  public void validateDate(String introduced, String discontinued) throws DateException {
     if (!"".equals(introduced) && !"".equals(discontinued) && Timestamp.valueOf(introduced).after(Timestamp.valueOf(discontinued))) {
-      valid = true;
+      throw new DateException("La date d'introduction doit être antérieur à la date d'interruption");
     }
-    return valid;
   }
 }

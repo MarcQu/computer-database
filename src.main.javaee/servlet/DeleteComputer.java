@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controler.Controler;
-import dao.ComputerFactory;
 import dto.ComputerTO;
 import mapper.ComputerMapper;
 import model.Computer;
@@ -36,13 +36,13 @@ public class DeleteComputer extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    Logger logger = LoggerFactory.getLogger(DeleteComputer.class);
+    HttpSession session = request.getSession();
+    String search = request.getParameter("search");
+    String sort = request.getParameter("sort");
+    int nombre = Integer.parseInt(request.getParameter("nombre"));
+    int page = Integer.parseInt(request.getParameter("page"));
     try {
-      HttpSession session = request.getSession();
-      String search = request.getParameter("search");
-      String sort = request.getParameter("sort");
-      int nombre = Integer.parseInt(request.getParameter("nombre"));
-      int page = Integer.parseInt(request.getParameter("page"));
-
       String selected = request.getParameter("selected");
       if (selected != null) {
         String[] selectedComputers = selected.split(",");
@@ -64,7 +64,7 @@ public class DeleteComputer extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
+      logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }

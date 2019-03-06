@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controler.Controler;
-import dao.ComputerFactory;
+import exception.EmptyNameException;
 import model.Company;
 import validator.Validator;
 
@@ -34,17 +35,18 @@ public class UpdateCompany extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    Logger logger = LoggerFactory.getLogger(UpdateCompany.class);
+    String companyId = request.getParameter("companyId");
+    String search = request.getParameter("search");
+    String sort = request.getParameter("sort");
     try {
-      String companyId = request.getParameter("companyId");
-      String search = request.getParameter("search");
-      String sort = request.getParameter("sort");
       Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
       request.setAttribute("companyId", companyId);
       request.setAttribute("companyName", company.getName());
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
+      logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
@@ -58,30 +60,30 @@ public class UpdateCompany extends HttpServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    Logger logger = LoggerFactory.getLogger(UpdateCompany.class);
     String companyId = request.getParameter("companyId");
     String companyName = request.getParameter("companyName");
-
-    ArrayList<String> champs = new ArrayList<String>();
-    if (companyName != "") {
-      champs.add("name");
-    }
     try {
-      String errorName = "";
-      String success = "";
-      if (Validator.getInstance().validateName(companyName)) {
-        errorName = "Le nom ne doit pas être vide";
-      }
-      if (errorName == "") {
-        Controler.getInstance().updateCompany(companyId, companyName, champs);
-        success = "Succès de la mise à jour";
-      }
+      Validator.getInstance().validateName(companyName);
+      ArrayList<String> champs = new ArrayList<String>();
+      champs.add("name");
+      Controler.getInstance().updateCompany(companyId, companyName, champs);
       Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
       request.setAttribute("companyId", company.getId());
       request.setAttribute("companyName", company.getName());
-      request.setAttribute("errorName", errorName);
-      request.setAttribute("success", success);
+      request.setAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
-      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
+      logger.error(e.toString());
+    } catch (EmptyNameException e) {
+      try {
+        Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
+        request.setAttribute("companyId", company.getId());
+        request.setAttribute("companyName", company.getName());
+        request.setAttribute("errorName", "Le nom ne doit pas être vide");
+        logger.error(e.toString());
+      } catch (SQLException e1) {
+        logger.error(e1.toString());
+      }
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
