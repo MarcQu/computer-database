@@ -2,19 +2,19 @@ package service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import dao.CompanyFactory;
+import dao.CompanyDAOFactory;
 import model.Company;
 
 public class CompanyService {
   private static CompanyService instance = null;
-  private CompanyFactory companyFactory;
+  private CompanyDAOFactory companyFactory;
 
   /**
    * Constructeur vide de la classe CompanyService.
    * @throws SQLException SQLException
    */
   private CompanyService() throws SQLException {
-    this.companyFactory = CompanyFactory.getInstance();
+    this.companyFactory = CompanyDAOFactory.getInstance();
   }
 
   /**

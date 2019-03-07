@@ -52,3 +52,36 @@ public class Company {
     return chaine;
   }
 }
+
+class CompanyBuilder {
+  private final Integer id;
+  private String name;
+
+  /**
+   * Contructeur CompanyBuilder.
+   * @param id l'id de la compagnie
+   * @param name le nom de la compagnie
+   */
+  CompanyBuilder(Integer id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
+  /**
+   * Set le nom du CompagnyBuilder.
+   * @param name le nom de la compagnie
+   * @return CompagnyBuilder
+   */
+  public CompanyBuilder setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  /**
+   * Construit l'instance Company.
+   * @return Company la compagnie
+   */
+  public Company build() {
+    return new Company(this.id, this.name);
+  }
+}

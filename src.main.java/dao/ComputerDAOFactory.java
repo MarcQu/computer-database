@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import model.Company;
 import model.Computer;
 
-public class ComputerFactory {
-  private static ComputerFactory instance = null;
+public class ComputerDAOFactory {
+  private static ComputerDAOFactory instance = null;
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM computer";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer WHERE name like ?";
   private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id = ?";
@@ -27,23 +27,23 @@ public class ComputerFactory {
   private Logger logger;
 
   /**
-   * ComputerFactory contient les mÃ©thodes spÃ©cifiques Ã  la table computer.
+   * ComputerFactory contient les méthodes spécifiques Ã  la table computer.
    * @throws SQLException SQLException
    */
-  private ComputerFactory() throws SQLException {
-    this.logger = LoggerFactory.getLogger(ComputerFactory.class);
+  private ComputerDAOFactory() throws SQLException {
+    this.logger = LoggerFactory.getLogger(ComputerDAOFactory.class);
   }
 
   /**
-   * MÃ©thode qui retourne l'instance unique de la classe ComputerFactory.
+   * Méthode qui retourne l'instance unique de la classe ComputerFactory.
    * @return l'instance de la classe ComputerFactory
    * @throws SQLException SQLException
    */
-  public static ComputerFactory getInstance() throws SQLException {
-    if (ComputerFactory.instance == null) {
-      ComputerFactory.instance = new ComputerFactory();
+  public static ComputerDAOFactory getInstance() throws SQLException {
+    if (ComputerDAOFactory.instance == null) {
+      ComputerDAOFactory.instance = new ComputerDAOFactory();
     }
-    return ComputerFactory.instance;
+    return ComputerDAOFactory.instance;
   }
 
   /**

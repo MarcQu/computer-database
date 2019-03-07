@@ -14,10 +14,10 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controler.Controler;
 import dto.ComputerTO;
 import mapper.ComputerMapper;
 import model.Computer;
+import service.ComputerService;
 
 /**
  * Servlet implementation class DeleteComputer.
@@ -29,8 +29,8 @@ public class DeleteComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -47,12 +47,12 @@ public class DeleteComputer extends HttpServlet {
       if (selected != null) {
         String[] selectedComputers = selected.split(",");
         for (String computer : selectedComputers) {
-           Controler.getInstance().deleteComputer(computer);
+          ComputerService.getInstance().deleteComputer(computer);
         }
       }
 
-      int nombreComputers = Controler.getInstance().countComputers(search);
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
+      int nombreComputers = ComputerService.getInstance().countComputers(search);
+      ArrayList<Computer> computers = ComputerService.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
       ArrayList<ComputerTO> computersTO = ComputerMapper.getInstance().getComputerTO(computers);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computersTO);
@@ -71,8 +71,8 @@ public class DeleteComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */

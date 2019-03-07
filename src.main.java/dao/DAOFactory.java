@@ -17,12 +17,12 @@ public class DAOFactory implements AutoCloseable {
   private Logger logger;
 
   /**
-   * DAOFactory contient les mÃ©thodes spÃ©cifiques pour initier la connexion Ã  la base de donnÃ©es.
+   * DAOFactory contient les méthodes spécifiques pour initier la connexion de la base de données.
    * @throws IOException IOException
    */
   public DAOFactory() throws IOException {
     this.initConnexion();
-    this.logger = LoggerFactory.getLogger(ComputerFactory.class);
+    this.logger = LoggerFactory.getLogger(ComputerDAOFactory.class);
   }
 
   /**

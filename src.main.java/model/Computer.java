@@ -108,3 +108,67 @@ public class Computer {
     return chaine;
   }
 }
+
+class ComputerBuilder {
+  private final Integer id;
+  private String name;
+  private LocalDate introduced;
+  private LocalDate discontinued;
+  private Company company;
+
+  /**
+   * Contructeur ComputerBuilder.
+   * @param id l'id de la compagnie
+   * @param name le nom de la compagnie
+   * @param introduced la date d'introduction de la compagnie
+   * @param discontinued la date d'interruption de la compagnie
+   * @param company la compagnie de l'ordinateur
+   */
+  ComputerBuilder(Integer id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
+    this.id = id;
+    this.name = name;
+    this.introduced = introduced;
+    this.discontinued = discontinued;
+    this.company = company;
+  }
+
+  /**
+   * Set le nom du ComputerBuilder.
+   * @param name le nom de l'ordinateur
+   * @return ComputerBuilder
+   */
+  public ComputerBuilder setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  /**
+   * Set la date d'introduction du CompagnyBuilder.
+   * @param introduced la date d'introduction de l'ordinateur
+   * @return CompagnyBuilder
+   */
+  public ComputerBuilder setIntroduced(LocalDate introduced) {
+    this.introduced = introduced;
+    return this;
+  }
+
+  /**
+   * Set la date d'interruption du CompagnyBuilder.
+   * @param discontinued la date d'interruption de l'ordinateur
+   * @return CompagnyBuilder
+   */
+  public ComputerBuilder setDiscontinued(LocalDate discontinued) {
+    this.discontinued = discontinued;
+    return this;
+  }
+
+  /**
+   * Set la compagnie  du CompagnyBuilder.
+   * @param company la company de l'ordinateur
+   * @return CompagnyBuilder
+   */
+  public ComputerBuilder setDiscontinued(Company company) {
+    this.company = company;
+    return this;
+  }
+}

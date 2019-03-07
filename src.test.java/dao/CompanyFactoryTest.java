@@ -14,7 +14,7 @@ import org.mockito.Mockito;
 import model.Company;
 
 public class CompanyFactoryTest {
-  private CompanyFactory companyFactory;
+  private CompanyDAOFactory companyFactory;
   private DAOFactory daoFactory;
   private static final String URL = "jdbc:mysql://localhost:3306/computer-database-test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
 
@@ -29,7 +29,7 @@ public class CompanyFactoryTest {
     prp.put("password", "network");
     this.daoFactory = Mockito.mock(DAOFactory.class);
     Mockito.when(this.daoFactory.getConnection()).thenReturn(DriverManager.getConnection(URL, prp));
-    this.companyFactory = CompanyFactory.getInstance();
+    this.companyFactory = CompanyDAOFactory.getInstance();
   }
 
   /**

@@ -13,11 +13,11 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.LoggerFactory;
 
-import controler.Controler;
-import dao.ComputerFactory;
+import dao.ComputerDAOFactory;
 import dto.ComputerTO;
 import mapper.ComputerMapper;
 import model.Computer;
+import service.ComputerService;
 
 /**
  * Servlet implementation class Computer.
@@ -29,8 +29,8 @@ public class ComputerMenu extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException IOException
    */
@@ -42,9 +42,9 @@ public class ComputerMenu extends HttpServlet {
       String sort = request.getParameter("sort");
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreComputers = Controler.getInstance().countComputers(search);
+      int nombreComputers = ComputerService.getInstance().countComputers(search);
 
-      ArrayList<Computer> computers = Controler.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
+      ArrayList<Computer> computers = ComputerService.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
       ArrayList<ComputerTO> computersTO = ComputerMapper.getInstance().getComputerTO(computers);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computersTO);
@@ -56,15 +56,15 @@ public class ComputerMenu extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
+      LoggerFactory.getLogger(ComputerDAOFactory.class).error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */

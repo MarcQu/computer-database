@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import model.Company;
 
-public class CompanyFactory {
-  private static CompanyFactory instance = null;
+public class CompanyDAOFactory {
+  private static CompanyDAOFactory instance = null;
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM company";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like ?";
   private static final String SHOW = "SELECT id, name FROM company WHERE id = ?";
@@ -27,23 +27,23 @@ public class CompanyFactory {
   private Logger logger;
 
   /**
-   * CompanyFactory contient les mÃ©thodes spÃ©cifiques Ã  la table company.
+   * CompanyFactory contient les méthodes spécifiques de la table company.
    * @throws SQLException SQLException
    */
-  private CompanyFactory() throws SQLException {
-    this.logger = LoggerFactory.getLogger(CompanyFactory.class);
+  private CompanyDAOFactory() throws SQLException {
+    this.logger = LoggerFactory.getLogger(CompanyDAOFactory.class);
   }
 
   /**
-   * MÃ©thode qui retourne l'instance unique de la classe CompanyFactory.
+   * Méthode qui retourne l'instance unique de la classe CompanyFactory.
    * @return l'instance de la classe CompanyFactory
    * @throws SQLException SQLException
    */
-  public static CompanyFactory getInstance() throws SQLException {
-    if (CompanyFactory.instance == null) {
-      CompanyFactory.instance = new CompanyFactory();
+  public static CompanyDAOFactory getInstance() throws SQLException {
+    if (CompanyDAOFactory.instance == null) {
+      CompanyDAOFactory.instance = new CompanyDAOFactory();
     }
-    return CompanyFactory.instance;
+    return CompanyDAOFactory.instance;
   }
 
   /**

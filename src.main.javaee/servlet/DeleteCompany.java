@@ -14,10 +14,10 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controler.Controler;
 import dto.CompanyTO;
 import mapper.CompanyMapper;
 import model.Company;
+import service.CompanyService;
 
 /**
  * Servlet implementation class DeleteCompany.
@@ -29,8 +29,8 @@ public class DeleteCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -49,12 +49,12 @@ public class DeleteCompany extends HttpServlet {
       if (selected != null) {
         String[] selectedCompanies = selected.split(",");
         for (String company : selectedCompanies) {
-           Controler.getInstance().deleteCompany(company);
+          CompanyService.getInstance().deleteCompany(company);
         }
       }
 
-      int nombreCompanies = Controler.getInstance().countCompanies(search);
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
+      int nombreCompanies = CompanyService.getInstance().countCompanies(search);
+      ArrayList<Company> companies = CompanyService.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
       ArrayList<CompanyTO> companiesTO = CompanyMapper.getInstance().getCompanyTO(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);
@@ -73,8 +73,8 @@ public class DeleteCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */

@@ -13,11 +13,11 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.LoggerFactory;
 
-import controler.Controler;
-import dao.ComputerFactory;
+import dao.ComputerDAOFactory;
 import dto.CompanyTO;
 import mapper.CompanyMapper;
 import model.Company;
+import service.CompanyService;
 
 /**
  * Servlet implementation class Company.
@@ -29,8 +29,8 @@ public class CompanyMenu extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -43,9 +43,9 @@ public class CompanyMenu extends HttpServlet {
 
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreCompanies = Controler.getInstance().countCompanies(search);
+      int nombreCompanies = CompanyService.getInstance().countCompanies(search);
 
-      ArrayList<Company> companies = Controler.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
+      ArrayList<Company> companies = CompanyService.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
       ArrayList<CompanyTO> companiesTO = CompanyMapper.getInstance().getCompanyTO(companies);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companiesTO);
@@ -57,15 +57,15 @@ public class CompanyMenu extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      LoggerFactory.getLogger(ComputerFactory.class).error(e.toString());
+      LoggerFactory.getLogger(ComputerDAOFactory.class).error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */

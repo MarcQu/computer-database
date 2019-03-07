@@ -13,12 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controler.Controler;
 import exception.DateException;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import model.Company;
 import model.Computer;
+import service.CompanyService;
+import service.ComputerService;
 import validator.Validator;
 
 /**
@@ -31,8 +32,8 @@ public class UpdateComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -43,8 +44,8 @@ public class UpdateComputer extends HttpServlet {
     String search = request.getParameter("search");
     String sort = request.getParameter("sort");
     try {
-      Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
-      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
+      Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
+      ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("computerId", computerId);
       request.setAttribute("computerName", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());
@@ -61,8 +62,8 @@ public class UpdateComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requÃ¨te
-   * @param response la rÃ©ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -94,7 +95,7 @@ public class UpdateComputer extends HttpServlet {
       champs.add("discontinued");
     }
     try {
-      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
+      ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
       Validator.getInstance().validateField(computerId);
       Validator.getInstance().validateField(computerName);
@@ -103,9 +104,9 @@ public class UpdateComputer extends HttpServlet {
       Validator.getInstance().validateField(companyId);
       Validator.getInstance().validateName(computerName);
       Validator.getInstance().validateDate(introduced.toString(), discontinued.toString());
-      Controler.getInstance().updateComputer(computerId, computerName, introduced.toString(), discontinued.toString(), companyId, champs);
+      ComputerService.getInstance().updateComputer(computerId, computerName, introduced.toString(), discontinued.toString(), companyId, champs);
 
-      Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
+      Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
       request.setAttribute("computerId", computer.getId());
       request.setAttribute("computerName", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());
@@ -116,7 +117,7 @@ public class UpdateComputer extends HttpServlet {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
-        Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
+        Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
         request.setAttribute("computerId", computer.getId());
         request.setAttribute("computerName", computer.getName());
         request.setAttribute("introduced", computer.getIntroduced());
@@ -129,7 +130,7 @@ public class UpdateComputer extends HttpServlet {
       }
     } catch (DateException e) {
       try {
-        Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
+        Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
         request.setAttribute("computerId", computer.getId());
         request.setAttribute("computerName", computer.getName());
         request.setAttribute("introduced", computer.getIntroduced());
@@ -142,7 +143,7 @@ public class UpdateComputer extends HttpServlet {
       }
     } catch (SpecialCharacterException e) {
       try {
-        Computer computer = Controler.getInstance().showComputerDetails(computerId).get(0);
+        Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
         request.setAttribute("computerId", computer.getId());
         request.setAttribute("computerName", computer.getName());
         request.setAttribute("introduced", computer.getIntroduced());

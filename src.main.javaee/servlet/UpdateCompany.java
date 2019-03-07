@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controler.Controler;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import model.Company;
+import service.CompanyService;
 import validator.Validator;
 
 /**
@@ -29,8 +29,8 @@ public class UpdateCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requ�te
+   * @param response la r�ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -41,7 +41,7 @@ public class UpdateCompany extends HttpServlet {
     String search = request.getParameter("search");
     String sort = request.getParameter("sort");
     try {
-      Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
+      Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
       request.setAttribute("companyId", companyId);
       request.setAttribute("companyName", company.getName());
       request.setAttribute("search", search);
@@ -54,8 +54,8 @@ public class UpdateCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requ�te
+   * @param response la r�ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -69,8 +69,8 @@ public class UpdateCompany extends HttpServlet {
       Validator.getInstance().validateName(companyName);
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("name");
-      Controler.getInstance().updateCompany(companyId, companyName, champs);
-      Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
+      CompanyService.getInstance().updateCompany(companyId, companyName, champs);
+      Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
       request.setAttribute("companyId", company.getId());
       request.setAttribute("companyName", company.getName());
       request.setAttribute("success", "Succès de la mise à jour");
@@ -78,7 +78,7 @@ public class UpdateCompany extends HttpServlet {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
-        Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
+        Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
         request.setAttribute("companyId", company.getId());
         request.setAttribute("companyName", company.getName());
         request.setAttribute("errorName", "Le nom ne doit pas être vide");
@@ -88,7 +88,7 @@ public class UpdateCompany extends HttpServlet {
       }
     } catch (SpecialCharacterException e) {
       try {
-        Company company = Controler.getInstance().showCompanyDetails(companyId).get(0);
+        Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
         request.setAttribute("companyId", company.getId());
         request.setAttribute("companyName", company.getName());
         request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");

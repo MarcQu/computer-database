@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controler.Controler;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
+import service.CompanyService;
 import validator.Validator;
 
 /**
@@ -27,8 +27,8 @@ public class CreateCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ√®te
-   * @param response la r√©ponse
+   * @param request la requËte
+   * @param response la rÈponse
    * @throws ServletException ServletException
    * @throws IOException IOException
    */
@@ -39,8 +39,8 @@ public class CreateCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ√®te
-   * @param response la r√©ponse
+   * @param request la requËte
+   * @param response la rÈponse
    * @throws ServletException ServletException
    * @throws IOException IOException
    */
@@ -51,7 +51,7 @@ public class CreateCompany extends HttpServlet {
       String name = request.getParameter("companyName");
       Validator.getInstance().validateField(name);
       Validator.getInstance().validateName(name);
-      Controler.getInstance().createCompany(name);
+      CompanyService.getInstance().createCompany(name);
       request.setAttribute("success", "Succ√®s de la cr√©ation");
     } catch (SQLException e) {
       logger.error(e.toString());

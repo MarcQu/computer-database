@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controler.Controler;
 import exception.DateException;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import model.Company;
+import service.CompanyService;
+import service.ComputerService;
 import validator.Validator;
 
 /**
@@ -30,8 +31,8 @@ public class CreateComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ√®te
-   * @param response la r√©ponse
+   * @param request la requËte
+   * @param response la rÈponse
    * @throws ServletException ServletException
    * @throws IOException IOException
    */
@@ -39,7 +40,7 @@ public class CreateComputer extends HttpServlet {
       throws ServletException, IOException {
     Logger logger = LoggerFactory.getLogger(CreateComputer.class);
     try {
-      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
+      ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
     } catch (SQLException e) {
       logger.error(e.toString());
@@ -49,8 +50,8 @@ public class CreateComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ√®te
-   * @param response la r√©ponse
+   * @param request la requËte
+   * @param response la rÈponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -69,7 +70,7 @@ public class CreateComputer extends HttpServlet {
       discontinued.append(" 00:00:00");
     }
     try {
-      ArrayList<Company> companies = Controler.getInstance().listCompaniesAll();
+      ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
       Validator.getInstance().validateField(name);
       Validator.getInstance().validateField(introduced.toString());
@@ -77,7 +78,7 @@ public class CreateComputer extends HttpServlet {
       Validator.getInstance().validateField(companyId);
       Validator.getInstance().validateName(name);
       Validator.getInstance().validateDate(introduced.toString(), discontinued.toString());
-      Controler.getInstance().createComputer(name, introduced.toString(), discontinued.toString(), companyId);
+      ComputerService.getInstance().createComputer(name, introduced.toString(), discontinued.toString(), companyId);
       request.setAttribute("success", "Succ√®s de la cr√©ation");
     } catch (SQLException e) {
       logger.error(e.toString());
