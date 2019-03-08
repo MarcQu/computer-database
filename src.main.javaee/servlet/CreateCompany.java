@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import service.CompanyService;
-import validator.Validator;
 
 /**
  * Servlet implementation class CreateCompany.
@@ -27,8 +26,8 @@ public class CreateCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ�te
-   * @param response la r�ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException IOException
    */
@@ -39,8 +38,8 @@ public class CreateCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ�te
-   * @param response la r�ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException IOException
    */
@@ -49,17 +48,17 @@ public class CreateCompany extends HttpServlet {
     Logger logger = LoggerFactory.getLogger(CreateCompany.class);
     try {
       String name = request.getParameter("companyName");
-      Validator.getInstance().validateField(name);
-      Validator.getInstance().validateName(name);
       CompanyService.getInstance().createCompany(name);
       request.setAttribute("success", "Succès de la création");
     } catch (SQLException e) {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
-      request.setAttribute("errorName", "Le nom ne doit pas être vide");
+      String error = e.toString().split(": ")[1];
+      request.setAttribute("errorName", error);
       logger.error(e.toString());
     } catch (SpecialCharacterException e) {
-      request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
+      String error = e.toString().split(": ")[1];
+      request.setAttribute("error", error);
       logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);

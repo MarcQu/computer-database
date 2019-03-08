@@ -26,7 +26,7 @@ public class DAOFactory implements AutoCloseable {
   }
 
   /**
-   * Initialise la connexion Ã  la BDD.
+   * Initialise la connexion à la BDD.
    * @throws IOException IOException
    */
   private void initConnexion() throws IOException {
@@ -49,8 +49,8 @@ public class DAOFactory implements AutoCloseable {
   }
 
   /**
-   * RÃ©cupÃ¨re la connexion Ã  la base de donnÃ©es.
-   * @return Connection la connection Ã  la base de donnÃ©es
+   * Récupére la connexion de la base de données.
+   * @return Connection la connection à la base de données
    */
   public Connection getConnection() {
     return this.conn;

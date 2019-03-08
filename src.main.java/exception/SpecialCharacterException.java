@@ -5,7 +5,7 @@ public class SpecialCharacterException extends Exception {
 
   /**
    * Constructeur classe SpecialCharacterException.
-   * @param message le message retourné lorsqu'un caractère spécial est détécté
+   * @param message le message affiché quand le champ contient des caractères spéciaux
    */
   public SpecialCharacterException(String message) {
     super(message);

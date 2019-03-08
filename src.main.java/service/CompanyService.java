@@ -2,12 +2,17 @@ package service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import dao.CompanyDAOFactory;
+import exception.EmptyNameException;
+import exception.SpecialCharacterException;
 import model.Company;
+import validator.ValidatorCompany;
 
 public class CompanyService {
   private static CompanyService instance = null;
   private CompanyDAOFactory companyFactory;
+  private ValidatorCompany validator;
 
   /**
    * Constructeur vide de la classe CompanyService.
@@ -15,10 +20,11 @@ public class CompanyService {
    */
   private CompanyService() throws SQLException {
     this.companyFactory = CompanyDAOFactory.getInstance();
+    this.validator = ValidatorCompany.getInstance();
   }
 
   /**
-   * Méthode qui retourne l'instance unique de la classe CompanyService.
+   * M�thode qui retourne l'instance unique de la classe CompanyService.
    * @return l'instance de la classe CompanyService
    * @throws SQLException SQLException
    */
@@ -77,8 +83,12 @@ public class CompanyService {
    * @param name         le nom de la compagnie à ajouter
    * @throws SQLException             SQLException
    * @throws IllegalArgumentException IllegalArgumentException
+   * @throws EmptyNameException EmptyNameException
+   * @throws SpecialCharacterException SpecialCharacterException
    */
-  public void createCompany(String name) throws SQLException, IllegalArgumentException {
+  public void createCompany(String name) throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException {
+    this.validator.validateEmptyName(name);
+    this.validator.validateSpecialCharaterName(name);
     this.companyFactory.createCompany(name);
   }
 
@@ -88,8 +98,13 @@ public class CompanyService {
    * @param name         le nom de la compagnie à mettre à jour
    * @param champs       les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
+   * @throws EmptyNameException EmptyNameException
+   * @throws SpecialCharacterException SpecialCharacterException
    */
-  public void updateCompany(String id, String name, ArrayList<String> champs) throws SQLException {
+  public void updateCompany(String id, String name, ArrayList<String> champs) throws SQLException, EmptyNameException, SpecialCharacterException {
+    this.validator.validateEmptyName(name);
+    this.validator.validateSpecialCharaterId(id);
+    this.validator.validateSpecialCharaterName(name);
     this.companyFactory.updateCompany(id, name, champs);
   }
 

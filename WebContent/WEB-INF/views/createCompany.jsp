@@ -25,15 +25,18 @@
                     <h1>Add Company</h1>
 					<c:if test="${success != ''}">
 						<label id="success">${success}</label>
-					</c:if>                    
+					</c:if>
+                    <c:if test="${errorName != ''}">
+                    	<label id="errorName">${errorName}</label>
+                    </c:if>
+                    <c:if test="${error != ''}">
+                    	<label id="error">${error}</label>
+                    </c:if>                    
                     <form method="POST" action="CreateCompany">
                         <fieldset>
                             <div class="form-group">
                                 <label for="companyName">Company name</label>
                                 <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Company name">
-                                <c:if test="${errorName != ''}">
-                                	<label id="errorName">${errorName}</label>
-                                </c:if>
                             </div>      
                         </fieldset>
                         <div class="actions pull-right">

@@ -29,13 +29,15 @@ public class CompanyMenu extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requÃ¨te
+   * @param response la rÃ©ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+//    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+//    CompanyService companyService = context.getBean(CompanyService.class);
     try {
       HttpSession session = request.getSession();
       String search = request.getParameter("search");
@@ -64,8 +66,8 @@ public class CompanyMenu extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requÃ¨te
+   * @param response la rÃ©ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */

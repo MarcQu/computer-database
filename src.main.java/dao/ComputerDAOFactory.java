@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import exception.DatePrecedenceException;
 import model.Company;
 import model.Computer;
+import validator.ValidatorComputer;
 
 public class ComputerDAOFactory {
   private static ComputerDAOFactory instance = null;
@@ -25,17 +27,18 @@ public class ComputerDAOFactory {
   private static final String SEARCH_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id IS NOT NULL AND computer.name LIKE ? ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   private Logger logger;
-
+  private ValidatorComputer validator;
   /**
-   * ComputerFactory contient les m�thodes sp�cifiques à la table computer.
+   * ComputerFactory contient les méthodes spécifiques à la table computer.
    * @throws SQLException SQLException
    */
   private ComputerDAOFactory() throws SQLException {
     this.logger = LoggerFactory.getLogger(ComputerDAOFactory.class);
+    this.validator = ValidatorComputer.getInstance();
   }
 
   /**
-   * M�thode qui retourne l'instance unique de la classe ComputerFactory.
+   * M�thode qui retourne l'instance unique de la classe ComputerFactory.
    * @return l'instance de la classe ComputerFactory
    * @throws SQLException SQLException
    */
@@ -271,9 +274,11 @@ public class ComputerDAOFactory {
    * @param companyId    l'id de la companie de l'ordinateur à ajouter
    * @throws SQLException             SQLException
    * @throws IllegalArgumentException IllegalArgumentException
+   * @throws DatePrecedenceException DatePrecedenceException
    */
   public void createComputer(String name, String introduced, String discontinued, String companyId)
-      throws SQLException, IllegalArgumentException {
+      throws SQLException, IllegalArgumentException, DatePrecedenceException {
+    this.validator.validateDatePrecedence(introduced, discontinued);
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(CREATE);
       if ("".equals(name)) {
@@ -311,9 +316,11 @@ public class ComputerDAOFactory {
    * @param companyId    l'id de la companie de l'ordinateur à mettre à jour
    * @param champs       les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
+   * @throws DatePrecedenceException DatePrecedenceException
    */
   public void updateComputer(String id, String name, String introduced, String discontinued,
-      String companyId, ArrayList<String> champs) throws SQLException {
+      String companyId, ArrayList<String> champs) throws SQLException, DatePrecedenceException {
+    this.validator.validateDatePrecedence(introduced, discontinued);
     StringBuilder query = new StringBuilder("UPDATE computer SET ");
     for (int i = 0; i < champs.size() - 1; i++) {
       query.append(champs.get(i)).append(" = ?, ");

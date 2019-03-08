@@ -13,14 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import exception.DateException;
+import exception.DateFormatException;
+import exception.DatePrecedenceException;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import model.Company;
 import model.Computer;
 import service.CompanyService;
 import service.ComputerService;
-import validator.Validator;
 
 /**
  * Servlet implementation class UpdateComputer.
@@ -32,8 +32,8 @@ public class UpdateComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ�te
-   * @param response la r�ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -62,8 +62,8 @@ public class UpdateComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ�te
-   * @param response la r�ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -97,64 +97,64 @@ public class UpdateComputer extends HttpServlet {
     try {
       ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
-      Validator.getInstance().validateField(computerId);
-      Validator.getInstance().validateField(computerName);
-      Validator.getInstance().validateField(introduced.toString());
-      Validator.getInstance().validateField(discontinued.toString());
-      Validator.getInstance().validateField(companyId);
-      Validator.getInstance().validateName(computerName);
-      Validator.getInstance().validateDate(introduced.toString(), discontinued.toString());
       ComputerService.getInstance().updateComputer(computerId, computerName, introduced.toString(), discontinued.toString(), companyId, champs);
 
-      Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
-      request.setAttribute("computerId", computer.getId());
-      request.setAttribute("computerName", computer.getName());
-      request.setAttribute("introduced", computer.getIntroduced());
-      request.setAttribute("discontinued", computer.getDiscontinued());
-      request.setAttribute("companyComputer", computer.getCompany());
+      displayInformation(request, computerId);
       request.setAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
-        Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
-        request.setAttribute("computerId", computer.getId());
-        request.setAttribute("computerName", computer.getName());
-        request.setAttribute("introduced", computer.getIntroduced());
-        request.setAttribute("discontinued", computer.getDiscontinued());
-        request.setAttribute("companyComputer", computer.getCompany());
-        request.setAttribute("errorName", "Le nom ne doit pas être vide");
+        String error = e.toString().split(": ")[1];
+        displayInformation(request, computerId);
+        request.setAttribute("errorName", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
         logger.error(e1.toString());
       }
-    } catch (DateException e) {
+    } catch (DateFormatException e) {
       try {
-        Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
-        request.setAttribute("computerId", computer.getId());
-        request.setAttribute("computerName", computer.getName());
-        request.setAttribute("introduced", computer.getIntroduced());
-        request.setAttribute("discontinued", computer.getDiscontinued());
-        request.setAttribute("companyComputer", computer.getCompany());
-        request.setAttribute("errorDate", "La date d'introduction doit être antérieur à la date d'interruption");
+        String error = e.toString().split(": ")[1];
+        displayInformation(request, computerId);
+        request.setAttribute("errorDate", error);
+        logger.error(e.toString());
+      } catch (SQLException e1) {
+        logger.error(e1.toString());
+      }
+    } catch (DatePrecedenceException e) {
+      try {
+        String error = e.toString().split(": ")[1];
+        displayInformation(request, computerId);
+        request.setAttribute("errorDate", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
         logger.error(e1.toString());
       }
     } catch (SpecialCharacterException e) {
       try {
-        Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
-        request.setAttribute("computerId", computer.getId());
-        request.setAttribute("computerName", computer.getName());
-        request.setAttribute("introduced", computer.getIntroduced());
-        request.setAttribute("discontinued", computer.getDiscontinued());
-        request.setAttribute("companyComputer", computer.getCompany());
-        request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
+        String error = e.toString().split(": ")[1];
+        displayInformation(request, computerId);
+        request.setAttribute("error", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
         logger.error(e1.toString());
       }
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+  }
+
+  /**
+   * Réaffiche les informations de l'ordinateur.
+   * @param request la requète de la page
+   * @param computerId l'id de l'ordinateur à afficher
+   * @throws SQLException SQLException
+   */
+  private void displayInformation(HttpServletRequest request, String computerId) throws SQLException {
+    Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
+    request.setAttribute("computerId", computer.getId());
+    request.setAttribute("computerName", computer.getName());
+    request.setAttribute("introduced", computer.getIntroduced());
+    request.setAttribute("discontinued", computer.getDiscontinued());
+    request.setAttribute("companyComputer", computer.getCompany());
   }
 }

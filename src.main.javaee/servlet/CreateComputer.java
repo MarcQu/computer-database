@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import exception.DateException;
+import exception.DateFormatException;
+import exception.DatePrecedenceException;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import model.Company;
 import service.CompanyService;
 import service.ComputerService;
-import validator.Validator;
 
 /**
  * Servlet implementation class CreateComputer.
@@ -31,8 +31,8 @@ public class CreateComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ�te
-   * @param response la r�ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException IOException
    */
@@ -50,8 +50,8 @@ public class CreateComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ�te
-   * @param response la r�ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -72,24 +72,25 @@ public class CreateComputer extends HttpServlet {
     try {
       ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
-      Validator.getInstance().validateField(name);
-      Validator.getInstance().validateField(introduced.toString());
-      Validator.getInstance().validateField(discontinued.toString());
-      Validator.getInstance().validateField(companyId);
-      Validator.getInstance().validateName(name);
-      Validator.getInstance().validateDate(introduced.toString(), discontinued.toString());
       ComputerService.getInstance().createComputer(name, introduced.toString(), discontinued.toString(), companyId);
       request.setAttribute("success", "Succès de la création");
     } catch (SQLException e) {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
-      request.setAttribute("errorName", "Le nom ne doit pas être vide");
+      String error = e.toString().split(": ")[1];
+      request.setAttribute("errorName", error);
       logger.error(e.toString());
-    } catch (DateException e) {
-      request.setAttribute("errorDate", "La date d'introduction doit être antérieur à la date d'interruption");
+    } catch (DateFormatException e) {
+      String error = e.toString().split(": ")[1];
+      request.setAttribute("errorDate", error);
+      logger.error(e.toString());
+    } catch (DatePrecedenceException e) {
+      String error = e.toString().split(": ")[1];
+      request.setAttribute("errorDate", error);
       logger.error(e.toString());
     } catch (SpecialCharacterException e) {
-      request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
+      String error = e.toString().split(": ")[1];
+      request.setAttribute("error", error);
       logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);

@@ -17,7 +17,6 @@ import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import model.Company;
 import service.CompanyService;
-import validator.Validator;
 
 /**
  * Servlet implementation class UpdateComputer.
@@ -29,8 +28,8 @@ public class UpdateCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ�te
-   * @param response la r�ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -54,8 +53,8 @@ public class UpdateCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requ�te
-   * @param response la r�ponse
+   * @param request la requète
+   * @param response la réponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -65,38 +64,44 @@ public class UpdateCompany extends HttpServlet {
     String companyId = request.getParameter("companyId");
     String companyName = request.getParameter("companyName");
     try {
-      Validator.getInstance().validateField(companyName);
-      Validator.getInstance().validateName(companyName);
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("name");
       CompanyService.getInstance().updateCompany(companyId, companyName, champs);
-      Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
-      request.setAttribute("companyId", company.getId());
-      request.setAttribute("companyName", company.getName());
+      displayInformation(request, companyId);
       request.setAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
-        Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
-        request.setAttribute("companyId", company.getId());
-        request.setAttribute("companyName", company.getName());
-        request.setAttribute("errorName", "Le nom ne doit pas être vide");
+        String error = e.toString().split(": ")[1];
+        displayInformation(request, companyId);
+        request.setAttribute("errorName", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
         logger.error(e1.toString());
       }
     } catch (SpecialCharacterException e) {
       try {
-        Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
-        request.setAttribute("companyId", company.getId());
-        request.setAttribute("companyName", company.getName());
-        request.setAttribute("errorName", "Le champ ne doit pas contenir de caractères spéciaux (\"#;)");
+        String error = e.toString().split(": ")[1];
+        displayInformation(request, companyId);
+        request.setAttribute("error", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
         logger.error(e1.toString());
       }
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
+  }
+
+  /**
+   * Réaffiche les informations de la compagnie.
+   * @param request la requète de la page
+   * @param companyId l'id de la compagnie à afficher
+   * @throws SQLException SQLException
+   */
+  private void displayInformation(HttpServletRequest request, String companyId) throws SQLException {
+    Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
+    request.setAttribute("companyId", company.getId());
+    request.setAttribute("companyName", company.getName());
   }
 }

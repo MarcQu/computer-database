@@ -25,15 +25,21 @@
                     <h1>Add Computer</h1>
 					<c:if test="${success != ''}">
 						<label id="success">${success}</label>
-					</c:if>                    
+					</c:if>
+                    <c:if test="${errorName != ''}">
+                    	<label id="errorName">${errorName}</label>
+                    </c:if>
+                    <c:if test="${errorDate != ''}">
+                    	<label id="errorDate">${errorDate}</label>                            
+                    </c:if>
+                    <c:if test="${error != ''}">
+                    	<label id="error">${error}</label>
+                    </c:if>                    
                     <form method="POST" action="CreateComputer">
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name">
-                                <c:if test="${errorName != ''}">
-                                	<label id="errorName">${errorName}</label>
-                                </c:if>
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
@@ -41,10 +47,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date">
-                                <c:if test="${errorDate != ''}">
-                                	<label id="errorDate">${errorDate}</label>                            
-                                </c:if>                           
+                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date">                           
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>

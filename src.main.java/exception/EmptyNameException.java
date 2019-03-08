@@ -5,9 +5,8 @@ public class EmptyNameException extends Exception {
 
   /**
    * Constructeur classe EmptyNameException.
-   * @param message le message retourné lorsque le nom est vide
    */
-  public EmptyNameException(String message) {
-    super(message);
+  public EmptyNameException() {
+    super("Le nom ne doit pas être vide");
   }
 }

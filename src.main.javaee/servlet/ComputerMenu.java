@@ -29,8 +29,8 @@ public class ComputerMenu extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requÃ¨te
+   * @param response la rÃ©ponse
    * @throws ServletException ServletException
    * @throws IOException IOException
    */
@@ -63,8 +63,8 @@ public class ComputerMenu extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requÃ¨te
+   * @param response la rÃ©ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
