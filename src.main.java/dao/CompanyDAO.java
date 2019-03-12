@@ -8,11 +8,14 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import model.Company;
 
-public class CompanyDAOFactory {
-  private static CompanyDAOFactory instance = null;
+@Component
+public class CompanyDAO {
+  private static CompanyDAO instance = null;
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM company";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like ?";
   private static final String SHOW = "SELECT id, name FROM company WHERE id = ?";
@@ -30,20 +33,21 @@ public class CompanyDAOFactory {
    * CompanyFactory contient les méthodes spécifiques de la table company.
    * @throws SQLException SQLException
    */
-  private CompanyDAOFactory() throws SQLException {
-    this.logger = LoggerFactory.getLogger(CompanyDAOFactory.class);
+  @Autowired
+  private CompanyDAO() throws SQLException {
+    this.logger = LoggerFactory.getLogger(CompanyDAO.class);
   }
 
   /**
-   * M�thode qui retourne l'instance unique de la classe CompanyFactory.
+   * Méthode qui retourne l'instance unique de la classe CompanyFactory.
    * @return l'instance de la classe CompanyFactory
    * @throws SQLException SQLException
    */
-  public static CompanyDAOFactory getInstance() throws SQLException {
-    if (CompanyDAOFactory.instance == null) {
-      CompanyDAOFactory.instance = new CompanyDAOFactory();
+  public static CompanyDAO getInstance() throws SQLException {
+    if (CompanyDAO.instance == null) {
+      CompanyDAO.instance = new CompanyDAO();
     }
-    return CompanyDAOFactory.instance;
+    return CompanyDAO.instance;
   }
 
   /**

@@ -3,7 +3,10 @@ package service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import dao.CompanyDAOFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.CompanyDAO;
 import dto.CompanyTO;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
@@ -11,9 +14,11 @@ import mapper.CompanyMapper;
 import model.Company;
 import validator.ValidatorCompany;
 
+@Service
 public class CompanyService {
   private static CompanyService instance = null;
-  private CompanyDAOFactory companyFactory;
+  @Autowired
+  private CompanyDAO companyFactory;
   private ValidatorCompany validator;
   private CompanyMapper mapper;
   /**
@@ -21,13 +26,13 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   private CompanyService() throws SQLException {
-    this.companyFactory = CompanyDAOFactory.getInstance();
+    this.companyFactory = CompanyDAO.getInstance();
     this.validator = ValidatorCompany.getInstance();
     this.mapper = CompanyMapper.getInstance();
   }
 
   /**
-   * M�thode qui retourne l'instance unique de la classe CompanyService.
+   * Méthode qui retourne l'instance unique de la classe CompanyService.
    * @return l'instance de la classe CompanyService
    * @throws SQLException SQLException
    */

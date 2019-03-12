@@ -11,9 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import dao.ComputerDAOFactory;
 import dto.CompanyTO;
 import service.CompanyService;
 
@@ -23,7 +25,18 @@ import service.CompanyService;
 @WebServlet("/CompanyMenu")
 public class CompanyMenu extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  public static final String VUE = "/WEB-INF/views/companyMenu.jsp";
+  private static final String VUE = "/WEB-INF/views/companyMenu.jsp";
+  private Logger logger;
+
+  @Autowired
+  private CompanyService companyService;
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    this.logger = LoggerFactory.getLogger(CompanyMenu.class);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+  }
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -34,8 +47,6 @@ public class CompanyMenu extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-//    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
-//    CompanyService companyService = context.getBean(CompanyService.class);
     try {
       HttpSession session = request.getSession();
       String search = request.getParameter("search");
@@ -43,9 +54,9 @@ public class CompanyMenu extends HttpServlet {
 
       int nombre = Integer.parseInt(request.getParameter("nombre"));
       int page = Integer.parseInt(request.getParameter("page"));
-      int nombreCompanies = CompanyService.getInstance().countCompanies(search);
+      int nombreCompanies = companyService.countCompanies(search);
 
-      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
+      ArrayList<CompanyTO> companies = companyService.listCompanies(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companies);
 
@@ -56,7 +67,7 @@ public class CompanyMenu extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      LoggerFactory.getLogger(ComputerDAOFactory.class).error(e.toString());
+      this.logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }

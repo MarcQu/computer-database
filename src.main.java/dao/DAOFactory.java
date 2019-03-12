@@ -6,10 +6,13 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+@Service
 public class DAOFactory implements AutoCloseable {
   private HikariConfig config = new HikariConfig("D:\\Eclipse-workspace\\Computer-database\\src.main.resources\\datasource.properties");
   private HikariDataSource datasource;
@@ -17,28 +20,20 @@ public class DAOFactory implements AutoCloseable {
   private Logger logger;
 
   /**
-   * DAOFactory contient les méthodes spécifiques pour initier la connexion de la base de données.
+   * DAOFactory contient les mÃ©thodes spÃ©cifiques pour initier la connexion de la base de donnÃ©es.
    * @throws IOException IOException
    */
+  @Autowired
   public DAOFactory() throws IOException {
     this.initConnexion();
-    this.logger = LoggerFactory.getLogger(ComputerDAOFactory.class);
+    this.logger = LoggerFactory.getLogger(ComputerDAO.class);
   }
 
   /**
-   * Initialise la connexion à la BDD.
+   * Initialise la connexion Ã  la BDD.
    * @throws IOException IOException
    */
   private void initConnexion() throws IOException {
-//    Properties prp = new Properties();
-//    String path = "D:\\Eclipse-workspace\\Computer-database\\src.main.resources\\dao.properties";
-//    InputStream input = new FileInputStream(path);
-//    prp.load(input);
-//    try {
-//      this.conn = DriverManager.getConnection(prp.getProperty("url"), prp.getProperty("login"), prp.getProperty("password"));
-//    } catch (SQLException e) {
-//      this.logger.error(e.toString());
-//    }
     try {
       this.config.setMaximumPoolSize(10);
       this.datasource = new HikariDataSource(this.config);
@@ -49,8 +44,8 @@ public class DAOFactory implements AutoCloseable {
   }
 
   /**
-   * Récupére la connexion de la base de données.
-   * @return Connection la connection à la base de données
+   * RÃ©cupÃ¨re la connexion de la base de donnÃ©es.
+   * @return Connection la connection Ã  la base de donnÃ©es
    */
   public Connection getConnection() {
     return this.conn;

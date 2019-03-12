@@ -3,7 +3,10 @@ package service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import dao.ComputerDAOFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import dao.ComputerDAO;
 import dto.ComputerTO;
 import exception.DateFormatException;
 import exception.DatePrecedenceException;
@@ -13,9 +16,11 @@ import mapper.ComputerMapper;
 import model.Computer;
 import validator.ValidatorComputer;
 
+@Service
 public class ComputerService {
   private static ComputerService instance  = null;
-  private ComputerDAOFactory computerFactory;
+  @Autowired
+  private ComputerDAO computerFactory;
   private ValidatorComputer validator;
   private ComputerMapper mapper;
   /**
@@ -23,7 +28,7 @@ public class ComputerService {
    * @throws SQLException SQLException
    */
   private ComputerService() throws SQLException {
-    this.computerFactory = ComputerDAOFactory.getInstance();
+    this.computerFactory = ComputerDAO.getInstance();
     this.validator = ValidatorComputer.getInstance();
     this.mapper = ComputerMapper.getInstance();
   }

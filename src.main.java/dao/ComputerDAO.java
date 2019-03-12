@@ -10,13 +10,16 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import exception.DatePrecedenceException;
 import model.Company;
 import model.Computer;
 
-public class ComputerDAOFactory {
-  private static ComputerDAOFactory instance = null;
+@Component
+public class ComputerDAO {
+  private static ComputerDAO instance = null;
   private static final DateTimeFormatter DATEFORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM computer";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer WHERE name like ?";
@@ -33,20 +36,21 @@ public class ComputerDAOFactory {
    * ComputerFactory contient les méthodes spécifiques à la table computer.
    * @throws SQLException SQLException
    */
-  private ComputerDAOFactory() throws SQLException {
-    this.logger = LoggerFactory.getLogger(ComputerDAOFactory.class);
+  @Autowired
+  private ComputerDAO() throws SQLException {
+    this.logger = LoggerFactory.getLogger(ComputerDAO.class);
   }
 
   /**
-   * M�thode qui retourne l'instance unique de la classe ComputerFactory.
+   * Méthode qui retourne l'instance unique de la classe ComputerFactory.
    * @return l'instance de la classe ComputerFactory
    * @throws SQLException SQLException
    */
-  public static ComputerDAOFactory getInstance() throws SQLException {
-    if (ComputerDAOFactory.instance == null) {
-      ComputerDAOFactory.instance = new ComputerDAOFactory();
+  public static ComputerDAO getInstance() throws SQLException {
+    if (ComputerDAO.instance == null) {
+      ComputerDAO.instance = new ComputerDAO();
     }
-    return ComputerDAOFactory.instance;
+    return ComputerDAO.instance;
   }
 
   /**

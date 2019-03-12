@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CompanyFactoryTest {
-  private CompanyDAOFactory companyFactory;
+  private CompanyDAO companyFactory;
   private DAOFactory daoFactory;
   private static final String URL = "jdbc:mysql://localhost:3306/computer-database-test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
 
