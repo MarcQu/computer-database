@@ -3,8 +3,10 @@ package mapper;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import dto.ComputerTO;
+import model.Company;
 import model.Computer;
 
 public class ComputerMapper {
@@ -40,11 +42,11 @@ public class ComputerMapper {
 
   /**
    * Récupère les computers.
-   * @param computersTO les DTOs
-   * @return computers les ordinateurs
+   * @param computerTO la DTO
+   * @return computer l'ordinateur
    */
-  public ArrayList<Computer> getComputer(ArrayList<ComputerTO> computersTO) {
-    return createComputer(computersTO);
+  public Computer getComputer(ComputerTO computerTO) {
+    return createComputer(computerTO);
   }
 
   /**
@@ -63,20 +65,31 @@ public class ComputerMapper {
 
   /**
    * Crée les computers.
-   * @param computersTO les DTOs
-   * @return computers les ordinateurs
+   * @param computerTO la DTO
+   * @return computer l'ordinateur
    */
-  private ArrayList<Computer> createComputer(ArrayList<ComputerTO> computersTO) {
-    ArrayList<Computer> computers = new ArrayList<Computer>();
-    for (ComputerTO computerTO : computersTO) {
+  private Computer createComputer(ComputerTO computerTO) {
       Computer computer = new Computer();
-      computer.setId(computerTO.getId());
-      computer.setName(computerTO.getName());
-      computer.setIntroduced(Timestamp.valueOf(computerTO.getIntroduced()));
-      computer.setDiscontinued(Timestamp.valueOf(computerTO.getDiscontinued()));
-      computer.setCompany(computerTO.getCompany());
-      computersTO.add(computerTO);
-    }
-      return computers;
+      Optional<String> optionalId = Optional.ofNullable(computerTO.getId());
+      Optional<String> optionalName = Optional.ofNullable(computerTO.getName());
+      Optional<String> optionalIntroduced = Optional.ofNullable(computerTO.getIntroduced());
+      Optional<String> optionalDiscontinued = Optional.ofNullable(computerTO.getDiscontinued());
+      Optional<Company> optionalCompany = Optional.ofNullable(computerTO.getCompany());
+      if (optionalId.isPresent() && !"".equals(computerTO.getId())) {
+        computer.setId(computerTO.getId());
+      }
+      if (optionalName.isPresent() && !"".equals(computerTO.getName())) {
+        computer.setName(computerTO.getName());
+      }
+      if (optionalIntroduced.isPresent() && !"".equals(computerTO.getIntroduced())) {
+        computer.setIntroduced(Timestamp.valueOf(computerTO.getIntroduced()).toLocalDateTime().toLocalDate());
+      }
+      if (optionalDiscontinued.isPresent() && !"".equals(computerTO.getDiscontinued())) {
+        computer.setDiscontinued(Timestamp.valueOf(computerTO.getDiscontinued()).toLocalDateTime().toLocalDate());
+      }
+      if (optionalCompany.isPresent()  && !"".equals(computerTO.getCompany().getId().toString()) && !"".equals(computerTO.getCompany().getName())) {
+        computer.setCompany(computerTO.getCompany());
+      }
+      return computer;
   }
 }

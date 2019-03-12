@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dto.CompanyTO;
+import dto.ComputerTO;
 import exception.DateFormatException;
 import exception.DatePrecedenceException;
 import exception.EmptyNameException;
@@ -40,7 +42,7 @@ public class CreateComputer extends HttpServlet {
       throws ServletException, IOException {
     Logger logger = LoggerFactory.getLogger(CreateComputer.class);
     try {
-      ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
+      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
     } catch (SQLException e) {
       logger.error(e.toString());
@@ -63,16 +65,20 @@ public class CreateComputer extends HttpServlet {
     StringBuilder discontinued = new StringBuilder(request.getParameter("discontinued"));
     String companyId = request.getParameter("companyId");
 
-    if (!"".equals(introduced.toString())) {
-      introduced.append(" 00:00:00");
-    }
-    if (!"".equals(discontinued.toString())) {
-      discontinued.append(" 00:00:00");
-    }
+    ComputerTO computerTO = new ComputerTO();
+    computerTO.setName(name);
+    computerTO.setIntroduced(introduced.toString());
+    computerTO.setDiscontinued(discontinued.toString());
+    CompanyTO companyTO = new CompanyTO();
+    companyTO.setId(companyId);
     try {
-      ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
+      ArrayList<Company> company = CompanyService.getInstance().showCompanyDetails(companyTO);
+      if (company.size() > 0) {
+        computerTO.setCompany(company.get(0));
+      }
+      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("companies", companies);
-      ComputerService.getInstance().createComputer(name, introduced.toString(), discontinued.toString(), companyId);
+      ComputerService.getInstance().createComputer(computerTO);
       request.setAttribute("success", "Succès de la création");
     } catch (SQLException e) {
       logger.error(e.toString());

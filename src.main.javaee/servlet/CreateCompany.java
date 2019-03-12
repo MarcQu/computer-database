@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dto.CompanyTO;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import service.CompanyService;
@@ -48,7 +49,9 @@ public class CreateCompany extends HttpServlet {
     Logger logger = LoggerFactory.getLogger(CreateCompany.class);
     try {
       String name = request.getParameter("companyName");
-      CompanyService.getInstance().createCompany(name);
+      CompanyTO companyTO = new CompanyTO();
+      companyTO.setName(name);
+      CompanyService.getInstance().createCompany(companyTO);
       request.setAttribute("success", "Succès de la création");
     } catch (SQLException e) {
       logger.error(e.toString());

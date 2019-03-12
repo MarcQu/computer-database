@@ -12,6 +12,7 @@ import exception.SpecialCharacterDiscontinuedException;
 import exception.SpecialCharacterIdException;
 import exception.SpecialCharacterIntroducedException;
 import exception.SpecialCharacterNameException;
+import model.Company;
 
 public class ValidatorComputer {
   private static ValidatorComputer instance = null;
@@ -125,12 +126,14 @@ public class ValidatorComputer {
 
   /**
    * Methode qui valide si l'id de la compagnie ne possède pas de caractère spécial.
-   * @param companyId l'id de la compagnie
+   * @param company la compagnie
    * @throws SpecialCharacterCompanyIdException SpecialCharacterCompanyIdException
    */
-  public void validateSpecialCharaterCompanyId(String companyId) throws SpecialCharacterCompanyIdException {
-    if (companyId.matches(".*;.*") || companyId.matches(".*\".*") || companyId.matches(".*#.*")) {
-      throw new SpecialCharacterCompanyIdException();
+  public void validateSpecialCharaterCompanyId(Company company) throws SpecialCharacterCompanyIdException {
+    if (company != null) {
+      if (Integer.toString(company.getId()).matches(".*;.*") || Integer.toString(company.getId()).matches(".*\".*") || Integer.toString(company.getId()).matches(".*#.*")) {
+        throw new SpecialCharacterCompanyIdException();
+      }
     }
   }
 }

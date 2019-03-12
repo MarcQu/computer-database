@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dto.CompanyTO;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
 import model.Company;
@@ -39,8 +40,10 @@ public class UpdateCompany extends HttpServlet {
     String companyId = request.getParameter("companyId");
     String search = request.getParameter("search");
     String sort = request.getParameter("sort");
+    CompanyTO companyTO = new CompanyTO();
+    companyTO.setId(companyId);
     try {
-      Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
+      Company company = CompanyService.getInstance().showCompanyDetails(companyTO).get(0);
       request.setAttribute("companyId", companyId);
       request.setAttribute("companyName", company.getName());
       request.setAttribute("search", search);
@@ -63,18 +66,21 @@ public class UpdateCompany extends HttpServlet {
     Logger logger = LoggerFactory.getLogger(UpdateCompany.class);
     String companyId = request.getParameter("companyId");
     String companyName = request.getParameter("companyName");
+    CompanyTO companyTO = new CompanyTO();
+    companyTO.setId(companyId);
+    companyTO.setName(companyName);
     try {
       ArrayList<String> champs = new ArrayList<String>();
       champs.add("name");
-      CompanyService.getInstance().updateCompany(companyId, companyName, champs);
-      displayInformation(request, companyId);
+      CompanyService.getInstance().updateCompany(companyTO, champs);
+      displayInformation(request, companyTO);
       request.setAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(request, companyId);
+        displayInformation(request, companyTO);
         request.setAttribute("errorName", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
@@ -83,7 +89,7 @@ public class UpdateCompany extends HttpServlet {
     } catch (SpecialCharacterException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(request, companyId);
+        displayInformation(request, companyTO);
         request.setAttribute("error", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
@@ -96,11 +102,11 @@ public class UpdateCompany extends HttpServlet {
   /**
    * Réaffiche les informations de la compagnie.
    * @param request la requète de la page
-   * @param companyId l'id de la compagnie à afficher
+   * @param companyTO la compagnie à afficher
    * @throws SQLException SQLException
    */
-  private void displayInformation(HttpServletRequest request, String companyId) throws SQLException {
-    Company company = CompanyService.getInstance().showCompanyDetails(companyId).get(0);
+  private void displayInformation(HttpServletRequest request, CompanyTO companyTO) throws SQLException {
+    Company company = CompanyService.getInstance().showCompanyDetails(companyTO).get(0);
     request.setAttribute("companyId", company.getId());
     request.setAttribute("companyName", company.getName());
   }

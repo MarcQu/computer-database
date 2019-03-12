@@ -15,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dto.CompanyTO;
-import mapper.CompanyMapper;
-import model.Company;
 import service.CompanyService;
 
 /**
@@ -29,8 +27,8 @@ public class DeleteCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requÃ¨te
+   * @param response la rÃ©ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -48,16 +46,17 @@ public class DeleteCompany extends HttpServlet {
     try {
       if (selected != null) {
         String[] selectedCompanies = selected.split(",");
-        for (String company : selectedCompanies) {
-          CompanyService.getInstance().deleteCompany(company);
+        for (String id : selectedCompanies) {
+          CompanyTO companyTO = new CompanyTO();
+          companyTO.setId(id);
+          CompanyService.getInstance().deleteCompany(companyTO);
         }
       }
 
       int nombreCompanies = CompanyService.getInstance().countCompanies(search);
-      ArrayList<Company> companies = CompanyService.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
-      ArrayList<CompanyTO> companiesTO = CompanyMapper.getInstance().getCompanyTO(companies);
+      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreCompanies", nombreCompanies);
-      request.setAttribute("companies", companiesTO);
+      request.setAttribute("companies", companies);
 
       int pages = nombreCompanies / nombre + 1;
       session.setAttribute("nombre", nombre);
@@ -73,8 +72,8 @@ public class DeleteCompany extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requÃ¨te
+   * @param response la rÃ©ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */

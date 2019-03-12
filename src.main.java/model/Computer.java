@@ -1,6 +1,5 @@
 package model;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -66,16 +65,16 @@ public class Computer {
    * Set la date d'introduction de Timestamp à Date.
    * @param introduced la date d'introduction
    */
-  public void setIntroduced(Timestamp introduced) {
-    this.introduced = introduced.toLocalDateTime().toLocalDate();
+  public void setIntroduced(LocalDate introduced) {
+    this.introduced = introduced;
   }
 
   /**
    * Set la date d'interruption de Timestamp à Date.
    * @param discontinued la date d'interruption
    */
-  public void setDiscontinued(Timestamp discontinued) {
-    this.discontinued = discontinued.toLocalDateTime().toLocalDate();
+  public void setDiscontinued(LocalDate discontinued) {
+    this.discontinued = discontinued;
   }
 
   public void setCompany(Company company) {

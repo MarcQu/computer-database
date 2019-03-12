@@ -2,6 +2,7 @@ package mapper;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import dto.CompanyTO;
 import model.Company;
@@ -39,11 +40,11 @@ public class CompanyMapper {
 
   /**
    * Récupère les compagnies.
-   * @param companiesTO les DTOs
-   * @return companies les compagnies
+   * @param companyTO la DTO
+   * @return company la compagnie
    */
-  public ArrayList<Company> getCompany(ArrayList<CompanyTO> companiesTO) {
-    return createCompany(companiesTO);
+  public Company getCompany(CompanyTO companyTO) {
+    return createCompany(companyTO);
   }
 
   /**
@@ -62,15 +63,19 @@ public class CompanyMapper {
 
   /**
    * Crée les compagnies.
-   * @param companiesTO les DTOs
-   * @return companies les compagnies
+   * @param companyTO la DTO
+   * @return company la compagnie
    */
-  private ArrayList<Company> createCompany(ArrayList<CompanyTO> companiesTO) {
-    ArrayList<Company> companies = new ArrayList<Company>();
-    for (CompanyTO companyTO : companiesTO) {
-      Company company = new Company(companyTO.getId(), companyTO.getName());
-      companies.add(company);
+  private Company createCompany(CompanyTO companyTO) {
+    Company company = new Company();
+    Optional<String> optionalId = Optional.ofNullable(companyTO.getId());
+    Optional<String> optionalName = Optional.ofNullable(companyTO.getName());
+    if (optionalId.isPresent() && !"".equals(companyTO.getId())) {
+      company.setId(Integer.parseInt(companyTO.getId()));
     }
-      return companies;
+    if (optionalName.isPresent() && !"".equals(companyTO.getName())) {
+      company.setName(companyTO.getName());
+    }
+    return company;
   }
 }

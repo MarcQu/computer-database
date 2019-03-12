@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import dao.ComputerDAOFactory;
 import dto.CompanyTO;
-import mapper.CompanyMapper;
-import model.Company;
 import service.CompanyService;
 
 /**
@@ -47,10 +45,9 @@ public class CompanyMenu extends HttpServlet {
       int page = Integer.parseInt(request.getParameter("page"));
       int nombreCompanies = CompanyService.getInstance().countCompanies(search);
 
-      ArrayList<Company> companies = CompanyService.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
-      ArrayList<CompanyTO> companiesTO = CompanyMapper.getInstance().getCompanyTO(companies);
+      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreCompanies", nombreCompanies);
-      request.setAttribute("companies", companiesTO);
+      request.setAttribute("companies", companies);
 
       int pages = nombreCompanies / nombre + 1;
       session.setAttribute("nombre", nombre);

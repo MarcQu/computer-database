@@ -15,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dto.ComputerTO;
-import mapper.ComputerMapper;
-import model.Computer;
 import service.ComputerService;
 
 /**
@@ -29,8 +27,8 @@ public class DeleteComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requÃ¨te
+   * @param response la rÃ©ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */
@@ -46,16 +44,17 @@ public class DeleteComputer extends HttpServlet {
       String selected = request.getParameter("selected");
       if (selected != null) {
         String[] selectedComputers = selected.split(",");
-        for (String computer : selectedComputers) {
-          ComputerService.getInstance().deleteComputer(computer);
+        for (String id : selectedComputers) {
+          ComputerTO computerTO = new ComputerTO();
+          computerTO.setId(id);
+          ComputerService.getInstance().deleteComputer(computerTO);
         }
       }
 
       int nombreComputers = ComputerService.getInstance().countComputers(search);
-      ArrayList<Computer> computers = ComputerService.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
-      ArrayList<ComputerTO> computersTO = ComputerMapper.getInstance().getComputerTO(computers);
+      ArrayList<ComputerTO> computers = ComputerService.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreComputers", nombreComputers);
-      request.setAttribute("computers", computersTO);
+      request.setAttribute("computers", computers);
 
       int pages = nombreComputers / nombre + 1;
       session.setAttribute("nombre", nombre);
@@ -71,8 +70,8 @@ public class DeleteComputer extends HttpServlet {
 
   /**
    * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   * @param request la requète
-   * @param response la réponse
+   * @param request la requÃ¨te
+   * @param response la rÃ©ponse
    * @throws ServletException ServletException
    * @throws IOException      IOException
    */

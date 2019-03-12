@@ -27,7 +27,7 @@ public class CompanyDAOFactory {
   private Logger logger;
 
   /**
-   * CompanyFactory contient les m�thodes sp�cifiques de la table company.
+   * CompanyFactory contient les méthodes spécifiques de la table company.
    * @throws SQLException SQLException
    */
   private CompanyDAOFactory() throws SQLException {
@@ -35,7 +35,7 @@ public class CompanyDAOFactory {
   }
 
   /**
-   * M�thode qui retourne l'instance unique de la classe CompanyFactory.
+   * M�thode qui retourne l'instance unique de la classe CompanyFactory.
    * @return l'instance de la classe CompanyFactory
    * @throws SQLException SQLException
    */
@@ -140,34 +140,34 @@ public class CompanyDAOFactory {
 
   /**
    * Affiche les informations d'une companie contenu dans la table company.
-   * @param id l'id de la compagnie à afficher
+   * @param company la compagnie à afficher
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> showCompanyDetails(String id) throws SQLException {
+  public ArrayList<Company> showCompanyDetails(Company company) throws SQLException {
     ArrayList<Company> companies = new ArrayList<Company>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(SHOW);
-      stmt.setString(1, id);
+      stmt.setInt(1, company.getId());
       ResultSet rs = stmt.executeQuery();
       String[] champs = {"id", "name"};
       while (rs.next()) {
-        Company company = new Company();
+        Company companyTemp = new Company();
         for (int i = 0; i < champs.length; i++) {
           if (rs.getString(champs[i]) != null) {
             switch (champs[i]) {
             case "id":
-              company.setId(Integer.parseInt(rs.getString(champs[i])));
+              companyTemp.setId(Integer.parseInt(rs.getString(champs[i])));
               break;
             case "name":
-              company.setName(rs.getString(champs[i]));
+              companyTemp.setName(rs.getString(champs[i]));
               break;
             default:
               break;
             }
           }
         }
-        companies.add(company);
+        companies.add(companyTemp);
       }
     } catch (Exception e) {
       this.logger.error(e.toString());
@@ -177,17 +177,17 @@ public class CompanyDAOFactory {
 
   /**
    * Ajoute une compagnie dans la table company.
-   * @param name         le nom de la compagnie à ajouter
+   * @param company la compagnie à ajouter
    * @throws SQLException             SQLException
    * @throws IllegalArgumentException IllegalArgumentException
    */
-  public void createCompany(String name) throws SQLException, IllegalArgumentException {
+  public void createCompany(Company company) throws SQLException, IllegalArgumentException {
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(CREATE);
-      if ("".equals(name)) {
+      if ("".equals(company.getName())) {
         stmt.setString(1, null);
       } else {
-        stmt.setString(1, name);
+        stmt.setString(1, company.getName());
       }
       stmt.executeUpdate();
     } catch (Exception e) {
@@ -197,12 +197,11 @@ public class CompanyDAOFactory {
 
   /**
    * Met à jour une compagnie dans la table company.
-   * @param id           l'id de la compagnie à mettre à jour
-   * @param name         le nom de la compagnie à mettre à jour
+   * @param company la compagnie à mettre à jour
    * @param champs       les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
    */
-  public void updateCompany(String id, String name, ArrayList<String> champs) throws SQLException {
+  public void updateCompany(Company company, ArrayList<String> champs) throws SQLException {
     StringBuilder query = new StringBuilder("UPDATE company SET ");
     for (int i = 0; i < champs.size() - 1; i++) {
       query.append(champs.get(i)).append(" = ?, ");
@@ -213,17 +212,17 @@ public class CompanyDAOFactory {
       for (int i = 0; i < champs.size(); i++) {
         switch (champs.get(i)) {
         case "name":
-          if ("".equals(name)) {
+          if ("".equals(company.getName())) {
             stmt.setString(i + 1, null);
           } else {
-            stmt.setString(i + 1, name);
+            stmt.setString(i + 1, company.getName());
           }
           break;
         default:
           break;
         }
       }
-      stmt.setInt(champs.size() + 1, Integer.parseInt(id));
+      stmt.setInt(champs.size() + 1, company.getId());
       stmt.executeUpdate();
     } catch (Exception e) {
       this.logger.error(e.toString());
@@ -232,19 +231,19 @@ public class CompanyDAOFactory {
 
   /**
    * Supprime une companie de la table company.
-   * @param id l'id de la compagnie à supprimer
+   * @param company la compagnie à supprimer
    * @throws SQLException SQLException
    */
-  public void deleteCompany(String id) throws SQLException {
+  public void deleteCompany(Company company) throws SQLException {
     Connection conn = null;
     try (DAOFactory factory = new DAOFactory()) {
       conn = factory.getConnection();
       conn.setAutoCommit(false);
       PreparedStatement stmtComputers = conn.prepareStatement(DELETE_COMPUTERS);
-      stmtComputers.setString(1, id);
+      stmtComputers.setInt(1, company.getId());
       stmtComputers.executeUpdate();
       PreparedStatement stmt = conn.prepareStatement(DELETE);
-      stmt.setString(1, id);
+      stmt.setInt(1, company.getId());
       stmt.executeUpdate();
       conn.commit();
       conn.setAutoCommit(true);

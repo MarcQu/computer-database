@@ -1,7 +1,6 @@
 package dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -74,11 +73,13 @@ public class ComputerTO implements Serializable {
    * Set la date d'introduction de Timestamp à Date.
    * @param introduced la date d'introduction
    */
-  public void setIntroduced(Timestamp introduced) {
-    LocalDate date = introduced.toLocalDateTime().toLocalDate();
-    Optional<LocalDate> optionalIntroduced = Optional.ofNullable(date);
+  public void setIntroduced(String introduced) {
+    if (!"".equals(introduced)) {
+      introduced += " 00:00:00";
+    }
+    Optional<String> optionalIntroduced = Optional.ofNullable(introduced);
     if (optionalIntroduced.isPresent()) {
-      this.introduced = DATEFORMAT.format(date);
+      this.introduced = introduced;
     }
   }
 
@@ -86,11 +87,13 @@ public class ComputerTO implements Serializable {
    * Set la date d'interruption de Timestamp à Date.
    * @param discontinued la date d'interruption
    */
-  public void setDiscontinued(Timestamp discontinued) {
-    LocalDate date = discontinued.toLocalDateTime().toLocalDate();
-    Optional<LocalDate> optionalDiscontinued = Optional.ofNullable(date);
+  public void setDiscontinued(String discontinued) {
+    if (!"".equals(discontinued)) {
+      discontinued += " 00:00:00";
+    }
+    Optional<String> optionalDiscontinued = Optional.ofNullable(discontinued);
     if (optionalDiscontinued.isPresent()) {
-      this.discontinued = DATEFORMAT.format(date);
+      this.discontinued = discontinued;
     }
   }
 

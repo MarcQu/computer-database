@@ -1,13 +1,9 @@
 package dao;
 
-
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 public class ComputerFactoryTest {
   private ComputerDAOFactory computerFactory;
@@ -20,12 +16,6 @@ public class ComputerFactoryTest {
    */
   @Before
   public void init() throws SQLException {
-    Properties prp = new Properties();
-    prp.put("user", "root");
-    prp.put("password", "network");
-    this.daoFactory = Mockito.mock(DAOFactory.class);
-    Mockito.when(this.daoFactory.getConnection()).thenReturn(DriverManager.getConnection(URL, prp));
-    this.computerFactory = ComputerDAOFactory.getInstance();
   }
 
   /**

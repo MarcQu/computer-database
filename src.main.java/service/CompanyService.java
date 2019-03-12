@@ -4,8 +4,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dao.CompanyDAOFactory;
+import dto.CompanyTO;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
+import mapper.CompanyMapper;
 import model.Company;
 import validator.ValidatorCompany;
 
@@ -13,7 +15,7 @@ public class CompanyService {
   private static CompanyService instance = null;
   private CompanyDAOFactory companyFactory;
   private ValidatorCompany validator;
-
+  private CompanyMapper mapper;
   /**
    * Constructeur vide de la classe CompanyService.
    * @throws SQLException SQLException
@@ -21,6 +23,7 @@ public class CompanyService {
   private CompanyService() throws SQLException {
     this.companyFactory = CompanyDAOFactory.getInstance();
     this.validator = ValidatorCompany.getInstance();
+    this.mapper = CompanyMapper.getInstance();
   }
 
   /**
@@ -54,9 +57,9 @@ public class CompanyService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompanies(int nombre, int offset, String search, String sort)
+  public ArrayList<CompanyTO> listCompanies(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return this.companyFactory.listCompanies(nombre, offset, search, sort);
+    return this.mapper.getCompanyTO(this.companyFactory.listCompanies(nombre, offset, search, sort));
   }
 
   /**
@@ -64,56 +67,55 @@ public class CompanyService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompaniesAll() throws SQLException {
-    return this.companyFactory.listCompaniesAll();
+  public ArrayList<CompanyTO> listCompaniesAll() throws SQLException {
+    return this.mapper.getCompanyTO(this.companyFactory.listCompaniesAll());
   }
 
   /**
    * Affiche les informations d'une companie contenu dans la table company.
-   * @param numero l'id de la compagnie à afficher
+   * @param companyTO la compagnie à afficher
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> showCompanyDetails(String numero) throws SQLException {
-    return this.companyFactory.showCompanyDetails(numero);
+  public ArrayList<Company> showCompanyDetails(CompanyTO companyTO) throws SQLException {
+    return this.companyFactory.showCompanyDetails(this.mapper.getCompany(companyTO));
   }
 
   /**
    * Ajoute une compagnie dans la table company.
-   * @param name         le nom de la compagnie à ajouter
-   * @throws SQLException             SQLException
+   * @param companyTO la compagnie à afficher
+   * @throws SQLException SQLException
    * @throws IllegalArgumentException IllegalArgumentException
    * @throws EmptyNameException EmptyNameException
    * @throws SpecialCharacterException SpecialCharacterException
    */
-  public void createCompany(String name) throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException {
-    this.validator.validateEmptyName(name);
-    this.validator.validateSpecialCharaterName(name);
-    this.companyFactory.createCompany(name);
+  public void createCompany(CompanyTO companyTO) throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException {
+    this.validator.validateEmptyName(companyTO.getName());
+    this.validator.validateSpecialCharaterName(companyTO.getName());
+    this.companyFactory.createCompany(this.mapper.getCompany(companyTO));
   }
 
   /**
    * Met à jour une compagnie dans la table company.
-   * @param id           l'id de la compagnie à mettre à jour
-   * @param name         le nom de la compagnie à mettre à jour
-   * @param champs       les champs qui sont prises en compte par la mise à jour
+   * @param companyTO la compagnie à afficher
+   * @param champs les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
    * @throws EmptyNameException EmptyNameException
    * @throws SpecialCharacterException SpecialCharacterException
    */
-  public void updateCompany(String id, String name, ArrayList<String> champs) throws SQLException, EmptyNameException, SpecialCharacterException {
-    this.validator.validateEmptyName(name);
-    this.validator.validateSpecialCharaterId(id);
-    this.validator.validateSpecialCharaterName(name);
-    this.companyFactory.updateCompany(id, name, champs);
+  public void updateCompany(CompanyTO companyTO, ArrayList<String> champs) throws SQLException, EmptyNameException, SpecialCharacterException {
+    this.validator.validateEmptyName(companyTO.getName());
+    this.validator.validateSpecialCharaterId(companyTO.getId());
+    this.validator.validateSpecialCharaterName(companyTO.getName());
+    this.companyFactory.updateCompany(this.mapper.getCompany(companyTO), champs);
   }
 
   /**
    * Supprime une companie de la table company.
-   * @param id l'id de la compagnie à supprimer
+   * @param companyTO la compagnie à afficher
    * @throws SQLException SQLException
    */
-  public void deleteCompany(String id) throws SQLException {
-    this.companyFactory.deleteCompany(id);
+  public void deleteCompany(CompanyTO companyTO) throws SQLException {
+    this.companyFactory.deleteCompany(this.mapper.getCompany(companyTO));
   }
 }

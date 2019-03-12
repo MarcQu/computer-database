@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import dao.ComputerDAOFactory;
 import dto.ComputerTO;
-import mapper.ComputerMapper;
-import model.Computer;
 import service.ComputerService;
 
 /**
@@ -44,10 +42,9 @@ public class ComputerMenu extends HttpServlet {
       int page = Integer.parseInt(request.getParameter("page"));
       int nombreComputers = ComputerService.getInstance().countComputers(search);
 
-      ArrayList<Computer> computers = ComputerService.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
-      ArrayList<ComputerTO> computersTO = ComputerMapper.getInstance().getComputerTO(computers);
+      ArrayList<ComputerTO> computers = ComputerService.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreComputers", nombreComputers);
-      request.setAttribute("computers", computersTO);
+      request.setAttribute("computers", computers);
 
       int pages = nombreComputers / nombre + 1;
       session.setAttribute("nombre", nombre);

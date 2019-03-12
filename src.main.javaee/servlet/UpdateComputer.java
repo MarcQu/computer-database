@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dto.CompanyTO;
+import dto.ComputerTO;
 import exception.DateFormatException;
 import exception.DatePrecedenceException;
 import exception.EmptyNameException;
@@ -43,9 +45,11 @@ public class UpdateComputer extends HttpServlet {
     String computerId = request.getParameter("computerId");
     String search = request.getParameter("search");
     String sort = request.getParameter("sort");
+    ComputerTO computerTO = new ComputerTO();
+    computerTO.setId(computerId);
     try {
-      Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
-      ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
+      Computer computer = ComputerService.getInstance().showComputerDetails(computerTO).get(0);
+      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompaniesAll();
       request.setAttribute("computerId", computerId);
       request.setAttribute("computerName", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());
@@ -72,16 +76,9 @@ public class UpdateComputer extends HttpServlet {
     Logger logger = LoggerFactory.getLogger(UpdateComputer.class);
     String computerId = request.getParameter("computerId");
     String computerName = request.getParameter("computerName");
-    StringBuilder introduced = new StringBuilder("");
-    StringBuilder discontinued = new StringBuilder("");
+    StringBuilder introduced = new StringBuilder(request.getParameter("introduced"));
+    StringBuilder discontinued = new StringBuilder(request.getParameter("discontinued"));
     String companyId = request.getParameter("companyId");
-
-    if (!"".equals(request.getParameter("introduced"))) {
-      introduced.append(request.getParameter("introduced")).append(" 00:00:00");
-    }
-    if (!"".equals(request.getParameter("discontinued"))) {
-      discontinued.append(request.getParameter("discontinued")).append(" 00:00:00");
-    }
 
     ArrayList<String> champs = new ArrayList<String>();
     champs.add("company_id");
@@ -94,19 +91,31 @@ public class UpdateComputer extends HttpServlet {
     if (discontinued.toString() != "") {
       champs.add("discontinued");
     }
-    try {
-      ArrayList<Company> companies = CompanyService.getInstance().listCompaniesAll();
-      request.setAttribute("companies", companies);
-      ComputerService.getInstance().updateComputer(computerId, computerName, introduced.toString(), discontinued.toString(), companyId, champs);
 
-      displayInformation(request, computerId);
+    ComputerTO computerTO = new ComputerTO();
+    computerTO.setId(computerId);
+    computerTO.setName(computerName);
+    computerTO.setIntroduced(introduced.toString());
+    computerTO.setDiscontinued(discontinued.toString());
+    CompanyTO companyTO = new CompanyTO();
+    companyTO.setId(companyId);
+    try {
+      ArrayList<Company> company = CompanyService.getInstance().showCompanyDetails(companyTO);
+      if (company.size() > 0) {
+        computerTO.setCompany(company.get(0));
+      }
+      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompaniesAll();
+      request.setAttribute("companies", companies);
+      ComputerService.getInstance().updateComputer(computerTO, champs);
+
+      displayInformation(request, computerTO);
       request.setAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
       logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(request, computerId);
+        displayInformation(request, computerTO);
         request.setAttribute("errorName", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
@@ -115,7 +124,7 @@ public class UpdateComputer extends HttpServlet {
     } catch (DateFormatException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(request, computerId);
+        displayInformation(request, computerTO);
         request.setAttribute("errorDate", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
@@ -124,7 +133,7 @@ public class UpdateComputer extends HttpServlet {
     } catch (DatePrecedenceException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(request, computerId);
+        displayInformation(request, computerTO);
         request.setAttribute("errorDate", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
@@ -133,7 +142,7 @@ public class UpdateComputer extends HttpServlet {
     } catch (SpecialCharacterException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(request, computerId);
+        displayInformation(request, computerTO);
         request.setAttribute("error", error);
         logger.error(e.toString());
       } catch (SQLException e1) {
@@ -146,11 +155,11 @@ public class UpdateComputer extends HttpServlet {
   /**
    * Réaffiche les informations de l'ordinateur.
    * @param request la requète de la page
-   * @param computerId l'id de l'ordinateur à afficher
+   * @param computerTO l'ordinateur à afficher
    * @throws SQLException SQLException
    */
-  private void displayInformation(HttpServletRequest request, String computerId) throws SQLException {
-    Computer computer = ComputerService.getInstance().showComputerDetails(computerId).get(0);
+  private void displayInformation(HttpServletRequest request, ComputerTO computerTO) throws SQLException {
+    Computer computer = ComputerService.getInstance().showComputerDetails(computerTO).get(0);
     request.setAttribute("computerId", computer.getId());
     request.setAttribute("computerName", computer.getName());
     request.setAttribute("introduced", computer.getIntroduced());

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import model.Company;
 public class CompanyTO implements Serializable {
   private static final long serialVersionUID = 1L;
-  private int id;
+  private String id;
   private String name;
 
   /**
@@ -18,11 +18,11 @@ public class CompanyTO implements Serializable {
    * @param company la companie
    */
   public CompanyTO(Company company) {
-    this.id = company.getId();
+    this.id = Integer.toString(company.getId());
     this.name = company.getName();
   }
 
-  public Integer getId() {
+  public String getId() {
     return this.id;
   }
 
@@ -30,7 +30,7 @@ public class CompanyTO implements Serializable {
     return this.name;
   }
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 

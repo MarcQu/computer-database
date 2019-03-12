@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
@@ -13,10 +14,10 @@ import org.slf4j.LoggerFactory;
 import exception.DatePrecedenceException;
 import model.Company;
 import model.Computer;
-import validator.ValidatorComputer;
 
 public class ComputerDAOFactory {
   private static ComputerDAOFactory instance = null;
+  private static final DateTimeFormatter DATEFORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM computer";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer WHERE name like ?";
   private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id = ?";
@@ -27,14 +28,13 @@ public class ComputerDAOFactory {
   private static final String SEARCH_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id IS NOT NULL AND computer.name LIKE ? ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   private Logger logger;
-  private ValidatorComputer validator;
+
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
    * @throws SQLException SQLException
    */
   private ComputerDAOFactory() throws SQLException {
     this.logger = LoggerFactory.getLogger(ComputerDAOFactory.class);
-    this.validator = ValidatorComputer.getInstance();
   }
 
   /**
@@ -122,15 +122,15 @@ public class ComputerDAOFactory {
               computer.setName(rs.getString(champs[i]));
               break;
             case "introduced":
-              if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+              if (!"0000-00-00 00:00:00".equals(rs.getString(champs[i]))) {
                 Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
-                computer.setIntroduced(stamp);
+                computer.setIntroduced(stamp.toLocalDateTime().toLocalDate());
               }
               break;
             case "discontinued":
-              if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+              if (!"0000-00-00 00:00:00".equals(rs.getString(champs[i]))) {
                 Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
-                computer.setDiscontinued(stamp);
+                computer.setDiscontinued(stamp.toLocalDateTime().toLocalDate());
               }
               break;
             case "company_id":
@@ -181,15 +181,15 @@ public class ComputerDAOFactory {
               computer.setName(rs.getString(champs.get(i)));
               break;
             case "introduced":
-              if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+              if (!"0000-00-00 00:00:00".equals(rs.getString(champs.get(i)))) {
                 Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
-                computer.setIntroduced(stamp);
+                computer.setIntroduced(stamp.toLocalDateTime().toLocalDate());
               }
               break;
             case "discontinued":
-              if (!rs.getString(champs.get(i)).equals("0000-00-00 00:00:00")) {
+              if (!"0000-00-00 00:00:00".equals(rs.getString(champs.get(i)))) {
                 Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
-                computer.setDiscontinued(stamp);
+                computer.setDiscontinued(stamp.toLocalDateTime().toLocalDate());
               }
               break;
             case "company_id":
@@ -210,40 +210,40 @@ public class ComputerDAOFactory {
 
   /**
    * Affiche les informations d'un ordinateur contenu dans la table computer.
-   * @param id l'id de l'ordinateur à afficher
+   * @param computer l'ordinateur à afficher
    * @return computers la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> showComputerDetails(String id) throws SQLException {
+  public ArrayList<Computer> showComputerDetails(Computer computer) throws SQLException {
     ArrayList<Computer> computers = new ArrayList<Computer>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(SHOW);
-      stmt.setString(1, id);
-      stmt.setString(2, id);
+      stmt.setInt(1, computer.getId());
+      stmt.setInt(2, computer.getId());
       ResultSet rs = stmt.executeQuery();
       String[] champs = {"id", "name", "introduced", "discontinued", "company_id", "company_name"};
       while (rs.next()) {
         Company company = new Company();
-        Computer computer = new Computer();
+        Computer computerTemp = new Computer();
         for (int i = 0; i < champs.length; i++) {
           if (rs.getString(champs[i]) != null) {
             switch (champs[i]) {
             case "id":
-              computer.setId(rs.getString(champs[i]));
+              computerTemp.setId(rs.getString(champs[i]));
               break;
             case "name":
-              computer.setName(rs.getString(champs[i]));
+              computerTemp.setName(rs.getString(champs[i]));
               break;
             case "introduced":
-              if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+              if (!"0000-00-00 00:00:00".equals(rs.getString(champs[i]))) {
                 Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
-                computer.setIntroduced(stamp);
+                computerTemp.setIntroduced(stamp.toLocalDateTime().toLocalDate());
               }
               break;
             case "discontinued":
-              if (!rs.getString(champs[i]).equals("0000-00-00 00:00:00")) {
+              if (!"0000-00-00 00:00:00".equals(rs.getString(champs[i]))) {
                 Timestamp stamp = Timestamp.valueOf(rs.getString(champs[i]));
-                computer.setDiscontinued(stamp);
+                computerTemp.setDiscontinued(stamp.toLocalDateTime().toLocalDate());
               }
               break;
             case "company_id":
@@ -257,8 +257,8 @@ public class ComputerDAOFactory {
             }
           }
         }
-        computer.setCompany(company);
-        computers.add(computer);
+        computerTemp.setCompany(company);
+        computers.add(computerTemp);
       }
     } catch (Exception e) {
       this.logger.error(e.toString());
@@ -268,38 +268,30 @@ public class ComputerDAOFactory {
 
   /**
    * Ajoute un ordinateur dans la table computer.
-   * @param name         le nom de l'ordinateur à ajouter
-   * @param introduced   la date d'introduction de l'ordinateur à ajouter
-   * @param discontinued la date d'interruption de l'ordinateur à ajouter
-   * @param companyId    l'id de la companie de l'ordinateur à ajouter
+   * @param computer l'ordinateur à ajouter
    * @throws SQLException             SQLException
    * @throws IllegalArgumentException IllegalArgumentException
    * @throws DatePrecedenceException DatePrecedenceException
    */
-  public void createComputer(String name, String introduced, String discontinued, String companyId)
+  public void createComputer(Computer computer)
       throws SQLException, IllegalArgumentException, DatePrecedenceException {
-    this.validator.validateDatePrecedence(introduced, discontinued);
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(CREATE);
-      if ("".equals(name)) {
-        stmt.setString(1, null);
+      stmt.setString(1, computer.getName());
+      if (computer.getIntroduced() != null) {
+        stmt.setTimestamp(2, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
       } else {
-        stmt.setString(1, name);
-      }
-      if ("".equals(introduced)) {
         stmt.setTimestamp(2, null);
-      } else {
-        stmt.setTimestamp(2, Timestamp.valueOf(introduced));
       }
-      if ("".equals(discontinued)) {
+      if (computer.getDiscontinued() != null) {
+        stmt.setTimestamp(3, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
+      } else {
         stmt.setTimestamp(3, null);
-      } else {
-        stmt.setTimestamp(3, Timestamp.valueOf(discontinued));
       }
-      if ("".equals(companyId)) {
-        stmt.setString(4, null);
+      if (computer.getCompany() != null) {
+        stmt.setInt(4, computer.getCompany().getId());
       } else {
-        stmt.setInt(4, Integer.parseInt(companyId));
+        stmt.setString(4, null);
       }
       stmt.executeUpdate();
     } catch (Exception e) {
@@ -309,18 +301,12 @@ public class ComputerDAOFactory {
 
   /**
    * Met à jour un ordinateur dans la table computer.
-   * @param id           l'id de l'ordinateur à mettre à jour
-   * @param name         le nom de l'ordinateur à mettre à jour
-   * @param introduced   la date d'introduction de l'ordinateur à mettre à jour
-   * @param discontinued la date d'interruption de l'ordinateur à mettre à jour
-   * @param companyId    l'id de la companie de l'ordinateur à mettre à jour
+   * @param computer l'ordinateur à mettre à jour
    * @param champs       les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
    * @throws DatePrecedenceException DatePrecedenceException
    */
-  public void updateComputer(String id, String name, String introduced, String discontinued,
-      String companyId, ArrayList<String> champs) throws SQLException, DatePrecedenceException {
-    this.validator.validateDatePrecedence(introduced, discontinued);
+  public void updateComputer(Computer computer, ArrayList<String> champs) throws SQLException, DatePrecedenceException {
     StringBuilder query = new StringBuilder("UPDATE computer SET ");
     for (int i = 0; i < champs.size() - 1; i++) {
       query.append(champs.get(i)).append(" = ?, ");
@@ -331,38 +317,34 @@ public class ComputerDAOFactory {
       for (int i = 0; i < champs.size(); i++) {
         switch (champs.get(i)) {
         case "name":
-          if ("".equals(name)) {
-            stmt.setString(i + 1, null);
-          } else {
-            stmt.setString(i + 1, name);
-          }
+          stmt.setString(i + 1, computer.getName());
           break;
         case "introduced":
-          if ("".equals(introduced)) {
-            stmt.setTimestamp(i + 1, null);
+          if (computer.getIntroduced() != null) {
+            stmt.setTimestamp(i + 1, Timestamp.valueOf(computer.getIntroduced().atStartOfDay()));
           } else {
-            stmt.setTimestamp(i + 1, Timestamp.valueOf(introduced));
+            stmt.setTimestamp(i + 1, null);
           }
           break;
         case "discontinued":
-          if ("".equals(discontinued)) {
-            stmt.setTimestamp(i + 1, null);
+          if (computer.getDiscontinued() != null) {
+            stmt.setTimestamp(i + 1, Timestamp.valueOf(computer.getDiscontinued().atStartOfDay()));
           } else {
-            stmt.setTimestamp(i + 1, Timestamp.valueOf(discontinued));
+            stmt.setTimestamp(i + 1, null);
           }
           break;
         case "company_id":
-          if ("".equals(companyId)) {
-            stmt.setString(i + 1, null);
+          if (computer.getCompany() != null) {
+            stmt.setInt(i + 1, computer.getCompany().getId());
           } else {
-            stmt.setInt(i + 1, Integer.parseInt(companyId));
+            stmt.setString(i + 1, null);
           }
           break;
         default:
           break;
         }
       }
-      stmt.setInt(champs.size() + 1, Integer.parseInt(id));
+      stmt.setInt(champs.size() + 1, computer.getId());
       stmt.executeUpdate();
     } catch (Exception e) {
       this.logger.error(e.toString());
@@ -371,13 +353,13 @@ public class ComputerDAOFactory {
 
   /**
    * Supprime un ordinateur de la table computer.
-   * @param id           l'id de l'ordinateur à supprimer
+   * @param computer l'ordinateur à supprimer
    * @throws SQLException SQLException
    */
-  public void deleteComputer(String id) throws SQLException {
+  public void deleteComputer(Computer computer) throws SQLException {
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt = factory.getConnection().prepareStatement(DELETE);
-      stmt.setString(1, id);
+      stmt.setInt(1, computer.getId());
       stmt.executeUpdate();
     } catch (Exception e) {
       this.logger.error(e.toString());

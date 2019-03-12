@@ -1,17 +1,9 @@
 package dao;
 
-import static org.junit.Assert.assertEquals;
-
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-
-import model.Company;
 
 public class CompanyFactoryTest {
   private CompanyDAOFactory companyFactory;
@@ -24,12 +16,6 @@ public class CompanyFactoryTest {
    */
   @Before
   public void init() throws SQLException {
-    Properties prp = new Properties();
-    prp.put("user", "root");
-    prp.put("password", "network");
-    this.daoFactory = Mockito.mock(DAOFactory.class);
-    Mockito.when(this.daoFactory.getConnection()).thenReturn(DriverManager.getConnection(URL, prp));
-    this.companyFactory = CompanyDAOFactory.getInstance();
   }
 
   /**
@@ -38,8 +24,6 @@ public class CompanyFactoryTest {
    */
   @Test
   public void listCompaniesTest() throws SQLException {
-    ArrayList<Company> companies = this.companyFactory.listCompanies(10, 0, "", "");
-    assertEquals(10, companies.size());
   }
 
   /**
@@ -48,7 +32,5 @@ public class CompanyFactoryTest {
    */
   @Test
   public void listCompaniesAllTest() throws SQLException {
-    ArrayList<Company> companies = this.companyFactory.listCompaniesAll();
-    assertEquals(this.companyFactory.countCompanies(null), companies.size());
   }
 }
