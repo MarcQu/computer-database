@@ -21,7 +21,7 @@ public class SpringConfiguration implements WebApplicationInitializer {
    * @return la dataSource
    */
   @Bean
-  public HikariDataSource dataSource() {
+  public HikariDataSource getDataSource() {
     HikariConfig config = new HikariConfig("D:\\Eclipse-workspace\\Computer-database\\src.main.resources\\datasource.properties");
     return new HikariDataSource(config);
   }

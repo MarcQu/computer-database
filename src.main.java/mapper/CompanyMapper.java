@@ -1,13 +1,17 @@
 package mapper;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import org.springframework.jdbc.core.RowMapper;
 
 import dto.CompanyTO;
 import model.Company;
 
-public class CompanyMapper {
+public class CompanyMapper implements RowMapper<Company> {
   private static CompanyMapper instance = null;
 
   /**
@@ -34,7 +38,7 @@ public class CompanyMapper {
    * @param companies les compagnies
    * @return companiesTO les DTOs
    */
-  public ArrayList<CompanyTO> getCompanyTO(ArrayList<Company> companies) {
+  public List<CompanyTO> getCompanyTO(List<Company> companies) {
     return createCompanyTO(companies);
   }
 
@@ -52,7 +56,7 @@ public class CompanyMapper {
    * @param companies les compagnies
    * @return companiesTO les DTOs
    */
-  private ArrayList<CompanyTO> createCompanyTO(ArrayList<Company> companies) {
+  private List<CompanyTO> createCompanyTO(List<Company> companies) {
     ArrayList<CompanyTO> companiesTO = new ArrayList<CompanyTO>();
     for (Company company : companies) {
       CompanyTO companyTO = new CompanyTO(company);
@@ -76,6 +80,14 @@ public class CompanyMapper {
     if (optionalName.isPresent() && !"".equals(companyTO.getName())) {
       company.setName(companyTO.getName());
     }
+    return company;
+  }
+
+  @Override
+  public Company mapRow(ResultSet rs, int rowNum) throws SQLException {
+    Company company = new Company();
+    company.setId(rs.getInt("id"));
+    company.setName(rs.getString("name"));
     return company;
   }
 }

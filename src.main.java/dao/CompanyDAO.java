@@ -1,23 +1,28 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.zaxxer.hikari.HikariDataSource;
+
+import mapper.CompanyMapper;
 import model.Company;
 
 @Component
 public class CompanyDAO {
   private static CompanyDAO instance = null;
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM company";
-  private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like ?";
+  private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like :search";
   private static final String SHOW = "SELECT id, name FROM company WHERE id = ?";
   private static final String CREATE = "INSERT INTO company(name) values(?)";
   private static final String LIST_ASC = "SELECT id, name FROM company ORDER BY name ASC LIMIT ? OFFSET ?";
@@ -28,6 +33,10 @@ public class CompanyDAO {
   private static final String DELETE = "DELETE FROM company WHERE id = ?";
   private static final String DELETE_COMPUTERS = "DELETE FROM computer WHERE company_id = ?";
   private Logger logger;
+  private CompanyMapper mapper;
+
+  @Autowired
+  private HikariDataSource dataSource;
 
   /**
    * CompanyFactory contient les méthodes spécifiques de la table company.
@@ -36,6 +45,7 @@ public class CompanyDAO {
   @Autowired
   private CompanyDAO() throws SQLException {
     this.logger = LoggerFactory.getLogger(CompanyDAO.class);
+    this.mapper = CompanyMapper.getInstance();
   }
 
   /**
@@ -57,20 +67,14 @@ public class CompanyDAO {
    * @throws SQLException SQLException
    */
   public int countCompanies(String search) throws SQLException {
+    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(dataSource);
+    MapSqlParameterSource params = new MapSqlParameterSource();
     int nombre = 0;
-    try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt;
-      if (search == null || "".equals(search)) {
-        stmt = factory.getConnection().prepareStatement(COUNT_ALL);
-      } else {
-        stmt = factory.getConnection().prepareStatement(COUNT);
-        stmt.setString(1, new StringBuilder("%").append(search).append("%").toString());
-      }
-      ResultSet rs = stmt.executeQuery();
-      rs.next();
-      nombre = rs.getInt("rowcount");
-    } catch (Exception e) {
-      this.logger.error(e.toString());
+    if (search == null || "".equals(search)) {
+      nombre = template.queryForObject(COUNT_ALL, params, Integer.class);
+    } else {
+      params.addValue("search", new StringBuilder("%").append(search).append("%").toString());
+      nombre = template.queryForObject(COUNT, params, Integer.class);
     }
     return nombre;
   }
@@ -83,39 +87,24 @@ public class CompanyDAO {
    * @param sort le sens de triage
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
+   * @throws NumberFormatException NumberFormatException
    */
-  public ArrayList<Company> listCompanies(int nombre, int offset, String search, String sort)
-      throws SQLException {
-    ArrayList<Company> companies = new ArrayList<Company>();
-    try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt;
-      if (search == null || "".equals(search)) {
-        if ("desc".equals(sort)) {
-          stmt = factory.getConnection().prepareStatement(LIST_DESC);
-        } else {
-          stmt = factory.getConnection().prepareStatement(LIST_ASC);
-        }
-        stmt.setInt(1, nombre);
-        stmt.setInt(2, offset);
+  public List<Company> listCompanies(int nombre, int offset, String search, String sort) throws SQLException, NumberFormatException {
+    JdbcTemplate template = new JdbcTemplate(dataSource);
+    List<Company> companies = new ArrayList<>();
+
+    if (search == null || "".equals(search)) {
+      if ("desc".equals(sort)) {
+        companies = template.query(LIST_DESC, new Object[] {nombre, offset}, this.mapper);
       } else {
-        if ("desc".equals(sort)) {
-          stmt = factory.getConnection().prepareStatement(SEARCH_DESC);
-        } else {
-          stmt = factory.getConnection().prepareStatement(SEARCH_ASC);
-        }
-        stmt.setString(1, new StringBuilder("%").append(search).append("%").toString());
-        stmt.setInt(2, nombre);
-        stmt.setInt(3, offset);
+        companies = template.query(LIST_ASC, new Object[] {nombre, offset}, this.mapper);
       }
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        Company company = new Company();
-        company.setId(Integer.parseInt(rs.getString("id")));
-        company.setName(rs.getString("name"));
-        companies.add(company);
+    } else {
+      if ("desc".equals(sort)) {
+        companies = template.query(SEARCH_DESC, new Object[] {search, nombre, offset}, this.mapper);
+      } else {
+        companies = template.query(SEARCH_ASC, new Object[] {search, nombre, offset}, this.mapper);
       }
-    } catch (Exception e) {
-      this.logger.error(e.toString());
     }
     return companies;
   }
@@ -125,20 +114,9 @@ public class CompanyDAO {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> listCompaniesAll() throws SQLException {
-    ArrayList<Company> companies = new ArrayList<Company>();
-    try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt = factory.getConnection().prepareStatement(LIST_ALL);
-      ResultSet rs = stmt.executeQuery();
-      while (rs.next()) {
-        Company company = new Company();
-        company.setId(Integer.parseInt(rs.getString("id")));
-        company.setName(rs.getString("name"));
-        companies.add(company);
-      }
-    } catch (Exception e) {
-      this.logger.error(e.toString());
-    }
+  public List<Company> listCompaniesAll() throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(dataSource);
+    List<Company> companies = template.query(LIST_ALL, this.mapper);
     return companies;
   }
 
@@ -148,35 +126,9 @@ public class CompanyDAO {
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> showCompanyDetails(Company company) throws SQLException {
-    ArrayList<Company> companies = new ArrayList<Company>();
-    try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt = factory.getConnection().prepareStatement(SHOW);
-      stmt.setInt(1, company.getId());
-      ResultSet rs = stmt.executeQuery();
-      String[] champs = {"id", "name"};
-      while (rs.next()) {
-        Company companyTemp = new Company();
-        for (int i = 0; i < champs.length; i++) {
-          if (rs.getString(champs[i]) != null) {
-            switch (champs[i]) {
-            case "id":
-              companyTemp.setId(Integer.parseInt(rs.getString(champs[i])));
-              break;
-            case "name":
-              companyTemp.setName(rs.getString(champs[i]));
-              break;
-            default:
-              break;
-            }
-          }
-        }
-        companies.add(companyTemp);
-      }
-    } catch (Exception e) {
-      this.logger.error(e.toString());
-    }
-    return companies;
+  public List<Company> showCompanyDetails(Company company) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(dataSource);
+    return template.query(SHOW, new Object[] {company.getId()}, this.mapper);
   }
 
   /**
@@ -186,17 +138,8 @@ public class CompanyDAO {
    * @throws IllegalArgumentException IllegalArgumentException
    */
   public void createCompany(Company company) throws SQLException, IllegalArgumentException {
-    try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt = factory.getConnection().prepareStatement(CREATE);
-      if ("".equals(company.getName())) {
-        stmt.setString(1, null);
-      } else {
-        stmt.setString(1, company.getName());
-      }
-      stmt.executeUpdate();
-    } catch (Exception e) {
-      this.logger.error(e.toString());
-    }
+    JdbcTemplate template = new JdbcTemplate(dataSource);
+    template.update(CREATE, company.getName());
   }
 
   /**
@@ -211,26 +154,9 @@ public class CompanyDAO {
       query.append(champs.get(i)).append(" = ?, ");
     }
     query.append(champs.get(champs.size() - 1)).append(" = ? WHERE id = ?");
-    try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt = factory.getConnection().prepareStatement(query.toString());
-      for (int i = 0; i < champs.size(); i++) {
-        switch (champs.get(i)) {
-        case "name":
-          if ("".equals(company.getName())) {
-            stmt.setString(i + 1, null);
-          } else {
-            stmt.setString(i + 1, company.getName());
-          }
-          break;
-        default:
-          break;
-        }
-      }
-      stmt.setInt(champs.size() + 1, company.getId());
-      stmt.executeUpdate();
-    } catch (Exception e) {
-      this.logger.error(e.toString());
-    }
+
+    JdbcTemplate template = new JdbcTemplate(dataSource);
+    template.update(query.toString(), company.getName(), company.getId());
   }
 
   /**
@@ -238,22 +164,10 @@ public class CompanyDAO {
    * @param company la compagnie à supprimer
    * @throws SQLException SQLException
    */
+  @Transactional
   public void deleteCompany(Company company) throws SQLException {
-    Connection conn = null;
-    try (DAOFactory factory = new DAOFactory()) {
-      conn = factory.getConnection();
-      conn.setAutoCommit(false);
-      PreparedStatement stmtComputers = conn.prepareStatement(DELETE_COMPUTERS);
-      stmtComputers.setInt(1, company.getId());
-      stmtComputers.executeUpdate();
-      PreparedStatement stmt = conn.prepareStatement(DELETE);
-      stmt.setInt(1, company.getId());
-      stmt.executeUpdate();
-      conn.commit();
-      conn.setAutoCommit(true);
-    } catch (Exception e) {
-      conn.rollback();
-      this.logger.error(e.toString());
-    }
+    JdbcTemplate template = new JdbcTemplate(dataSource);
+    template.update(DELETE_COMPUTERS, company.getId());
+    template.update(DELETE, company.getId());
   }
 }

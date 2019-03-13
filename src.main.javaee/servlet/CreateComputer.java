@@ -2,7 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -57,7 +57,7 @@ public class CreateComputer extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      ArrayList<CompanyTO> companies = companyService.listCompaniesAll();
+      List<CompanyTO> companies = companyService.listCompaniesAll();
       request.setAttribute("companies", companies);
     } catch (SQLException e) {
       this.logger.error(e.toString());
@@ -86,11 +86,11 @@ public class CreateComputer extends HttpServlet {
     CompanyTO companyTO = new CompanyTO();
     companyTO.setId(companyId);
     try {
-      ArrayList<Company> company = companyService.showCompanyDetails(companyTO);
+      List<Company> company = companyService.showCompanyDetails(companyTO);
       if (company.size() > 0) {
         computerTO.setCompany(company.get(0));
       }
-      ArrayList<CompanyTO> companies = companyService.listCompaniesAll();
+      List<CompanyTO> companies = companyService.listCompaniesAll();
       request.setAttribute("companies", companies);
       computerService.createComputer(computerTO);
       request.setAttribute("success", "Succès de la création");

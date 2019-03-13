@@ -2,6 +2,7 @@ package service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,19 +65,9 @@ public class ComputerService {
    * @return le liste de certains ordinateurs
    * @throws SQLException SQLException
    */
-  public ArrayList<ComputerTO> listComputers(int nombre, int offset, String search, String sort)
+  public List<ComputerTO> listComputers(int nombre, int offset, String search, String sort)
       throws SQLException {
     return this.mapper.getComputerTO(this.computerFactory.listComputers(nombre, offset, search, sort));
-  }
-
-  /**
-   * Liste tous les ordinateurs contenus dans la table computer.
-   * @param champs les champs de la table à afficher
-   * @return la liste de tous les ordinateurs
-   * @throws SQLException SQLException
-   */
-  public ArrayList<ComputerTO> listComputersAll(ArrayList<String> champs) throws SQLException {
-    return this.mapper.getComputerTO(this.computerFactory.listComputersAll(champs));
   }
 
   /**

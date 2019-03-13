@@ -2,7 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -56,7 +56,7 @@ public class CompanyMenu extends HttpServlet {
       int page = Integer.parseInt(request.getParameter("page"));
       int nombreCompanies = companyService.countCompanies(search);
 
-      ArrayList<CompanyTO> companies = companyService.listCompanies(nombre, nombre * (page - 1), search, sort);
+      List<CompanyTO> companies = companyService.listCompanies(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companies);
 

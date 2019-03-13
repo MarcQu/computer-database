@@ -2,7 +2,7 @@ package servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -67,7 +67,7 @@ public class DeleteComputer extends HttpServlet {
       }
 
       int nombreComputers = computerService.countComputers(search);
-      ArrayList<ComputerTO> computers = computerService.listComputers(nombre, nombre * (page - 1), search, sort);
+      List<ComputerTO> computers = computerService.listComputers(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computers);
 

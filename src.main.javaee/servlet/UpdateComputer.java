@@ -3,6 +3,7 @@ package servlet;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -63,7 +64,7 @@ public class UpdateComputer extends HttpServlet {
     computerTO.setId(computerId);
     try {
       Computer computer = computerService.showComputerDetails(computerTO).get(0);
-      ArrayList<CompanyTO> companies = companyService.listCompaniesAll();
+      List<CompanyTO> companies = companyService.listCompaniesAll();
       request.setAttribute("computerId", computerId);
       request.setAttribute("computerName", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());
@@ -113,11 +114,11 @@ public class UpdateComputer extends HttpServlet {
     CompanyTO companyTO = new CompanyTO();
     companyTO.setId(companyId);
     try {
-      ArrayList<Company> company = companyService.showCompanyDetails(companyTO);
+      List<Company> company = companyService.showCompanyDetails(companyTO);
       if (company.size() > 0) {
         computerTO.setCompany(company.get(0));
       }
-      ArrayList<CompanyTO> companies = companyService.listCompaniesAll();
+      List<CompanyTO> companies = companyService.listCompaniesAll();
       request.setAttribute("companies", companies);
       computerService.updateComputer(computerTO, champs);
 

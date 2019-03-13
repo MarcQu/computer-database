@@ -2,6 +2,7 @@ package service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,7 @@ public class CompanyService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<CompanyTO> listCompanies(int nombre, int offset, String search, String sort)
+  public List<CompanyTO> listCompanies(int nombre, int offset, String search, String sort)
       throws SQLException {
     return this.mapper.getCompanyTO(this.companyFactory.listCompanies(nombre, offset, search, sort));
   }
@@ -72,7 +73,7 @@ public class CompanyService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<CompanyTO> listCompaniesAll() throws SQLException {
+  public List<CompanyTO> listCompaniesAll() throws SQLException {
     return this.mapper.getCompanyTO(this.companyFactory.listCompaniesAll());
   }
 
@@ -82,7 +83,7 @@ public class CompanyService {
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Company> showCompanyDetails(CompanyTO companyTO) throws SQLException {
+  public List<Company> showCompanyDetails(CompanyTO companyTO) throws SQLException {
     return this.companyFactory.showCompanyDetails(this.mapper.getCompany(companyTO));
   }
 

@@ -3,15 +3,19 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import exception.DatePrecedenceException;
 import model.Company;
@@ -31,6 +35,9 @@ public class ComputerDAO {
   private static final String SEARCH_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id IS NOT NULL AND computer.name LIKE ? ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   private Logger logger;
+
+  @Autowired
+  private HikariDataSource dataSource;
 
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
@@ -60,20 +67,14 @@ public class ComputerDAO {
    * @throws SQLException SQLException
    */
   public int countComputers(String search) throws SQLException {
+    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(dataSource);
+    MapSqlParameterSource params = new MapSqlParameterSource();
     int nombre = 0;
-    try (DAOFactory factory = new DAOFactory()) {
-      PreparedStatement stmt;
-      if (search == null || "".equals(search)) {
-        stmt = factory.getConnection().prepareStatement(COUNT_ALL);
-      } else {
-        stmt = factory.getConnection().prepareStatement(COUNT);
-        stmt.setString(1, new StringBuilder("%").append(search).append("%").toString());
-      }
-      ResultSet rs = stmt.executeQuery();
-      rs.next();
-      nombre = rs.getInt("rowcount");
-    } catch (Exception e) {
-      this.logger.error(e.toString());
+    if (search == null || "".equals(search)) {
+      nombre = template.queryForObject(COUNT_ALL, params, Integer.class);
+    } else {
+      params.addValue("search", new StringBuilder("%").append(search).append("%").toString());
+      nombre = template.queryForObject(COUNT, params, Integer.class);
     }
     return nombre;
   }
@@ -87,9 +88,9 @@ public class ComputerDAO {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> listComputers(int nombre, int offset, String search, String sort)
+  public List<Computer> listComputers(int nombre, int offset, String search, String sort)
       throws SQLException {
-    ArrayList<Computer> computers = new ArrayList<Computer>();
+    List<Computer> computers = new ArrayList<Computer>();
     try (DAOFactory factory = new DAOFactory()) {
       PreparedStatement stmt;
       if (search == null || "".equals(search)) {
@@ -120,7 +121,7 @@ public class ComputerDAO {
           if (rs.getString(champs[i]) != null) {
             switch (champs[i]) {
             case "id":
-              computer.setId(rs.getString(champs[i]));
+              computer.setId(rs.getInt(champs[i]));
               break;
             case "name":
               computer.setName(rs.getString(champs[i]));
@@ -157,60 +158,23 @@ public class ComputerDAO {
     return computers;
   }
 
-  /**
-   * Liste tous les ordinateurs contenus dans la table computer.
-   * @param champs les champs de la table à afficher
-   * @return retour la liste des resultats de la requète
-   * @throws SQLException SQLException
-   */
-  public ArrayList<Computer> listComputersAll(ArrayList<String> champs) throws SQLException {
-    ArrayList<Computer> computers = new ArrayList<Computer>();
-    try (DAOFactory factory = new DAOFactory()) {
-      Statement stmt = factory.getConnection().createStatement();
-      StringBuilder query = new StringBuilder("SELECT ");
-      for (int i = 0; i < champs.size() - 1; i++) {
-        query.append(champs.get(i)).append(", ");
-      }
-      query.append(champs.get(champs.size() - 1)).append(" FROM computer");
-      ResultSet rs = stmt.executeQuery(query.toString());
-      while (rs.next()) {
-        Computer computer = new Computer();
-        for (int i = 0; i < champs.size(); i++) {
-          if (rs.getString(champs.get(i)) != null) {
-            switch (champs.get(i)) {
-            case "id":
-              computer.setId(rs.getString(champs.get(i)));
-              break;
-            case "name":
-              computer.setName(rs.getString(champs.get(i)));
-              break;
-            case "introduced":
-              if (!"0000-00-00 00:00:00".equals(rs.getString(champs.get(i)))) {
-                Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
-                computer.setIntroduced(stamp.toLocalDateTime().toLocalDate());
-              }
-              break;
-            case "discontinued":
-              if (!"0000-00-00 00:00:00".equals(rs.getString(champs.get(i)))) {
-                Timestamp stamp = Timestamp.valueOf(rs.getString(champs.get(i)));
-                computer.setDiscontinued(stamp.toLocalDateTime().toLocalDate());
-              }
-              break;
-            case "company_id":
-              computer.setCompany(new Company(Integer.parseInt(rs.getString(champs.get(i))), ""));
-              break;
-            default:
-              break;
-            }
-          }
-        }
-        computers.add(computer);
-      }
-    } catch (Exception e) {
-      this.logger.error(e.toString());
-    }
-    return computers;
-  }
+//JdbcTemplate template = new JdbcTemplate(dataSource);
+//List<Computer> computers = new ArrayList<Computer>();
+//
+//if (search == null || "".equals(search)) {
+//  if ("desc".equals(sort)) {
+//    computers = template.query(LIST_DESC, new Object[] {nombre, offset}, this.mapper);
+//  } else {
+//    computers = template.query(LIST_ASC, new Object[] {nombre, offset}, this.mapper);
+//  }
+//} else {
+//  if ("desc".equals(sort)) {
+//    computers = template.query(SEARCH_DESC, new Object[] {search, search, nombre, offset}, this.mapper);
+//  } else {
+//    computers = template.query(SEARCH_ASC, new Object[] {search, search, nombre, offset}, this.mapper);
+//  }
+//}
+//return computers;
 
   /**
    * Affiche les informations d'un ordinateur contenu dans la table computer.
@@ -233,7 +197,7 @@ public class ComputerDAO {
           if (rs.getString(champs[i]) != null) {
             switch (champs[i]) {
             case "id":
-              computerTemp.setId(rs.getString(champs[i]));
+              computerTemp.setId(rs.getInt(champs[i]));
               break;
             case "name":
               computerTemp.setName(rs.getString(champs[i]));
