@@ -13,8 +13,11 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.ComputerTO;
+import service.CompanyService;
 import service.ComputerService;
 
 /**
@@ -24,7 +27,20 @@ import service.ComputerService;
 public class DeleteComputer extends HttpServlet {
   private static final long serialVersionUID = 1L;
   public static final String VUE = "/WEB-INF/views/computerMenu.jsp";
+  private Logger logger;
 
+  @Autowired
+  private ComputerService computerService;
+
+  @Autowired
+  private CompanyService companyService;
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    this.logger = LoggerFactory.getLogger(DeleteComputer.class);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+  }
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
    * @param request la requète
@@ -34,7 +50,6 @@ public class DeleteComputer extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Logger logger = LoggerFactory.getLogger(DeleteComputer.class);
     HttpSession session = request.getSession();
     String search = request.getParameter("search");
     String sort = request.getParameter("sort");
@@ -47,12 +62,12 @@ public class DeleteComputer extends HttpServlet {
         for (String id : selectedComputers) {
           ComputerTO computerTO = new ComputerTO();
           computerTO.setId(id);
-          ComputerService.getInstance().deleteComputer(computerTO);
+          computerService.deleteComputer(computerTO);
         }
       }
 
-      int nombreComputers = ComputerService.getInstance().countComputers(search);
-      ArrayList<ComputerTO> computers = ComputerService.getInstance().listComputers(nombre, nombre * (page - 1), search, sort);
+      int nombreComputers = computerService.countComputers(search);
+      ArrayList<ComputerTO> computers = computerService.listComputers(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreComputers", nombreComputers);
       request.setAttribute("computers", computers);
 
@@ -63,7 +78,7 @@ public class DeleteComputer extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }

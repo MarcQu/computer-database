@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.CompanyTO;
 import dto.ComputerTO;
@@ -30,6 +32,20 @@ import service.ComputerService;
 public class CreateComputer extends HttpServlet {
   private static final long serialVersionUID = 1L;
   public static final String VUE = "/WEB-INF/views/createComputer.jsp";
+  private Logger logger;
+
+  @Autowired
+  private ComputerService computerService;
+
+  @Autowired
+  private CompanyService companyService;
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    this.logger = LoggerFactory.getLogger(CreateComputer.class);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+  }
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -40,12 +56,11 @@ public class CreateComputer extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Logger logger = LoggerFactory.getLogger(CreateComputer.class);
     try {
-      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompaniesAll();
+      ArrayList<CompanyTO> companies = companyService.listCompaniesAll();
       request.setAttribute("companies", companies);
     } catch (SQLException e) {
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
@@ -59,7 +74,6 @@ public class CreateComputer extends HttpServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Logger logger = LoggerFactory.getLogger(CreateComputer.class);
     String name = request.getParameter("computerName");
     StringBuilder introduced = new StringBuilder(request.getParameter("introduced"));
     StringBuilder discontinued = new StringBuilder(request.getParameter("discontinued"));
@@ -72,32 +86,32 @@ public class CreateComputer extends HttpServlet {
     CompanyTO companyTO = new CompanyTO();
     companyTO.setId(companyId);
     try {
-      ArrayList<Company> company = CompanyService.getInstance().showCompanyDetails(companyTO);
+      ArrayList<Company> company = companyService.showCompanyDetails(companyTO);
       if (company.size() > 0) {
         computerTO.setCompany(company.get(0));
       }
-      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompaniesAll();
+      ArrayList<CompanyTO> companies = companyService.listCompaniesAll();
       request.setAttribute("companies", companies);
-      ComputerService.getInstance().createComputer(computerTO);
+      computerService.createComputer(computerTO);
       request.setAttribute("success", "Succès de la création");
     } catch (SQLException e) {
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     } catch (EmptyNameException e) {
       String error = e.toString().split(": ")[1];
       request.setAttribute("errorName", error);
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     } catch (DateFormatException e) {
       String error = e.toString().split(": ")[1];
       request.setAttribute("errorDate", error);
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     } catch (DatePrecedenceException e) {
       String error = e.toString().split(": ")[1];
       request.setAttribute("errorDate", error);
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     } catch (SpecialCharacterException e) {
       String error = e.toString().split(": ")[1];
       request.setAttribute("error", error);
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }

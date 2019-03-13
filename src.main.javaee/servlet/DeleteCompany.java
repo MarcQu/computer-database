@@ -13,6 +13,8 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.CompanyTO;
 import service.CompanyService;
@@ -24,6 +26,17 @@ import service.CompanyService;
 public class DeleteCompany extends HttpServlet {
   private static final long serialVersionUID = 1L;
   public static final String VUE = "/WEB-INF/views/companyMenu.jsp";
+  private Logger logger;
+
+  @Autowired
+  private CompanyService companyService;
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    this.logger = LoggerFactory.getLogger(DeleteCompany.class);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+  }
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -34,7 +47,6 @@ public class DeleteCompany extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Logger logger = LoggerFactory.getLogger(DeleteCompany.class);
     HttpSession session = request.getSession();
     String search = request.getParameter("search");
     String sort = request.getParameter("sort");
@@ -49,12 +61,12 @@ public class DeleteCompany extends HttpServlet {
         for (String id : selectedCompanies) {
           CompanyTO companyTO = new CompanyTO();
           companyTO.setId(id);
-          CompanyService.getInstance().deleteCompany(companyTO);
+          companyService.deleteCompany(companyTO);
         }
       }
 
-      int nombreCompanies = CompanyService.getInstance().countCompanies(search);
-      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompanies(nombre, nombre * (page - 1), search, sort);
+      int nombreCompanies = companyService.countCompanies(search);
+      ArrayList<CompanyTO> companies = companyService.listCompanies(nombre, nombre * (page - 1), search, sort);
       request.setAttribute("nombreCompanies", nombreCompanies);
       request.setAttribute("companies", companies);
 
@@ -65,7 +77,7 @@ public class DeleteCompany extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }

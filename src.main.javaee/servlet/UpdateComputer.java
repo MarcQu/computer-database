@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.CompanyTO;
 import dto.ComputerTO;
@@ -31,7 +33,20 @@ import service.ComputerService;
 public class UpdateComputer extends HttpServlet {
   private static final long serialVersionUID = 1L;
   public static final String VUE = "/WEB-INF/views/updateComputer.jsp";
+  private Logger logger;
 
+  @Autowired
+  private ComputerService computerService;
+
+  @Autowired
+  private CompanyService companyService;
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    this.logger = LoggerFactory.getLogger(UpdateComputer.class);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+  }
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
    * @param request la requète
@@ -41,15 +56,14 @@ public class UpdateComputer extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Logger logger = LoggerFactory.getLogger(UpdateComputer.class);
     String computerId = request.getParameter("computerId");
     String search = request.getParameter("search");
     String sort = request.getParameter("sort");
     ComputerTO computerTO = new ComputerTO();
     computerTO.setId(computerId);
     try {
-      Computer computer = ComputerService.getInstance().showComputerDetails(computerTO).get(0);
-      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompaniesAll();
+      Computer computer = computerService.showComputerDetails(computerTO).get(0);
+      ArrayList<CompanyTO> companies = companyService.listCompaniesAll();
       request.setAttribute("computerId", computerId);
       request.setAttribute("computerName", computer.getName());
       request.setAttribute("introduced", computer.getIntroduced());
@@ -59,7 +73,7 @@ public class UpdateComputer extends HttpServlet {
       request.setAttribute("search", search);
       request.setAttribute("sort", sort);
     } catch (SQLException e) {
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
@@ -73,7 +87,6 @@ public class UpdateComputer extends HttpServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Logger logger = LoggerFactory.getLogger(UpdateComputer.class);
     String computerId = request.getParameter("computerId");
     String computerName = request.getParameter("computerName");
     StringBuilder introduced = new StringBuilder(request.getParameter("introduced"));
@@ -100,53 +113,53 @@ public class UpdateComputer extends HttpServlet {
     CompanyTO companyTO = new CompanyTO();
     companyTO.setId(companyId);
     try {
-      ArrayList<Company> company = CompanyService.getInstance().showCompanyDetails(companyTO);
+      ArrayList<Company> company = companyService.showCompanyDetails(companyTO);
       if (company.size() > 0) {
         computerTO.setCompany(company.get(0));
       }
-      ArrayList<CompanyTO> companies = CompanyService.getInstance().listCompaniesAll();
+      ArrayList<CompanyTO> companies = companyService.listCompaniesAll();
       request.setAttribute("companies", companies);
-      ComputerService.getInstance().updateComputer(computerTO, champs);
+      computerService.updateComputer(computerTO, champs);
 
       displayInformation(request, computerTO);
       request.setAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
         String error = e.toString().split(": ")[1];
         displayInformation(request, computerTO);
         request.setAttribute("errorName", error);
-        logger.error(e.toString());
+        this.logger.error(e.toString());
       } catch (SQLException e1) {
-        logger.error(e1.toString());
+        this.logger.error(e1.toString());
       }
     } catch (DateFormatException e) {
       try {
         String error = e.toString().split(": ")[1];
         displayInformation(request, computerTO);
         request.setAttribute("errorDate", error);
-        logger.error(e.toString());
+        this.logger.error(e.toString());
       } catch (SQLException e1) {
-        logger.error(e1.toString());
+        this.logger.error(e1.toString());
       }
     } catch (DatePrecedenceException e) {
       try {
         String error = e.toString().split(": ")[1];
         displayInformation(request, computerTO);
         request.setAttribute("errorDate", error);
-        logger.error(e.toString());
+        this.logger.error(e.toString());
       } catch (SQLException e1) {
-        logger.error(e1.toString());
+        this.logger.error(e1.toString());
       }
     } catch (SpecialCharacterException e) {
       try {
         String error = e.toString().split(": ")[1];
         displayInformation(request, computerTO);
         request.setAttribute("error", error);
-        logger.error(e.toString());
+        this.logger.error(e.toString());
       } catch (SQLException e1) {
-        logger.error(e1.toString());
+        this.logger.error(e1.toString());
       }
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
@@ -159,7 +172,7 @@ public class UpdateComputer extends HttpServlet {
    * @throws SQLException SQLException
    */
   private void displayInformation(HttpServletRequest request, ComputerTO computerTO) throws SQLException {
-    Computer computer = ComputerService.getInstance().showComputerDetails(computerTO).get(0);
+    Computer computer = computerService.showComputerDetails(computerTO).get(0);
     request.setAttribute("computerId", computer.getId());
     request.setAttribute("computerName", computer.getName());
     request.setAttribute("introduced", computer.getIntroduced());

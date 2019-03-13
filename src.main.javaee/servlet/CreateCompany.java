@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import dto.CompanyTO;
 import exception.EmptyNameException;
@@ -24,6 +26,17 @@ import service.CompanyService;
 public class CreateCompany extends HttpServlet {
   private static final long serialVersionUID = 1L;
   public static final String VUE = "/WEB-INF/views/createCompany.jsp";
+  private Logger logger;
+
+  @Autowired
+  private CompanyService companyService;
+
+  @Override
+  public void init() throws ServletException {
+    super.init();
+    this.logger = LoggerFactory.getLogger(CreateCompany.class);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+  }
 
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -46,23 +59,22 @@ public class CreateCompany extends HttpServlet {
    */
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    Logger logger = LoggerFactory.getLogger(CreateCompany.class);
     try {
       String name = request.getParameter("companyName");
       CompanyTO companyTO = new CompanyTO();
       companyTO.setName(name);
-      CompanyService.getInstance().createCompany(companyTO);
+      companyService.createCompany(companyTO);
       request.setAttribute("success", "Succès de la création");
     } catch (SQLException e) {
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     } catch (EmptyNameException e) {
       String error = e.toString().split(": ")[1];
       request.setAttribute("errorName", error);
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     } catch (SpecialCharacterException e) {
       String error = e.toString().split(": ")[1];
       request.setAttribute("error", error);
-      logger.error(e.toString());
+      this.logger.error(e.toString());
     }
     this.getServletContext().getRequestDispatcher(VUE).forward(request, response);
   }
