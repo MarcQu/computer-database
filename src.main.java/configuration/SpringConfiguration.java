@@ -9,12 +9,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan({"service", "dao", "mapper"})
+@EnableWebMvc
+@ComponentScan({"service", "dao", "mapper", "validator"})
 public class SpringConfiguration implements WebApplicationInitializer {
   /**
    * Initialise la connexion à la BDD hikari.

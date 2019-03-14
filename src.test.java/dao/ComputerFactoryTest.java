@@ -7,7 +7,6 @@ import org.junit.Test;
 
 public class ComputerFactoryTest {
   private ComputerDAO computerFactory;
-  private DAOFactory daoFactory;
   private static final String URL = "jdbc:mysql://localhost:3306/computer-database-test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B1";
 
   /**

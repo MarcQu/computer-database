@@ -1,7 +1,8 @@
 package validator;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
+
+import org.springframework.stereotype.Component;
 
 import exception.DatePrecedenceException;
 import exception.DiscontinuedFormatException;
@@ -14,27 +15,8 @@ import exception.SpecialCharacterIntroducedException;
 import exception.SpecialCharacterNameException;
 import model.Company;
 
+@Component
 public class ValidatorComputer {
-  private static ValidatorComputer instance = null;
-
-  /**
-   * Constructeur vide privée classe Validator.
-   */
-  private ValidatorComputer() {
-  }
-
-  /**
-   * Méthode qui retourne l'instance unique de la classe Validator.
-   * @return l'instance de la classe Validator
-   * @throws SQLException
-   */
-  public static ValidatorComputer getInstance() {
-    if (ValidatorComputer.instance == null) {
-      ValidatorComputer.instance = new ValidatorComputer();
-    }
-    return ValidatorComputer.instance;
-  }
-
   /**
    * Methode qui valide si le champ name est non vide.
    * @param name le nom

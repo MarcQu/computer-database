@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -18,9 +18,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import mapper.CompanyMapper;
 import model.Company;
 
-@Component
+@Repository
 public class CompanyDAO {
-  private static CompanyDAO instance = null;
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM company";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like :search";
   private static final String SHOW = "SELECT id, name FROM company WHERE id = ?";
@@ -45,18 +44,6 @@ public class CompanyDAO {
    */
   private CompanyDAO() throws SQLException {
     this.logger = LoggerFactory.getLogger(CompanyDAO.class);
-  }
-
-  /**
-   * Méthode qui retourne l'instance unique de la classe CompanyFactory.
-   * @return l'instance de la classe CompanyFactory
-   * @throws SQLException SQLException
-   */
-  public static CompanyDAO getInstance() throws SQLException {
-    if (CompanyDAO.instance == null) {
-      CompanyDAO.instance = new CompanyDAO();
-    }
-    return CompanyDAO.instance;
   }
 
   /**

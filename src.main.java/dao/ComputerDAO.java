@@ -12,16 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.zaxxer.hikari.HikariDataSource;
 
 import mapper.ComputerMapper;
 import model.Computer;
 
-@Component
+@Repository
 public class ComputerDAO {
-  private static ComputerDAO instance = null;
   private static final DateTimeFormatter DATEFORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private static final String COUNT_ALL = "SELECT COUNT(id) AS rowcount FROM computer";
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer WHERE name like :search";
@@ -46,18 +45,6 @@ public class ComputerDAO {
   @Autowired
   private ComputerDAO() throws SQLException {
     this.logger = LoggerFactory.getLogger(ComputerDAO.class);
-  }
-
-  /**
-   * Méthode qui retourne l'instance unique de la classe ComputerFactory.
-   * @return l'instance de la classe ComputerFactory
-   * @throws SQLException SQLException
-   */
-  public static ComputerDAO getInstance() throws SQLException {
-    if (ComputerDAO.instance == null) {
-      ComputerDAO.instance = new ComputerDAO();
-    }
-    return ComputerDAO.instance;
   }
 
   /**

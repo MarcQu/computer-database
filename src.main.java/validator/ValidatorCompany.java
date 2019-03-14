@@ -1,32 +1,13 @@
 package validator;
 
-import java.sql.SQLException;
+import org.springframework.stereotype.Component;
 
 import exception.EmptyNameException;
 import exception.SpecialCharacterIdException;
 import exception.SpecialCharacterNameException;
 
+@Component
 public class ValidatorCompany {
-  private static ValidatorCompany instance = null;
-
-  /**
-   * Constructeur vide privée classe Validator.
-   */
-  private ValidatorCompany() {
-  }
-
-  /**
-   * Méthode qui retourne l'instance unique de la classe Validator.
-   * @return l'instance de la classe Validator
-   * @throws SQLException
-   */
-  public static ValidatorCompany getInstance() {
-    if (ValidatorCompany.instance == null) {
-      ValidatorCompany.instance = new ValidatorCompany();
-    }
-    return ValidatorCompany.instance;
-  }
-
   /**
    * Methode qui valide si le champ name est non vide.
    * @param name le nom

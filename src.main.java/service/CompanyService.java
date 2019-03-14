@@ -20,6 +20,7 @@ public class CompanyService {
   private static CompanyService instance = null;
   @Autowired
   private CompanyDAO companyFactory;
+  @Autowired
   private ValidatorCompany validator;
   @Autowired
   private CompanyMapper mapper;
@@ -28,8 +29,6 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   private CompanyService() throws SQLException {
-    this.companyFactory = CompanyDAO.getInstance();
-    this.validator = ValidatorCompany.getInstance();
   }
 
   /**
@@ -96,8 +95,8 @@ public class CompanyService {
    * @throws SpecialCharacterException SpecialCharacterException
    */
   public void createCompany(CompanyTO companyTO) throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException {
-    this.validator.validateEmptyName(companyTO.getName());
-    this.validator.validateSpecialCharaterName(companyTO.getName());
+    validator.validateEmptyName(companyTO.getName());
+    validator.validateSpecialCharaterName(companyTO.getName());
     this.companyFactory.createCompany(mapper.getCompany(companyTO));
   }
 
@@ -110,9 +109,9 @@ public class CompanyService {
    * @throws SpecialCharacterException SpecialCharacterException
    */
   public void updateCompany(CompanyTO companyTO, ArrayList<String> champs) throws SQLException, EmptyNameException, SpecialCharacterException {
-    this.validator.validateEmptyName(companyTO.getName());
-    this.validator.validateSpecialCharaterId(companyTO.getId());
-    this.validator.validateSpecialCharaterName(companyTO.getName());
+    validator.validateEmptyName(companyTO.getName());
+    validator.validateSpecialCharaterId(companyTO.getId());
+    validator.validateSpecialCharaterName(companyTO.getName());
     this.companyFactory.updateCompany(mapper.getCompany(companyTO), champs);
   }
 

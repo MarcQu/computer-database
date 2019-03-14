@@ -19,9 +19,9 @@ import validator.ValidatorComputer;
 
 @Service
 public class ComputerService {
-  private static ComputerService instance  = null;
   @Autowired
   private ComputerDAO computerFactory;
+  @Autowired
   private ValidatorComputer validator;
   @Autowired
   private ComputerMapper mapper;
@@ -30,20 +30,6 @@ public class ComputerService {
    * @throws SQLException SQLException
    */
   private ComputerService() throws SQLException {
-    this.computerFactory = ComputerDAO.getInstance();
-    this.validator = ValidatorComputer.getInstance();
-  }
-
-  /**
-   * Méthode qui retourne l' unique de la classe ComputerService.
-   * @return l' de la classe ComputerService
-   * @throws SQLException SQLException
-   */
-  public static ComputerService getInstance() throws SQLException {
-    if (ComputerService.instance == null) {
-      ComputerService.instance = new ComputerService();
-    }
-    return ComputerService.instance;
   }
 
   /**
@@ -92,14 +78,14 @@ public class ComputerService {
    */
   public void createComputer(ComputerTO computerTO)
       throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException, DatePrecedenceException, DateFormatException {
-    this.validator.validateEmptyName(computerTO.getName());
-    this.validator.validateIntroducedFormat(computerTO.getIntroduced());
-    this.validator.validateDiscontinuedFormat(computerTO.getDiscontinued());
-    this.validator.validateSpecialCharaterName(computerTO.getName());
-    this.validator.validateSpecialCharaterIntroduced(computerTO.getIntroduced());
-    this.validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
-    this.validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
-    this.validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
+    validator.validateEmptyName(computerTO.getName());
+    validator.validateIntroducedFormat(computerTO.getIntroduced());
+    validator.validateDiscontinuedFormat(computerTO.getDiscontinued());
+    validator.validateSpecialCharaterName(computerTO.getName());
+    validator.validateSpecialCharaterIntroduced(computerTO.getIntroduced());
+    validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
+    validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
+    validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
     this.computerFactory.createComputer(mapper.getComputer(computerTO));
   }
 
@@ -114,14 +100,14 @@ public class ComputerService {
    * @throws DateFormatException DateFormatException
    */
   public void updateComputer(ComputerTO computerTO, ArrayList<String> champs) throws SQLException, EmptyNameException, SpecialCharacterException, DatePrecedenceException, DateFormatException {
-    this.validator.validateEmptyName(computerTO.getName());
-    this.validator.validateIntroducedFormat(computerTO.getIntroduced());
-    this.validator.validateDiscontinuedFormat(computerTO.getDiscontinued());
-    this.validator.validateSpecialCharaterName(computerTO.getName());
-    this.validator.validateSpecialCharaterIntroduced(computerTO.getIntroduced());
-    this.validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
-    this.validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
-    this.validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
+    validator.validateEmptyName(computerTO.getName());
+    validator.validateIntroducedFormat(computerTO.getIntroduced());
+    validator.validateDiscontinuedFormat(computerTO.getDiscontinued());
+    validator.validateSpecialCharaterName(computerTO.getName());
+    validator.validateSpecialCharaterIntroduced(computerTO.getIntroduced());
+    validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
+    validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
+    validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
     this.computerFactory.updateComputer(mapper.getComputer(computerTO), champs);
   }
 
