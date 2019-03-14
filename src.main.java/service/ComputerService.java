@@ -23,6 +23,7 @@ public class ComputerService {
   @Autowired
   private ComputerDAO computerFactory;
   private ValidatorComputer validator;
+  @Autowired
   private ComputerMapper mapper;
   /**
    * Constructeur vide de la classe CompanyService.
@@ -31,7 +32,6 @@ public class ComputerService {
   private ComputerService() throws SQLException {
     this.computerFactory = ComputerDAO.getInstance();
     this.validator = ValidatorComputer.getInstance();
-    this.mapper = ComputerMapper.getInstance();
   }
 
   /**
@@ -67,7 +67,7 @@ public class ComputerService {
    */
   public List<ComputerTO> listComputers(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return this.mapper.getComputerTO(this.computerFactory.listComputers(nombre, offset, search, sort));
+    return mapper.getComputerTO(this.computerFactory.listComputers(nombre, offset, search, sort));
   }
 
   /**
@@ -77,7 +77,7 @@ public class ComputerService {
    * @throws SQLException SQLException
    */
   public List<Computer> showComputerDetails(ComputerTO computerTO) throws SQLException {
-    return this.computerFactory.showComputerDetails(this.mapper.getComputer(computerTO));
+    return this.computerFactory.showComputerDetails(mapper.getComputer(computerTO));
   }
 
   /**
@@ -100,7 +100,7 @@ public class ComputerService {
     this.validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
     this.validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
     this.validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
-    this.computerFactory.createComputer(this.mapper.getComputer(computerTO));
+    this.computerFactory.createComputer(mapper.getComputer(computerTO));
   }
 
   /**
@@ -122,7 +122,7 @@ public class ComputerService {
     this.validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
     this.validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
     this.validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
-    this.computerFactory.updateComputer(this.mapper.getComputer(computerTO), champs);
+    this.computerFactory.updateComputer(mapper.getComputer(computerTO), champs);
   }
 
   /**
@@ -131,6 +131,6 @@ public class ComputerService {
    * @throws SQLException SQLException
    */
   public void deleteComputer(ComputerTO computerTO) throws SQLException {
-    this.computerFactory.deleteComputer(this.mapper.getComputer(computerTO));
+    this.computerFactory.deleteComputer(mapper.getComputer(computerTO));
   }
 }

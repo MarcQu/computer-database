@@ -14,7 +14,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan({"service", "dao"})
+@ComponentScan({"service", "dao", "mapper"})
 public class SpringConfiguration implements WebApplicationInitializer {
   /**
    * Initialise la connexion à la BDD hikari.

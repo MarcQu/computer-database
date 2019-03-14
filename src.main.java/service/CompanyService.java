@@ -21,6 +21,7 @@ public class CompanyService {
   @Autowired
   private CompanyDAO companyFactory;
   private ValidatorCompany validator;
+  @Autowired
   private CompanyMapper mapper;
   /**
    * Constructeur vide de la classe CompanyService.
@@ -29,7 +30,6 @@ public class CompanyService {
   private CompanyService() throws SQLException {
     this.companyFactory = CompanyDAO.getInstance();
     this.validator = ValidatorCompany.getInstance();
-    this.mapper = CompanyMapper.getInstance();
   }
 
   /**
@@ -65,7 +65,7 @@ public class CompanyService {
    */
   public List<CompanyTO> listCompanies(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return this.mapper.getCompanyTO(this.companyFactory.listCompanies(nombre, offset, search, sort));
+    return mapper.getCompanyTO(this.companyFactory.listCompanies(nombre, offset, search, sort));
   }
 
   /**
@@ -74,7 +74,7 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   public List<CompanyTO> listCompaniesAll() throws SQLException {
-    return this.mapper.getCompanyTO(this.companyFactory.listCompaniesAll());
+    return mapper.getCompanyTO(this.companyFactory.listCompaniesAll());
   }
 
   /**
@@ -84,7 +84,7 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   public List<Company> showCompanyDetails(CompanyTO companyTO) throws SQLException {
-    return this.companyFactory.showCompanyDetails(this.mapper.getCompany(companyTO));
+    return this.companyFactory.showCompanyDetails(mapper.getCompany(companyTO));
   }
 
   /**
@@ -98,7 +98,7 @@ public class CompanyService {
   public void createCompany(CompanyTO companyTO) throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException {
     this.validator.validateEmptyName(companyTO.getName());
     this.validator.validateSpecialCharaterName(companyTO.getName());
-    this.companyFactory.createCompany(this.mapper.getCompany(companyTO));
+    this.companyFactory.createCompany(mapper.getCompany(companyTO));
   }
 
   /**
@@ -113,7 +113,7 @@ public class CompanyService {
     this.validator.validateEmptyName(companyTO.getName());
     this.validator.validateSpecialCharaterId(companyTO.getId());
     this.validator.validateSpecialCharaterName(companyTO.getName());
-    this.companyFactory.updateCompany(this.mapper.getCompany(companyTO), champs);
+    this.companyFactory.updateCompany(mapper.getCompany(companyTO), champs);
   }
 
   /**
@@ -122,6 +122,6 @@ public class CompanyService {
    * @throws SQLException SQLException
    */
   public void deleteCompany(CompanyTO companyTO) throws SQLException {
-    this.companyFactory.deleteCompany(this.mapper.getCompany(companyTO));
+    this.companyFactory.deleteCompany(mapper.getCompany(companyTO));
   }
 }

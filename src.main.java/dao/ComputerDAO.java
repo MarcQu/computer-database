@@ -33,6 +33,7 @@ public class ComputerDAO {
   private static final String SEARCH_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id IS NOT NULL AND computer.name LIKE ? ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   private Logger logger;
+  @Autowired
   private ComputerMapper mapper;
 
   @Autowired
@@ -45,7 +46,6 @@ public class ComputerDAO {
   @Autowired
   private ComputerDAO() throws SQLException {
     this.logger = LoggerFactory.getLogger(ComputerDAO.class);
-    this.mapper = ComputerMapper.getInstance();
   }
 
   /**
@@ -94,37 +94,19 @@ public class ComputerDAO {
 
     if (search == null || "".equals(search)) {
       if ("desc".equals(sort)) {
-        computers = template.query(LIST_DESC, new Object[] {nombre, offset}, this.mapper);
+        computers = template.query(LIST_DESC, new Object[] {nombre, offset}, mapper);
       } else {
-        computers = template.query(LIST_ASC, new Object[] {nombre, offset}, this.mapper);
+        computers = template.query(LIST_ASC, new Object[] {nombre, offset}, mapper);
       }
     } else {
       if ("desc".equals(sort)) {
-        computers = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
+        computers = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, mapper);
       } else {
-        computers = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
+        computers = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, mapper);
       }
     }
     return computers;
   }
-
-//JdbcTemplate template = new JdbcTemplate(dataSource);
-//List<Computer> computers = new ArrayList<Computer>();
-//
-//if (search == null || "".equals(search)) {
-//  if ("desc".equals(sort)) {
-//    computers = template.query(LIST_DESC, new Object[] {nombre, offset}, this.mapper);
-//  } else {
-//    computers = template.query(LIST_ASC, new Object[] {nombre, offset}, this.mapper);
-//  }
-//} else {
-//  if ("desc".equals(sort)) {
-//    computers = template.query(SEARCH_DESC, new Object[] {search, search, nombre, offset}, this.mapper);
-//  } else {
-//    computers = template.query(SEARCH_ASC, new Object[] {search, search, nombre, offset}, this.mapper);
-//  }
-//}
-//return computers;
 
   /**
    * Affiche les informations d'un ordinateur contenu dans la table computer.
@@ -134,7 +116,7 @@ public class ComputerDAO {
    */
   public List<Computer> showComputerDetails(Computer computer) throws SQLException {
     JdbcTemplate template = new JdbcTemplate(dataSource);
-    return template.query(SHOW, new Object[] {computer.getId(), computer.getId()}, this.mapper);
+    return template.query(SHOW, new Object[] {computer.getId(), computer.getId()}, mapper);
   }
 
   /**

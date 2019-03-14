@@ -33,6 +33,7 @@ public class CompanyDAO {
   private static final String DELETE = "DELETE FROM company WHERE id = ?";
   private static final String DELETE_COMPUTERS = "DELETE FROM computer WHERE company_id = ?";
   private Logger logger;
+  @Autowired
   private CompanyMapper mapper;
 
   @Autowired
@@ -42,10 +43,8 @@ public class CompanyDAO {
    * CompanyFactory contient les méthodes spécifiques de la table company.
    * @throws SQLException SQLException
    */
-  @Autowired
   private CompanyDAO() throws SQLException {
     this.logger = LoggerFactory.getLogger(CompanyDAO.class);
-    this.mapper = CompanyMapper.getInstance();
   }
 
   /**
@@ -87,23 +86,22 @@ public class CompanyDAO {
    * @param sort le sens de triage
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
-   * @throws NumberFormatException NumberFormatException
    */
-  public List<Company> listCompanies(int nombre, int offset, String search, String sort) throws SQLException, NumberFormatException {
+  public List<Company> listCompanies(int nombre, int offset, String search, String sort) throws SQLException {
     JdbcTemplate template = new JdbcTemplate(dataSource);
     List<Company> companies = new ArrayList<>();
 
     if (search == null || "".equals(search)) {
       if ("desc".equals(sort)) {
-        companies = template.query(LIST_DESC, new Object[] {nombre, offset}, this.mapper);
+        companies = template.query(LIST_DESC, new Object[] {nombre, offset}, mapper);
       } else {
-        companies = template.query(LIST_ASC, new Object[] {nombre, offset}, this.mapper);
+        companies = template.query(LIST_ASC, new Object[] {nombre, offset}, mapper);
       }
     } else {
       if ("desc".equals(sort)) {
-        companies = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
+        companies = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, mapper);
       } else {
-        companies = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
+        companies = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, mapper);
       }
     }
     return companies;
@@ -116,7 +114,7 @@ public class CompanyDAO {
    */
   public List<Company> listCompaniesAll() throws SQLException {
     JdbcTemplate template = new JdbcTemplate(dataSource);
-    List<Company> companies = template.query(LIST_ALL, this.mapper);
+    List<Company> companies = template.query(LIST_ALL, mapper);
     return companies;
   }
 
@@ -128,16 +126,15 @@ public class CompanyDAO {
    */
   public List<Company> showCompanyDetails(Company company) throws SQLException {
     JdbcTemplate template = new JdbcTemplate(dataSource);
-    return template.query(SHOW, new Object[] {company.getId()}, this.mapper);
+    return template.query(SHOW, new Object[] {company.getId()}, mapper);
   }
 
   /**
    * Ajoute une compagnie dans la table company.
    * @param company la compagnie à ajouter
    * @throws SQLException             SQLException
-   * @throws IllegalArgumentException IllegalArgumentException
    */
-  public void createCompany(Company company) throws SQLException, IllegalArgumentException {
+  public void createCompany(Company company) throws SQLException {
     JdbcTemplate template = new JdbcTemplate(dataSource);
     template.update(CREATE, company.getName());
   }

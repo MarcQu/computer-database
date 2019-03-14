@@ -8,11 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import dto.ComputerTO;
 import model.Company;
 import model.Computer;
 
+@Component
 public class ComputerMapper implements RowMapper<Computer> {
   private static ComputerMapper instance = null;
 

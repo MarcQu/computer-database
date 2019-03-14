@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import dto.CompanyTO;
 import model.Company;
 
+@Component
 public class CompanyMapper implements RowMapper<Company> {
   private static CompanyMapper instance = null;
 
