@@ -15,7 +15,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="index.jsp"> Application - Computer Database </a>
+            <a class="navbar-brand" href="/Computer-database/"> Application - Computer Database </a>
         </div>
     </header>
 
@@ -33,7 +33,8 @@
                     <form id="searchForm" action="/Computer-database/ComputerMenu" method="GET" class="form-inline">
                         <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" value="${search}" />
                         <input type="hidden" name="nombre" value="10" />
-                        <input type="hidden" name="page" value="1" />                        
+                        <input type="hidden" name="page" value="1" />       
+                        <input type="hidden" name="sort" value="" />                 
                         <input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
                     </form>
                 </div>

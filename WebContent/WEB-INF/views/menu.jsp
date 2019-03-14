@@ -14,7 +14,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="index.jsp"> Application - Accueil </a>
+            <a class="navbar-brand"> Application - Accueil </a>
         </div>
     </header>
 
@@ -25,8 +25,8 @@
                     <h1>Accueil</h1>
                     <br/>
                     <h3>Séléctioner une table : </h3>
-					<h3><a href="/Computer-database/CompanyMenu?nombre=10&page=1&sort=asc">Company</a></h3>
-					<h3><a href="/Computer-database/ComputerMenu?nombre=10&page=1&sort=asc">Computer</a></h3>
+					<h3><a href="/Computer-database/CompanyMenu?nombre=10&page=1&sort=asc&search=">Company</a></h3>
+					<h3><a href="/Computer-database/ComputerMenu?nombre=10&page=1&sort=asc&search=">Computer</a></h3>
                 </div>
             </div>
         </div>

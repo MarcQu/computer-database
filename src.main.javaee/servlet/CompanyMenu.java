@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +21,7 @@ import service.CompanyService;
 /**
  * Servlet implementation class Company.
  */
-@WebServlet("/CompanyMenu")
+//@WebServlet("/CompanyMenu")
 public class CompanyMenu extends HttpServlet {
   private static final long serialVersionUID = 1L;
   private static final String VUE = "/WEB-INF/views/companyMenu.jsp";
