@@ -102,24 +102,17 @@ public class ComputerMapper implements RowMapper<Computer> {
     Computer computer = new Computer();
     computer.setId(rs.getInt("id"));
     computer.setName(rs.getString("name"));
-    if (rs.getTimestamp("introduced") != null && !"".equals(rs.getString("introduced"))) {
-      computer.setIntroduced(rs.getTimestamp("introduced").toLocalDateTime().toLocalDate());
-    } else {
-      computer.setIntroduced(null);
+    if (rs.getString("introduced") != null && !"0000-00-00 00:00:00".equals(rs.getString("introduced"))) {
+      computer.setIntroduced(Timestamp.valueOf(rs.getString("introduced")).toLocalDateTime().toLocalDate());
     }
-    if (rs.getTimestamp("discontinued") != null && !"".equals(rs.getString("discontinued"))) {
-      computer.setIntroduced(rs.getTimestamp("discontinued").toLocalDateTime().toLocalDate());
-    } else {
-      computer.setDiscontinued(null);
+    if (rs.getString("discontinued") != null && !"0000-00-00 00:00:00".equals(rs.getString("discontinued"))) {
+      computer.setDiscontinued(Timestamp.valueOf(rs.getString("discontinued")).toLocalDateTime().toLocalDate());
     }
+
     Company company = new Company();
-    if (rs.getString("company_id") != null && !"".equals(rs.getString("company_id"))) {
-      company.setId(rs.getInt("company_id"));
-      company.setName(rs.getString("company_name"));
-      computer.setCompany(company);
-    } else {
-      computer.setCompany(null);
-    }
+    company.setId(rs.getInt("company_id"));
+    company.setName(rs.getString("company_name"));
+    computer.setCompany(company);
     return computer;
   }
 }

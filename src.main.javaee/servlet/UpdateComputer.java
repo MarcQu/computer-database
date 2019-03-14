@@ -95,7 +95,6 @@ public class UpdateComputer extends HttpServlet {
     String companyId = request.getParameter("companyId");
 
     ArrayList<String> champs = new ArrayList<String>();
-    champs.add("company_id");
     if (computerName != "") {
       champs.add("name");
     }
@@ -105,6 +104,7 @@ public class UpdateComputer extends HttpServlet {
     if (discontinued.toString() != "") {
       champs.add("discontinued");
     }
+    champs.add("company_id");
 
     ComputerTO computerTO = new ComputerTO();
     computerTO.setId(computerId);

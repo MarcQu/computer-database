@@ -101,9 +101,9 @@ public class CompanyDAO {
       }
     } else {
       if ("desc".equals(sort)) {
-        companies = template.query(SEARCH_DESC, new Object[] {search, nombre, offset}, this.mapper);
+        companies = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
       } else {
-        companies = template.query(SEARCH_ASC, new Object[] {search, nombre, offset}, this.mapper);
+        companies = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
       }
     }
     return companies;

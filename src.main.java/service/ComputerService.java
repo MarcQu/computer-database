@@ -76,7 +76,7 @@ public class ComputerService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public ArrayList<Computer> showComputerDetails(ComputerTO computerTO) throws SQLException {
+  public List<Computer> showComputerDetails(ComputerTO computerTO) throws SQLException {
     return this.computerFactory.showComputerDetails(this.mapper.getComputer(computerTO));
   }
 
