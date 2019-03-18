@@ -83,8 +83,7 @@ public class CompanyService {
    * @throws SpecialCharacterException SpecialCharacterException
    */
   public void create(CompanyTO companyTO) throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException {
-    this.validator.validateEmptyName(companyTO.getName());
-    this.validator.validateSpecialCharaterName(companyTO.getName());
+    this.validator.validate(companyTO);
     this.companyDAO.create(this.mapper.getCompany(companyTO));
   }
 
@@ -96,9 +95,8 @@ public class CompanyService {
    * @throws SpecialCharacterException SpecialCharacterException
    */
   public void update(CompanyTO companyTO) throws SQLException, EmptyNameException, SpecialCharacterException {
-    this.validator.validateEmptyName(companyTO.getName());
+    this.validator.validate(companyTO);
     this.validator.validateSpecialCharaterId(companyTO.getId());
-    this.validator.validateSpecialCharaterName(companyTO.getName());
     this.companyDAO.update(this.mapper.getCompany(companyTO));
   }
 

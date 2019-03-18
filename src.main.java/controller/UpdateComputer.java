@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +27,7 @@ import service.ComputerService;
 public class UpdateComputer {
   public static final String VUE = "updateComputer";
   private Logger logger;
-
-  @Autowired
   private ComputerService computerService;
-
-  @Autowired
   private CompanyService companyService;
 
   /**
@@ -40,7 +35,7 @@ public class UpdateComputer {
    * @param computerService le service de computer
    * @param companyService le service de company
    */
-  public void init(ComputerService computerService, CompanyService companyService) {
+  public UpdateComputer(ComputerService computerService, CompanyService companyService) {
     this.logger = LoggerFactory.getLogger(UpdateComputer.class);
     this.computerService = computerService;
     this.companyService = companyService;

@@ -79,14 +79,7 @@ public class ComputerService {
    */
   public void create(ComputerTO computerTO)
       throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException, DatePrecedenceException, DateFormatException {
-    this.validator.validateEmptyName(computerTO.getName());
-    this.validator.validateIntroducedFormat(computerTO.getIntroduced());
-    this.validator.validateDiscontinuedFormat(computerTO.getDiscontinued());
-    this.validator.validateSpecialCharaterName(computerTO.getName());
-    this.validator.validateSpecialCharaterIntroduced(computerTO.getIntroduced());
-    this.validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
-    this.validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
-    this.validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
+    this.validator.validate(computerTO);
     this.computerDAO.create(this.mapper.getComputer(computerTO));
   }
 
@@ -100,14 +93,8 @@ public class ComputerService {
    * @throws DateFormatException DateFormatException
    */
   public void update(ComputerTO computerTO) throws SQLException, EmptyNameException, SpecialCharacterException, DatePrecedenceException, DateFormatException {
-    this.validator.validateEmptyName(computerTO.getName());
-    this.validator.validateIntroducedFormat(computerTO.getIntroduced());
-    this.validator.validateDiscontinuedFormat(computerTO.getDiscontinued());
-    this.validator.validateSpecialCharaterName(computerTO.getName());
-    this.validator.validateSpecialCharaterIntroduced(computerTO.getIntroduced());
-    this.validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
-    this.validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
-    this.validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
+    this.validator.validate(computerTO);
+    this.validator.validateSpecialCharaterId(computerTO.getId());
     this.computerDAO.update(this.mapper.getComputer(computerTO));
   }
 

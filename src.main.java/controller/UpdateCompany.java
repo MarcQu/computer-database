@@ -27,7 +27,7 @@ public class UpdateCompany {
    * Initialise les instances.
    * @param companyService le service
    */
-  public void init(CompanyService companyService) {
+  public UpdateCompany(CompanyService companyService) {
     this.logger = LoggerFactory.getLogger(UpdateCompany.class);
     this.companyService = companyService;
   }
