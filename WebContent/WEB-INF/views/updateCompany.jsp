@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ page import="model.Company"%>
 <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ page import="model.Company"%>
 <%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>
@@ -16,6 +17,9 @@
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <a class="navbar-brand" href="/Computer-database/"> Application - Company Database </a>
+            <div style="float: right;">
+            	<a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}&search=${search}&sort=${sort}&lang=en">English</a> | <a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}&search=${search}&sort=${sort}&lang=fr">Français</a>
+            </div>
         </div>
     </header>
 
@@ -24,23 +28,23 @@
             <h1 id="homeTitle">
                 <c:out value="${nombreCompanies}"/>
                 <c:choose>
-                	<c:when test="${nombreCompanies > 1}">Companies found</c:when>
-                	<c:otherwise>Company found</c:otherwise>
+                	<c:when test="${nombreCompanies > 1}"><spring:message code="user.companies"/></c:when>
+                	<c:otherwise><spring:message code="user.company"/></c:otherwise>
                 </c:choose>
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
                     <form id="searchForm" action="/Computer-database/CompanyMenu?sort=" method="GET" class="form-inline">
-                        <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" value="${search}" />
+                        <input type="search" id="searchbox" name="search" class="form-control" placeholder="<spring:message code="user.search"/>" value="${search}" />
                         <input type="hidden" name="nombre" value="10" />
                         <input type="hidden" name="page" value="1" />
                         <input type="hidden" name="sort" value="" />                 
-                        <input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
+                        <input type="submit" id="searchsubmit" value="<spring:message code="user.filter"/>" class="btn btn-primary" />
                     </form>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" id="addCompany" href="/Computer-database/CreateCompany">Add Company</a> 
-                    <a class="btn btn-default" id="editCompany" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
+                    <a class="btn btn-success" id="addCompany" href="/Computer-database/CreateCompany"><spring:message code="user.addCompany"/></a> 
+                    <a class="btn btn-default" id="editCompany" href="#" onclick="$.fn.toggleEditMode();"><spring:message code="user.edit"/></a>
                 </div>
             </div>
         </div>
@@ -63,7 +67,7 @@
                             </span>
                         </th>
                         <th>
-                            Company name
+                            <spring:message code="user.nameCompany"/>
                             <c:choose>
                             	<c:when test="${sort eq 'desc'}">
                             		<a href="/Computer-database/CompanyMenu?nombre=${nombre}&page=${page}&search=${search}&sort=asc" onclick="" class="fa fa-fw fa-sort"></a>
