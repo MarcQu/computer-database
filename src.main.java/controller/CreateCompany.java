@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,15 +20,15 @@ import service.CompanyService;
 public class CreateCompany {
   public static final String VUE = "createCompany";
   private Logger logger;
-
-  @Autowired
   private CompanyService companyService;
 
   /**
    * Initialise les instances.
+   * @param companyService le service
    */
-  public void init() {
+  public CreateCompany(CompanyService companyService) {
     this.logger = LoggerFactory.getLogger(CreateCompany.class);
+    this.companyService = companyService;
   }
 
   @RequestMapping(method = RequestMethod.GET)
@@ -39,11 +38,10 @@ public class CreateCompany {
 
   @RequestMapping(method = RequestMethod.POST)
   public String doPost(@RequestParam("companyName") String name, Model model) {
-    init();
     CompanyTO companyTO = new CompanyTO();
     companyTO.setName(name);
     try {
-      companyService.createCompany(companyTO);
+      this.companyService.create(companyTO);
       model.addAttribute("success", "Succès de la création");
     } catch (IllegalArgumentException e) {
       this.logger.error(e.toString());

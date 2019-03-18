@@ -53,7 +53,6 @@ public class SpringConfiguration implements WebApplicationInitializer, WebMvcCon
       viewResolver.setViewClass(JstlView.class);
       viewResolver.setPrefix("/WEB-INF/views/");
       viewResolver.setSuffix(".jsp");
-
       return viewResolver;
   }
 

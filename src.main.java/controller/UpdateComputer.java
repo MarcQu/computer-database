@@ -37,9 +37,13 @@ public class UpdateComputer {
 
   /**
    * Initialise les instances.
+   * @param computerService le service de computer
+   * @param companyService le service de company
    */
-  public void init() {
+  public void init(ComputerService computerService, CompanyService companyService) {
     this.logger = LoggerFactory.getLogger(UpdateComputer.class);
+    this.computerService = computerService;
+    this.companyService = companyService;
   }
 
   @RequestMapping(method = RequestMethod.GET)
@@ -47,8 +51,8 @@ public class UpdateComputer {
     ComputerTO computerTO = new ComputerTO();
     computerTO.setId(id);
     try {
-      Computer computer = computerService.showComputerDetails(computerTO).get(0);
-      List<CompanyTO> companies = companyService.listCompaniesAll();
+      Computer computer = this.computerService.showDetails(computerTO).get(0);
+      List<CompanyTO> companies = this.companyService.listAll();
       model.addAttribute("computerId", id);
       model.addAttribute("computerName", computer.getName());
       model.addAttribute("introduced", computer.getIntroduced());
@@ -75,13 +79,13 @@ public class UpdateComputer {
     CompanyTO companyTO = new CompanyTO();
     companyTO.setId(companyId);
     try {
-      List<Company> company = companyService.showCompanyDetails(companyTO);
+      List<Company> company = this.companyService.showDetails(companyTO);
       if (company.size() > 0) {
         computerTO.setCompany(company.get(0));
       }
-      List<CompanyTO> companies = companyService.listCompaniesAll();
+      List<CompanyTO> companies = this.companyService.listAll();
       model.addAttribute("companies", companies);
-      computerService.updateComputer(computerTO);
+      this.computerService.update(computerTO);
 
       displayInformation(model, computerTO, search, sort, nombre, page);
       model.addAttribute("success", "Succès de la mise à jour");
@@ -138,7 +142,7 @@ public class UpdateComputer {
    * @throws SQLException SQLException
    */
   private void displayInformation(Model model, ComputerTO computerTO, String search, String sort, int nombre, int page) throws SQLException {
-    Computer computer = computerService.showComputerDetails(computerTO).get(0);
+    Computer computer = this.computerService.showDetails(computerTO).get(0);
     model.addAttribute("computerId", computer.getId());
     model.addAttribute("computerName", computer.getName());
     model.addAttribute("introduced", computer.getIntroduced());

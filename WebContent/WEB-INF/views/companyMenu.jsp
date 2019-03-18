@@ -130,7 +130,7 @@
 	function deleteCompany(){
 		var companies = $("input.cb");
 		var selected = [];
-		if (confirm("Are you sure you want to delete the selected computers?")){
+		if (confirm("Are you sure you want to delete the selected companies?")){
 			for(var i = 0; i < companies.length; i++){
 				if (companies[i].checked) {
 					selected.push(companies[i].value);

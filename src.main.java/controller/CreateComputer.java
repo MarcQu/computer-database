@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,25 +26,24 @@ import service.ComputerService;
 public class CreateComputer {
   public static final String VUE = "createComputer";
   private Logger logger;
-
-  @Autowired
   private ComputerService computerService;
-
-  @Autowired
   private CompanyService companyService;
 
   /**
    * Initialise les instances.
+   * @param computerService le service de computer
+   * @param companyService le service de company
    */
-  public void init() {
+  public CreateComputer(ComputerService computerService, CompanyService companyService) {
     this.logger = LoggerFactory.getLogger(CreateComputer.class);
+    this.computerService = computerService;
+    this.companyService = companyService;
   }
 
   @RequestMapping(method = RequestMethod.GET)
   public String doGet(Model model) {
-    init();
     try {
-      List<CompanyTO> companies = companyService.listCompaniesAll();
+      List<CompanyTO> companies = this.companyService.listAll();
       model.addAttribute("companies", companies);
     } catch (SQLException e) {
       this.logger.error(e.toString());
@@ -55,7 +53,6 @@ public class CreateComputer {
 
   @RequestMapping(method = RequestMethod.POST)
   public String doPost(@RequestParam("computerName") String name, @RequestParam("introduced") String introduced, @RequestParam("discontinued") String discontinued, @RequestParam("companyId") String companyId, Model model) {
-    init();
     ComputerTO computerTO = new ComputerTO();
     computerTO.setName(name);
     computerTO.setIntroduced(introduced);
@@ -64,13 +61,13 @@ public class CreateComputer {
     companyTO.setId(companyId);
 
     try {
-      List<Company> company = companyService.showCompanyDetails(companyTO);
+      List<Company> company = this.companyService.showDetails(companyTO);
       if (company.size() > 0) {
         computerTO.setCompany(company.get(0));
       }
-      List<CompanyTO> companies = companyService.listCompaniesAll();
+      List<CompanyTO> companies = this.companyService.listAll();
       model.addAttribute("companies", companies);
-      computerService.createComputer(computerTO);
+      this.computerService.create(computerTO);
       model.addAttribute("success", "Succès de la création");
     } catch (SQLException e) {
       this.logger.error(e.toString());

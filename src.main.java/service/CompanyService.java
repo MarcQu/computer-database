@@ -3,7 +3,6 @@ package service;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dao.CompanyDAO;
@@ -16,30 +15,20 @@ import validator.ValidatorCompany;
 
 @Service
 public class CompanyService {
-  private static CompanyService instance = null;
-  @Autowired
-  private CompanyDAO companyFactory;
-  @Autowired
+  private CompanyDAO companyDAO;
   private ValidatorCompany validator;
-  @Autowired
   private CompanyMapper mapper;
   /**
-   * Constructeur vide de la classe CompanyService.
+   * Constructeur de la classe CompanyService.
+   * @param companyDAO la dao
+   * @param validator le validator
+   * @param mapper le mapper
    * @throws SQLException SQLException
    */
-  private CompanyService() throws SQLException {
-  }
-
-  /**
-   * Méthode qui retourne l'instance unique de la classe CompanyService.
-   * @return l'instance de la classe CompanyService
-   * @throws SQLException SQLException
-   */
-  public static CompanyService getInstance() throws SQLException {
-    if (CompanyService.instance == null) {
-      CompanyService.instance = new CompanyService();
-    }
-    return CompanyService.instance;
+  public CompanyService(CompanyDAO companyDAO, ValidatorCompany validator, CompanyMapper mapper) throws SQLException {
+    this.companyDAO = companyDAO;
+    this.validator = validator;
+    this.mapper = mapper;
   }
 
   /**
@@ -48,8 +37,8 @@ public class CompanyService {
    * @return nombre le nombre de ligne
    * @throws SQLException SQLException
    */
-  public int countCompanies(String search) throws SQLException {
-    return this.companyFactory.countCompanies(search);
+  public int count(String search) throws SQLException {
+    return this.companyDAO.count(search);
   }
 
   /**
@@ -61,9 +50,9 @@ public class CompanyService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<CompanyTO> listCompanies(int nombre, int offset, String search, String sort)
+  public List<CompanyTO> list(int nombre, int offset, String search, String sort)
       throws SQLException {
-    return mapper.getCompanyTO(this.companyFactory.listCompanies(nombre, offset, search, sort));
+    return this.mapper.getCompanyTO(this.companyDAO.list(nombre, offset, search, sort));
   }
 
   /**
@@ -71,8 +60,8 @@ public class CompanyService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<CompanyTO> listCompaniesAll() throws SQLException {
-    return mapper.getCompanyTO(this.companyFactory.listCompaniesAll());
+  public List<CompanyTO> listAll() throws SQLException {
+    return this.mapper.getCompanyTO(this.companyDAO.listAll());
   }
 
   /**
@@ -81,8 +70,8 @@ public class CompanyService {
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Company> showCompanyDetails(CompanyTO companyTO) throws SQLException {
-    return this.companyFactory.showCompanyDetails(mapper.getCompany(companyTO));
+  public List<Company> showDetails(CompanyTO companyTO) throws SQLException {
+    return this.companyDAO.showDetails(this.mapper.getCompany(companyTO));
   }
 
   /**
@@ -93,10 +82,10 @@ public class CompanyService {
    * @throws EmptyNameException EmptyNameException
    * @throws SpecialCharacterException SpecialCharacterException
    */
-  public void createCompany(CompanyTO companyTO) throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException {
-    validator.validateEmptyName(companyTO.getName());
-    validator.validateSpecialCharaterName(companyTO.getName());
-    this.companyFactory.createCompany(mapper.getCompany(companyTO));
+  public void create(CompanyTO companyTO) throws SQLException, IllegalArgumentException, EmptyNameException, SpecialCharacterException {
+    this.validator.validateEmptyName(companyTO.getName());
+    this.validator.validateSpecialCharaterName(companyTO.getName());
+    this.companyDAO.create(this.mapper.getCompany(companyTO));
   }
 
   /**
@@ -106,11 +95,11 @@ public class CompanyService {
    * @throws EmptyNameException EmptyNameException
    * @throws SpecialCharacterException SpecialCharacterException
    */
-  public void updateCompany(CompanyTO companyTO) throws SQLException, EmptyNameException, SpecialCharacterException {
-    validator.validateEmptyName(companyTO.getName());
-    validator.validateSpecialCharaterId(companyTO.getId());
-    validator.validateSpecialCharaterName(companyTO.getName());
-    this.companyFactory.updateCompany(mapper.getCompany(companyTO));
+  public void update(CompanyTO companyTO) throws SQLException, EmptyNameException, SpecialCharacterException {
+    this.validator.validateEmptyName(companyTO.getName());
+    this.validator.validateSpecialCharaterId(companyTO.getId());
+    this.validator.validateSpecialCharaterName(companyTO.getName());
+    this.companyDAO.update(this.mapper.getCompany(companyTO));
   }
 
   /**
@@ -118,7 +107,7 @@ public class CompanyService {
    * @param companyTO la compagnie à afficher
    * @throws SQLException SQLException
    */
-  public void deleteCompany(CompanyTO companyTO) throws SQLException {
-    this.companyFactory.deleteCompany(mapper.getCompany(companyTO));
+  public void delete(CompanyTO companyTO) throws SQLException {
+    this.companyDAO.delete(this.mapper.getCompany(companyTO));
   }
 }

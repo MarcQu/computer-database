@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +21,15 @@ import service.CompanyService;
 public class UpdateCompany {
   public static final String VUE = "updateCompany";
   private Logger logger;
-
-  @Autowired
   private CompanyService companyService;
 
   /**
    * Initialise les instances.
+   * @param companyService le service
    */
-  public void init() {
+  public void init(CompanyService companyService) {
     this.logger = LoggerFactory.getLogger(UpdateCompany.class);
+    this.companyService = companyService;
   }
 
   @RequestMapping(method = RequestMethod.GET)
@@ -38,7 +37,7 @@ public class UpdateCompany {
     CompanyTO companyTO = new CompanyTO();
     companyTO.setId(id);
     try {
-      Company company = companyService.showCompanyDetails(companyTO).get(0);
+      Company company = this.companyService.showDetails(companyTO).get(0);
       model.addAttribute("companyId", id);
       model.addAttribute("companyName", company.getName());
       model.addAttribute("nombre", nombre);
@@ -57,7 +56,7 @@ public class UpdateCompany {
     companyTO.setId(id);
     companyTO.setName(name);
     try {
-      companyService.updateCompany(companyTO);
+      this.companyService.update(companyTO);
       displayInformation(model, companyTO, search, sort, nombre, page);
       model.addAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
@@ -95,7 +94,7 @@ public class UpdateCompany {
    * @throws SQLException SQLException
    */
   private void displayInformation(Model model, CompanyTO companyTO, String search, String sort, int nombre, int page) throws SQLException {
-    Company company = companyService.showCompanyDetails(companyTO).get(0);
+    Company company = this.companyService.showDetails(companyTO).get(0);
     model.addAttribute("companyId", company.getId());
     model.addAttribute("companyName", company.getName());
     model.addAttribute("nombre", nombre);

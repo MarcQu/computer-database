@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,35 +20,32 @@ import service.ComputerService;
 public class DeleteComputer {
   public static final String VUE = "computerMenu";
   private Logger logger;
-
-  @Autowired
   private ComputerService computerService;
-
-  @Autowired
-  private CompanyService companyService;
 
   /**
    * Initialise les instances.
+   * @param computerService le service de computer
+   * @param companyService le service de company
    */
-  public void init() {
+  public void init(ComputerService computerService, CompanyService companyService) {
     this.logger = LoggerFactory.getLogger(DeleteComputer.class);
+    this.computerService = computerService;
   }
 
   @RequestMapping(method = RequestMethod.GET)
   public String doGet(@RequestParam("search") String search, @RequestParam("sort") String sort, @RequestParam("nombre") int nombre, @RequestParam("page") int page, @RequestParam("selected") String selected, Model model) {
-    init();
     try {
       if (selected != null) {
         String[] selectedComputers = selected.split(",");
         for (String id : selectedComputers) {
           ComputerTO computerTO = new ComputerTO();
           computerTO.setId(id);
-          computerService.deleteComputer(computerTO);
+          this.computerService.delete(computerTO);
         }
       }
 
-      int nombreComputers = computerService.countComputers(search);
-      List<ComputerTO> computers = computerService.listComputers(nombre, nombre * (page - 1), search, sort);
+      int nombreComputers = this.computerService.count(search);
+      List<ComputerTO> computers = this.computerService.list(nombre, nombre * (page - 1), search, sort);
       model.addAttribute("nombreComputers", nombreComputers);
       model.addAttribute("computers", computers);
 

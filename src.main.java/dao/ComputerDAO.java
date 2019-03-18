@@ -33,19 +33,20 @@ public class ComputerDAO {
   private static final String SEARCH_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id IS NOT NULL AND computer.name LIKE ? ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String DELETE = "DELETE FROM computer WHERE id = ?";
   private Logger logger;
-  @Autowired
   private ComputerMapper mapper;
-
-  @Autowired
   private HikariDataSource dataSource;
 
   /**
    * ComputerFactory contient les méthodes spécifiques à la table computer.
+   * @param mapper le mapper de computer
+   * @param dataSource la dataSource
    * @throws SQLException SQLException
    */
   @Autowired
-  private ComputerDAO() throws SQLException {
+  public ComputerDAO(ComputerMapper mapper, HikariDataSource dataSource) throws SQLException {
     this.logger = LoggerFactory.getLogger(ComputerDAO.class);
+    this.mapper = mapper;
+    this.dataSource = dataSource;
   }
 
   /**
@@ -54,8 +55,8 @@ public class ComputerDAO {
    * @return nombre le nombre de ligne
    * @throws SQLException SQLException
    */
-  public int countComputers(String search) throws SQLException {
-    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(dataSource);
+  public int count(String search) throws SQLException {
+    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(this.dataSource);
     MapSqlParameterSource params = new MapSqlParameterSource();
     int nombre = 0;
     if (search == null || "".equals(search)) {
@@ -76,21 +77,21 @@ public class ComputerDAO {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Computer> listComputers(int nombre, int offset, String search, String sort) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
+  public List<Computer> list(int nombre, int offset, String search, String sort) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
     List<Computer> computers = new ArrayList<Computer>();
 
     if (search == null || "".equals(search)) {
       if ("desc".equals(sort)) {
-        computers = template.query(LIST_DESC, new Object[] {nombre, offset}, mapper);
+        computers = template.query(LIST_DESC, new Object[] {nombre, offset}, this.mapper);
       } else {
-        computers = template.query(LIST_ASC, new Object[] {nombre, offset}, mapper);
+        computers = template.query(LIST_ASC, new Object[] {nombre, offset}, this.mapper);
       }
     } else {
       if ("desc".equals(sort)) {
-        computers = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, mapper);
+        computers = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
       } else {
-        computers = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, mapper);
+        computers = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
       }
     }
     return computers;
@@ -102,9 +103,9 @@ public class ComputerDAO {
    * @return computers la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Computer> showComputerDetails(Computer computer) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
-    return template.query(SHOW, new Object[] {computer.getId(), computer.getId()}, mapper);
+  public List<Computer> showDetails(Computer computer) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
+    return template.query(SHOW, new Object[] {computer.getId(), computer.getId()}, this.mapper);
   }
 
   /**
@@ -113,8 +114,8 @@ public class ComputerDAO {
    * @throws SQLException             SQLException
    * @throws IllegalArgumentException IllegalArgumentException
    */
-  public void createComputer(Computer computer) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
+  public void create(Computer computer) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
     Timestamp introduced = null;
     Timestamp discontinued = null;
     Integer companyId = null;
@@ -136,8 +137,8 @@ public class ComputerDAO {
    * @param computer l'ordinateur à mettre à jour
    * @throws SQLException SQLException
    */
-  public void updateComputer(Computer computer) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
+  public void update(Computer computer) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
     Timestamp introduced = null;
     Timestamp discontinued = null;
     Integer companyId = null;
@@ -159,8 +160,8 @@ public class ComputerDAO {
    * @param computer l'ordinateur à supprimer
    * @throws SQLException SQLException
    */
-  public void deleteComputer(Computer computer) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
+  public void delete(Computer computer) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
     template.update(DELETE, computer.getId());
   }
 }

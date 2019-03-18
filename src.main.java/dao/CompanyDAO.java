@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -33,18 +32,19 @@ public class CompanyDAO {
   private static final String DELETE = "DELETE FROM company WHERE id = ?";
   private static final String DELETE_COMPUTERS = "DELETE FROM computer WHERE company_id = ?";
   private Logger logger;
-  @Autowired
   private CompanyMapper mapper;
-
-  @Autowired
   private HikariDataSource dataSource;
 
   /**
    * CompanyFactory contient les méthodes spécifiques de la table company.
+   * @param mapper le mapper de company
+   * @param dataSource la dataSource
    * @throws SQLException SQLException
    */
-  private CompanyDAO() throws SQLException {
+  public CompanyDAO(CompanyMapper mapper, HikariDataSource dataSource) throws SQLException {
     this.logger = LoggerFactory.getLogger(CompanyDAO.class);
+    this.mapper = mapper;
+    this.dataSource = dataSource;
   }
 
   /**
@@ -53,8 +53,8 @@ public class CompanyDAO {
    * @return nombre le nombre de ligne
    * @throws SQLException SQLException
    */
-  public int countCompanies(String search) throws SQLException {
-    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(dataSource);
+  public int count(String search) throws SQLException {
+    NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(this.dataSource);
     MapSqlParameterSource params = new MapSqlParameterSource();
     int nombre = 0;
     if (search == null || "".equals(search)) {
@@ -75,21 +75,21 @@ public class CompanyDAO {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Company> listCompanies(int nombre, int offset, String search, String sort) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
+  public List<Company> list(int nombre, int offset, String search, String sort) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
     List<Company> companies = new ArrayList<>();
 
     if (search == null || "".equals(search)) {
       if ("desc".equals(sort)) {
-        companies = template.query(LIST_DESC, new Object[] {nombre, offset}, mapper);
+        companies = template.query(LIST_DESC, new Object[] {nombre, offset}, this.mapper);
       } else {
-        companies = template.query(LIST_ASC, new Object[] {nombre, offset}, mapper);
+        companies = template.query(LIST_ASC, new Object[] {nombre, offset}, this.mapper);
       }
     } else {
       if ("desc".equals(sort)) {
-        companies = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, mapper);
+        companies = template.query(SEARCH_DESC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
       } else {
-        companies = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, mapper);
+        companies = template.query(SEARCH_ASC, new Object[] {new StringBuilder("%").append(search).append("%").toString(), nombre, offset}, this.mapper);
       }
     }
     return companies;
@@ -100,9 +100,9 @@ public class CompanyDAO {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Company> listCompaniesAll() throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
-    List<Company> companies = template.query(LIST_ALL, mapper);
+  public List<Company> listAll() throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
+    List<Company> companies = template.query(LIST_ALL, this.mapper);
     return companies;
   }
 
@@ -112,9 +112,9 @@ public class CompanyDAO {
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Company> showCompanyDetails(Company company) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
-    return template.query(SHOW, new Object[] {company.getId()}, mapper);
+  public List<Company> showDetails(Company company) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
+    return template.query(SHOW, new Object[] {company.getId()}, this.mapper);
   }
 
   /**
@@ -122,8 +122,8 @@ public class CompanyDAO {
    * @param company la compagnie à ajouter
    * @throws SQLException             SQLException
    */
-  public void createCompany(Company company) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
+  public void create(Company company) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
     template.update(CREATE, company.getName());
   }
 
@@ -132,8 +132,8 @@ public class CompanyDAO {
    * @param company la compagnie à mettre à jour
    * @throws SQLException SQLException
    */
-  public void updateCompany(Company company) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
+  public void update(Company company) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
     template.update(UPDATE, company.getName(), company.getId());
   }
 
@@ -143,8 +143,8 @@ public class CompanyDAO {
    * @throws SQLException SQLException
    */
   @Transactional
-  public void deleteCompany(Company company) throws SQLException {
-    JdbcTemplate template = new JdbcTemplate(dataSource);
+  public void delete(Company company) throws SQLException {
+    JdbcTemplate template = new JdbcTemplate(this.dataSource);
     template.update(DELETE_COMPUTERS, company.getId());
     template.update(DELETE, company.getId());
   }

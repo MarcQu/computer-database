@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,23 +19,22 @@ import service.ComputerService;
 public class ComputerMenu {
   private static final String VUE = "computerMenu";
   private Logger logger;
-
-  @Autowired
   private ComputerService computerService;
 
   /**
    * Initialise les instances.
+   * @param computerService le service
    */
-  public void init() {
+  public ComputerMenu(ComputerService computerService) {
     this.logger = LoggerFactory.getLogger(ComputerMenu.class);
+    this.computerService = computerService;
   }
 
   @RequestMapping(method = RequestMethod.GET)
   public String doGet(@RequestParam("search") String search, @RequestParam("sort") String sort, @RequestParam("nombre") int nombre, @RequestParam("page") int page, Model model) {
-    init();
     try {
-      int nombreComputers = computerService.countComputers(search);
-      List<ComputerTO> computers = computerService.listComputers(nombre, nombre * (page - 1), search, sort);
+      int nombreComputers = this.computerService.count(search);
+      List<ComputerTO> computers = this.computerService.list(nombre, nombre * (page - 1), search, sort);
       model.addAttribute("nombreComputers", nombreComputers);
       model.addAttribute("computers", computers);
       int pages = nombreComputers / nombre + 1;

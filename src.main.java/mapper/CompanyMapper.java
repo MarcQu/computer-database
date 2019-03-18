@@ -14,27 +14,6 @@ import model.Company;
 
 @Component
 public class CompanyMapper implements RowMapper<Company> {
-  private static CompanyMapper instance = null;
-
-  /**
-   * CompanyMapper contient les méthodes gérant les DTOs.
-   * @throws SQLException SQLException
-   */
-  private CompanyMapper() {
-  }
-
-  /**
-   * Méthode qui retourne l'instance unique de la classe CompanyMapper.
-   * @return l'instance de la classe CompanyMapper
-   * @throws SQLException SQLException
-   */
-  public static CompanyMapper getInstance() {
-    if (CompanyMapper.instance == null) {
-      CompanyMapper.instance = new CompanyMapper();
-    }
-    return CompanyMapper.instance;
-  }
-
   /**
    * Récupère les DTOs.
    * @param companies les compagnies

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,23 +19,22 @@ import service.CompanyService;
 public class CompanyMenu {
   private static final String VUE = "companyMenu";
   private Logger logger;
-
-  @Autowired
   private CompanyService companyService;
 
   /**
    * Initialise les instances.
+   * @param companyService le service
    */
-  public void init() {
+  public CompanyMenu(CompanyService companyService) {
     this.logger = LoggerFactory.getLogger(CompanyMenu.class);
+    this.companyService = companyService;
   }
 
   @RequestMapping(method = RequestMethod.GET)
   public String doGet(@RequestParam("search") String search, @RequestParam("sort") String sort, @RequestParam("nombre") int nombre, @RequestParam("page") int page, Model model) {
-    init();
     try {
-      int nombreCompanies = companyService.countCompanies(search);
-      List<CompanyTO> companies = companyService.listCompanies(nombre, nombre * (page - 1), search, sort);
+      int nombreCompanies = this.companyService.count(search);
+      List<CompanyTO> companies = this.companyService.list(nombre, nombre * (page - 1), search, sort);
       model.addAttribute("nombreCompanies", nombreCompanies);
       model.addAttribute("companies", companies);
       int pages = nombreCompanies / nombre + 1;
