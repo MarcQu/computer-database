@@ -8,9 +8,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/css/main.css" rel="stylesheet" media="screen">
+<link href="<c:url value="/css/bootstrap.min.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value="/css/font-awesome.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value="/css/main.css"/>" rel="stylesheet" media="screen">
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -95,7 +95,7 @@
 	                            <input type="checkbox" name="cb" class="cb" value="${computer.getId()}">
 	                        </td>
 	                        <td>
-	                            <a href="/Computer-database/UpdateComputer?computerId=${computer.getId()}&search=${search}&sort=${sort}" onclick=""><c:out value="${computer.getName()}"/></a>
+	                            <a href="/Computer-database/UpdateComputer?computerId=${computer.getId()}&nombre=${nombre}&page=${page}&search=${search}&sort=${sort}" onclick=""><c:out value="${computer.getName()}"/></a>
 	                        </td>
 	                        <td><c:out value="${computer.getIntroduced()}"/></td>
 	                        <td><c:out value="${computer.getDiscontinued()}"/></td>
@@ -134,9 +134,9 @@
             <a href="/Computer-database/ComputerMenu?nombre=100&page=1&search=${search}&sort=${sort}" onclick="" class="btn btn-default">100</a>
         </div>
     </footer>
-<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
-<script src="${pageContext.request.contextPath}/js/dashboard.js"></script>
+<script src="<c:url value="/js/jquery.min.js"/>"></script>
+<script src="<c:url value="/js/bootstrap.min.js"/>"></script>
+<script src="<c:url value="/js/dashboard.js"/>"></script>
 <script src="jquery.js"></script>
 <script>
 	function deleteComputer(){

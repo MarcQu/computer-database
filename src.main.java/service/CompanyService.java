@@ -1,7 +1,6 @@
 package service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,16 +102,15 @@ public class CompanyService {
   /**
    * Met à jour une compagnie dans la table company.
    * @param companyTO la compagnie à afficher
-   * @param champs les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
    * @throws EmptyNameException EmptyNameException
    * @throws SpecialCharacterException SpecialCharacterException
    */
-  public void updateCompany(CompanyTO companyTO, ArrayList<String> champs) throws SQLException, EmptyNameException, SpecialCharacterException {
+  public void updateCompany(CompanyTO companyTO) throws SQLException, EmptyNameException, SpecialCharacterException {
     validator.validateEmptyName(companyTO.getName());
     validator.validateSpecialCharaterId(companyTO.getId());
     validator.validateSpecialCharaterName(companyTO.getName());
-    this.companyFactory.updateCompany(mapper.getCompany(companyTO), champs);
+    this.companyFactory.updateCompany(mapper.getCompany(companyTO));
   }
 
   /**

@@ -1,7 +1,6 @@
 package service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,14 +91,13 @@ public class ComputerService {
   /**
    * Met à jour un ordinateur dans la table computer.
    * @param computerTO l'ordinateur à mettre à jour
-   * @param champs       les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
    * @throws EmptyNameException EmptyNameException
    * @throws SpecialCharacterException SpecialCharacterException
    * @throws DatePrecedenceException DatePrecedenceException
    * @throws DateFormatException DateFormatException
    */
-  public void updateComputer(ComputerTO computerTO, ArrayList<String> champs) throws SQLException, EmptyNameException, SpecialCharacterException, DatePrecedenceException, DateFormatException {
+  public void updateComputer(ComputerTO computerTO) throws SQLException, EmptyNameException, SpecialCharacterException, DatePrecedenceException, DateFormatException {
     validator.validateEmptyName(computerTO.getName());
     validator.validateIntroducedFormat(computerTO.getIntroduced());
     validator.validateDiscontinuedFormat(computerTO.getDiscontinued());
@@ -108,7 +106,7 @@ public class ComputerService {
     validator.validateSpecialCharaterDiscontinued(computerTO.getDiscontinued());
     validator.validateSpecialCharaterCompanyId(computerTO.getCompany());
     validator.validateDatePrecedence(computerTO.getIntroduced(), computerTO.getDiscontinued());
-    this.computerFactory.updateComputer(mapper.getComputer(computerTO), champs);
+    this.computerFactory.updateComputer(mapper.getComputer(computerTO));
   }
 
   /**

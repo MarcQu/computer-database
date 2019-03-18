@@ -26,6 +26,7 @@ public class ComputerDAO {
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM computer WHERE name like :search";
   private static final String SHOW = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.id = ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id = ?";
   private static final String CREATE = "INSERT INTO computer(name, introduced, discontinued, company_id) values(?, ?, ?, ?)";
+  private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
   private static final String LIST_ASC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id IS NOT NULL ORDER BY name ASC LIMIT ? OFFSET ?";
   private static final String LIST_DESC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id IS NOT NULL ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String SEARCH_ASC = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer LEFT JOIN company ON computer.company_id = company.id WHERE computer.name LIKE ? UNION ALL SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.name as company_name FROM computer RIGHT JOIN company ON computer.company_id = company.id WHERE computer.company_id IS NULL AND computer.id IS NOT NULL AND computer.name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
@@ -133,17 +134,10 @@ public class ComputerDAO {
   /**
    * Met à jour un ordinateur dans la table computer.
    * @param computer l'ordinateur à mettre à jour
-   * @param champs       les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
    */
-  public void updateComputer(Computer computer, ArrayList<String> champs) throws SQLException {
+  public void updateComputer(Computer computer) throws SQLException {
     JdbcTemplate template = new JdbcTemplate(dataSource);
-    StringBuilder query = new StringBuilder("UPDATE computer SET ");
-    for (int i = 0; i < champs.size() - 1; i++) {
-      query.append(champs.get(i)).append(" = ?, ");
-    }
-    query.append(champs.get(champs.size() - 1)).append(" = ? WHERE id = ?");
-
     Timestamp introduced = null;
     Timestamp discontinued = null;
     Integer companyId = null;
@@ -157,7 +151,7 @@ public class ComputerDAO {
     if (computer.getCompany() != null) {
       companyId = computer.getCompany().getId();
     }
-    template.update(query.toString(), computer.getName(), introduced, discontinued, companyId, computer.getId());
+    template.update(UPDATE, computer.getName(), introduced, discontinued, companyId, computer.getId());
   }
 
   /**

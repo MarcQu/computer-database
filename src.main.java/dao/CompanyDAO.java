@@ -24,6 +24,7 @@ public class CompanyDAO {
   private static final String COUNT = "SELECT COUNT(id) AS rowcount FROM company WHERE name like :search";
   private static final String SHOW = "SELECT id, name FROM company WHERE id = ?";
   private static final String CREATE = "INSERT INTO company(name) values(?)";
+  private static final String UPDATE = "UPDATE company SET name = ? WHERE id = ?";
   private static final String LIST_ASC = "SELECT id, name FROM company ORDER BY name ASC LIMIT ? OFFSET ?";
   private static final String LIST_DESC = "SELECT id, name FROM company ORDER BY name DESC LIMIT ? OFFSET ?";
   private static final String SEARCH_ASC = "SELECT id, name FROM company WHERE name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?";
@@ -129,18 +130,11 @@ public class CompanyDAO {
   /**
    * Met à jour une compagnie dans la table company.
    * @param company la compagnie à mettre à jour
-   * @param champs       les champs qui sont prises en compte par la mise à jour
    * @throws SQLException SQLException
    */
-  public void updateCompany(Company company, ArrayList<String> champs) throws SQLException {
-    StringBuilder query = new StringBuilder("UPDATE company SET ");
-    for (int i = 0; i < champs.size() - 1; i++) {
-      query.append(champs.get(i)).append(" = ?, ");
-    }
-    query.append(champs.get(champs.size() - 1)).append(" = ? WHERE id = ?");
-
+  public void updateCompany(Company company) throws SQLException {
     JdbcTemplate template = new JdbcTemplate(dataSource);
-    template.update(query.toString(), company.getName(), company.getId());
+    template.update(UPDATE, company.getName(), company.getId());
   }
 
   /**
