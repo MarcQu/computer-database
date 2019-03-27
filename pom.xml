@@ -1,73 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Computer-database</groupId>
 	<artifactId>Computer-database</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
+	
+	<modules>
+	    <module>core</module>
+	    <module>persistence</module>
+	    <module>service</module>
+	    <module>binding</module>
+	    <module>webapp</module>
+  	</modules>
+  
 	<properties>
+		<junitVersion>4.11</junitVersion>
+		<servletVersion>3.1.0</servletVersion>
 		<mavenCompilerVersion>3.8.0</mavenCompilerVersion>
 		<mavenWarVersion>3.2.1</mavenWarVersion>
 		<mavenCheckstyleVersion>3.0.0</mavenCheckstyleVersion>
 		<slf4jVersion>1.6.1</slf4jVersion>
 		<mockitoVersion>2.24.5</mockitoVersion>
 		<javaxElApiVersion>3.0.0</javaxElApiVersion>
+		<javaxPersistenceApiVersion>1.0.2</javaxPersistenceApiVersion>
 		<javaxElVersion>2.2.6</javaxElVersion>
 		<seleniumVersion>3.141.59</seleniumVersion>
 		<hikariCPVersion>3.3.1</hikariCPVersion>
 		<springVersion>5.1.5.RELEASE</springVersion>
 		<javaxAnnotationApiVersion>1.3.2</javaxAnnotationApiVersion>
 		<javaxInjectVersion>1</javaxInjectVersion>
+		<hibernateVersion>5.1.0.Final</hibernateVersion>
+		<springOrmVersion>5.0.2.RELEASE</springOrmVersion>
+		<queryDslVersion>4.2.1</queryDslVersion>
+		<springSecurity>5.1.4.RELEASE</springSecurity>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4jVersion}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-log4j12</artifactId>
-		    <version>${slf4jVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-android</artifactId>
-			<version>${mockitoVersion}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-		    <groupId>javax.el</groupId>
-		    <artifactId>javax.el-api</artifactId>
-		    <version>${javaxElApiVersion}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.glassfish.web</groupId>
-		    <artifactId>javax.el</artifactId>
-		    <version>${javaxElVersion}</version>
-		</dependency>
-	    <dependency>
-	        <groupId>org.seleniumhq.selenium</groupId>
-	        <artifactId>selenium-java</artifactId>
-	        <version>${seleniumVersion}</version>
-	    </dependency>
-		<dependency>
-		    <groupId>com.zaxxer</groupId>
-		    <artifactId>HikariCP</artifactId>
-		    <version>${hikariCPVersion}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-webmvc</artifactId>
-		    <version>${springVersion}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-jdbc</artifactId>
-		    <version>${springVersion}</version>
-		</dependency>
-	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junitVersion}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${servletVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>javax.inject</groupId>
+			    <artifactId>javax.inject</artifactId>
+			    <version>${javaxInjectVersion}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4jVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.slf4j</groupId>
+			    <artifactId>slf4j-log4j12</artifactId>
+			    <version>${slf4jVersion}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-android</artifactId>
+				<version>${mockitoVersion}</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+			    <groupId>javax.el</groupId>
+			    <artifactId>javax.el-api</artifactId>
+			    <version>${javaxElApiVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>javax.persistence</groupId>
+			    <artifactId>persistence-api</artifactId>
+			    <version>${javaxPersistenceApiVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.glassfish.web</groupId>
+			    <artifactId>javax.el</artifactId>
+			    <version>${javaxElVersion}</version>
+			</dependency>
+		    <dependency>
+		        <groupId>org.seleniumhq.selenium</groupId>
+		        <artifactId>selenium-java</artifactId>
+		        <version>${seleniumVersion}</version>
+		    </dependency>
+			<dependency>
+			    <groupId>com.zaxxer</groupId>
+			    <artifactId>HikariCP</artifactId>
+			    <version>${hikariCPVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-webmvc</artifactId>
+			    <version>${springVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-jdbc</artifactId>
+			    <version>${springVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.hibernate</groupId>
+			    <artifactId>hibernate-core</artifactId>
+			    <version>${hibernateVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.hibernate</groupId>
+			    <artifactId>hibernate-java8</artifactId>
+			    <version>${hibernateVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.hibernate</groupId>
+			    <artifactId>hibernate-entitymanager</artifactId>
+			    <version>${hibernateVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework</groupId>
+			    <artifactId>spring-orm</artifactId>
+			    <version>${springOrmVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>com.querydsl</groupId>
+			    <artifactId>querydsl-apt</artifactId>
+			    <version>${queryDslVersion}</version>
+			    <scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>com.querydsl</groupId>
+			    <artifactId>querydsl-jpa</artifactId>
+			    <version>${queryDslVersion}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework.security</groupId>
+			    <artifactId>spring-security-core</artifactId>
+			    <version>${springSecurity}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework.security</groupId>
+			    <artifactId>spring-security-web</artifactId>
+			    <version>${springSecurity}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework.security</groupId>
+			    <artifactId>spring-security-config</artifactId>
+			    <version>${springSecurity}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.springframework.security</groupId>
+			    <artifactId>spring-security-taglibs</artifactId>
+			    <version>${springSecurity}</version>
+			</dependency>
+			<dependency>
+			    <groupId>taglibs</groupId>
+			    <artifactId>standard</artifactId>
+			    <version>1.1.2</version>
+			</dependency>
+		</dependencies>	
+	</dependencyManagement>
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+		    <plugin>
+		        <groupId>com.mysema.maven</groupId>
+		        <artifactId>apt-maven-plugin</artifactId>
+		        <version>1.1.3</version>
+		        <executions>
+			        <execution>
+			            <goals>
+			                <goal>process</goal>
+			            </goals>
+			            <configuration>
+			                <outputDirectory>target/generated-sources/java</outputDirectory>
+			                <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+			            </configuration>
+			        </execution>
+		        </executions>
+		    </plugin>	
+		</plugins>
 		<pluginManagement> 
 			<plugins>
 				<plugin>
@@ -98,7 +212,7 @@
 		                        <consoleOutput>true</consoleOutput>
 		                        <failsOnError>true</failsOnError>
 		                        <linkXRef>false</linkXRef>
-		                        <configLocation>${project.basedir}/src.main.resources/checkstyle.xml</configLocation>
+		                        <configLocation>${project.basedir}/src/main/resources/checkstyle.xml</configLocation>
 		                    </configuration>
 		                    <goals>
 		                        <goal>check</goal>
