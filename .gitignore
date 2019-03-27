@@ -1,7 +1,2 @@
-/build/
-/target/
-/.classpath
 /.project
-/config/
-/static/
 /log4j.log
