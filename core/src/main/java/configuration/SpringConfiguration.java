@@ -148,6 +148,7 @@ public class SpringConfiguration implements WebApplicationInitializer, WebMvcCon
   public void onStartup(ServletContext servletContext) throws ServletException {
     AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
     context.register(SpringConfiguration.class);
+    context.register(SecurityConfiguration.class);
     servletContext.addListener(new ContextLoaderListener(context));
 
     ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(context));

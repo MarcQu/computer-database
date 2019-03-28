@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <company id="2" name="Thinking Machines"/>
+  <company id="4" name="Netronics"/>
+  <company id="5" name="Tandy Corporation"/>
+  <company id="6" name="Commodore International"/>
+  <company id="7" name="MOS Technology"/>
+  <company id="8" name="Micro Instrumentation and Telemetry Systems"/>
+  <company id="9" name="IMS Associates, Inc."/>
+  <company id="10" name="Digital Equipment Corporation"/>
+  <company id="11" name="Lincoln Laboratory"/>
+  <company id="12" name="Moore School of Electrical Engineering"/>
+  <company id="13" name="IBM"/>
+  <company id="14" name="Amiga Corporation"/>
+  <company id="15" name="Canon"/>
+  <company id="16" name="Nokia"/>
+  <company id="17" name="Sony"/>
+  <company id="18" name="OQO"/>
+  <company id="19" name="NeXT"/>
+  <company id="20" name="Atari"/>
+  <company id="22" name="Acorn computer"/>
+  <company id="23" name="Timex Sinclair"/>
+  <company id="24" name="Nintendo"/>
+  <company id="25" name="Sinclair Research Ltd"/>
+  <company id="26" name="Xerox"/>
+  <company id="27" name="Hewlett-Packard"/>
+  <company id="28" name="Zemmix"/>
+  <company id="29" name="ACVS"/>
+  <company id="30" name="Sanyo"/>
+  <company id="31" name="Cray"/>
+  <company id="32" name="Evans &amp; Sutherland"/>
+  <company id="33" name="E.S.R. Inc."/>
+  <company id="34" name="OMRON"/>
+  <company id="35" name="BBN Technologies"/>
+  <company id="36" name="Lenovo Group"/>
+  <company id="37" name="ASUS"/>
+  <company id="38" name="Amstrad"/>
+  <company id="39" name="Sun Microsystems"/>
+  <company id="40" name="Texas Instruments"/>
+  <company id="41" name="HTC Corporation"/>
+  <company id="42" name="Research In Motion"/>
+  <company id="43" name="Samsung Electronics"/>
+  <company id="45" name="Apple Inc."/>
+  <computer id="51" name="Commodore 64" introduced="1982-08-01 01:00:00.0" discontinued="1994-01-01 00:00:00.0" company_id="6"/>
+  <computer id="74" name="Amiga 2000" introduced="1986-01-01 00:00:00.0" discontinued="1990-01-01 00:00:00.0" company_id="6"/>
+  <computer id="90" name="NeXTstation" introduced="1990-01-01 00:00:00.0" discontinued="1993-01-01 00:00:00.0" company_id="19"/>
+  <computer id="91" name="NeXTcube" introduced="1988-01-01 00:00:00.0" discontinued="1993-01-01 00:00:00.0" company_id="19"/>
+  <computer id="122" name="Atari ST" introduced="1985-01-01 00:00:00.0" discontinued="1993-01-01 00:00:00.0" company_id="20"/>
+  <computer id="129" name="Amiga 1200" introduced="1992-10-01 00:00:00.0" discontinued="1996-01-01 00:00:00.0" company_id="6"/>
+  <computer id="148" name="Timex Sinclair 2068" introduced="1983-11-01 00:00:00.0" discontinued="1984-04-01 01:00:00.0" company_id="23"/>
+  <computer id="154" name="Super Nintendo Entertainment System" introduced="1991-08-01 01:00:00.0" discontinued="1999-01-01 00:00:00.0" company_id="24"/>
+  <computer id="169" name="Sinclair QL" introduced="1984-01-01 00:00:00.0" discontinued="1986-01-01 00:00:00.0" company_id="25"/>
+  <computer id="248" name="MSX" introduced="1983-01-01 00:00:00.0" discontinued="1995-01-01 00:00:00.0" company_id="28"/>
+  <computer id="305" name="System/36" introduced="1983-01-01 00:00:00.0" discontinued="2000-01-01 00:00:00.0" company_id="13"/>
+  <computer id="311" name="ASCI White" introduced="2001-01-01 00:00:00.0" discontinued="2006-01-01 00:00:00.0" company_id="13"/>
+  <computer id="434" name="Xerox Daybreak" introduced="1985-01-01 00:00:00.0" discontinued="1989-01-01 00:00:00.0"/>
+  <computer id="456" name="Test" introduced="2009-01-01 00:00:00.0" discontinued="2009-01-01 00:00:00.0"/>
+  <computer id="496" name="Meiko Computing Surface" introduced="1986-01-01 00:00:00.0" discontinued="1993-01-01 00:00:00.0"/>
+  <computer id="503" name="System/34" introduced="1978-01-01 00:00:00.0" discontinued="1983-01-01 00:00:00.0" company_id="13"/>
+</dataset>
