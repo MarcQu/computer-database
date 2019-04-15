@@ -17,6 +17,7 @@ import exception.DateFormatException;
 import exception.DatePrecedenceException;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
+import mapper.CompanyMapper;
 import model.Company;
 import service.CompanyService;
 import service.ComputerService;
@@ -28,16 +29,18 @@ public class CreateComputer {
   private Logger logger;
   private ComputerService computerService;
   private CompanyService companyService;
+  private CompanyMapper companyMapper;
 
   /**
    * Initialise les instances.
    * @param computerService le service de computer
    * @param companyService le service de company
    */
-  public CreateComputer(ComputerService computerService, CompanyService companyService) {
+  public CreateComputer(ComputerService computerService, CompanyService companyService, CompanyMapper companyMapper) {
     this.logger = LoggerFactory.getLogger(CreateComputer.class);
     this.computerService = computerService;
     this.companyService = companyService;
+    this.companyMapper = companyMapper;
   }
 
   @RequestMapping(method = RequestMethod.GET)
@@ -52,24 +55,21 @@ public class CreateComputer {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public String doPost(@RequestParam("computerName") String name, @RequestParam("introduced") String introduced, @RequestParam("discontinued") String discontinued, @RequestParam("companyId") String companyId, Model model) {
+  public String doPost(@RequestParam("computerName") String name, @RequestParam("introduced") String introduced, @RequestParam("discontinued") String discontinued, @RequestParam("companyId") Integer companyId, Model model) {
     ComputerTO computerTO = new ComputerTO();
     computerTO.setName(name);
     computerTO.setIntroduced(introduced);
     computerTO.setDiscontinued(discontinued);
-    CompanyTO companyTO = new CompanyTO();
-    companyTO.setId(companyId);
     try {
-      List<Company> company = this.companyService.showDetails(companyTO);
-      if (company.size() > 0) {
-        computerTO.setCompany(company.get(0));
+      List<CompanyTO> companyTO = this.companyService.showDetails(companyId);
+      if (companyTO.size() > 0) {
+        computerTO.setCompany(this.companyMapper.getCompany(companyTO.get(0)));
       }
       List<CompanyTO> companies = this.companyService.listAll();
       model.addAttribute("companies", companies);
       this.computerService.create(computerTO);
       model.addAttribute("success", "Succès de la création");
     } catch (SQLException e) {
-      System.out.println("ici");
       this.logger.error(e.toString());
     } catch (IllegalArgumentException e) {
       this.logger.error(e.toString());

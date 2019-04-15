@@ -64,8 +64,8 @@ public class ComputerService {
    * @return retour la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Computer> showDetails(ComputerTO computerTO) throws SQLException {
-    return this.computerDAO.showDetails(this.mapper.getComputer(computerTO));
+  public List<ComputerTO> showDetails(Integer id) throws SQLException {
+    return this.mapper.getComputerTO(this.computerDAO.showDetails(id));
   }
 
   /**

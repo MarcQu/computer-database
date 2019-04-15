@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import com.zaxxer.hikari.HikariDataSource;
 
-import mapper.CompanyMapper;
 import model.Company;
 import model.QCompany;
 import model.QComputer;
@@ -108,13 +107,13 @@ public class CompanyDAO {
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Company> showDetails(Company company) throws SQLException {
+  public List<Company> showDetails(Integer id) throws SQLException {
     Session session = this.sessionFactory.getObject().openSession();
     HibernateQueryFactory queryFactory = new HibernateQueryFactory(session);
     QCompany qCompany = QCompany.company;
     List<Company> companies = new ArrayList<>();
-    if (company.getId() != null) {
-      companies = queryFactory.selectFrom(qCompany).where(qCompany.id.eq(company.getId())).fetch();
+    if (id != null) {
+      companies = queryFactory.selectFrom(qCompany).where(qCompany.id.eq(id)).fetch();
     }
     session.close();
     return companies;

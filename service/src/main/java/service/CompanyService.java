@@ -70,8 +70,8 @@ public class CompanyService {
    * @return companies la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Company> showDetails(CompanyTO companyTO) throws SQLException {
-    return this.companyDAO.showDetails(this.mapper.getCompany(companyTO));
+  public List<CompanyTO> showDetails(Integer id) throws SQLException {
+    return this.mapper.getCompanyTO(this.companyDAO.showDetails(id));
   }
 
   /**

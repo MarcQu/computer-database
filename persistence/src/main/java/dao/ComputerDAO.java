@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import com.zaxxer.hikari.HikariDataSource;
 
-import mapper.ComputerMapper;
 import model.Computer;
 import model.QComputer;
 
@@ -94,11 +93,11 @@ public class ComputerDAO {
    * @return computers la liste des resultats de la requète
    * @throws SQLException SQLException
    */
-  public List<Computer> showDetails(Computer computer) throws SQLException {
+  public List<Computer> showDetails(Integer id) throws SQLException {
     Session session = this.sessionFactory.getObject().openSession();
     HibernateQueryFactory queryFactory = new HibernateQueryFactory(session);
     QComputer qComputer = QComputer.computer;
-    List<Computer> computers = queryFactory.selectFrom(qComputer).where(qComputer.id.eq(computer.getId())).fetch();
+    List<Computer> computers = queryFactory.selectFrom(qComputer).where(qComputer.id.eq(id)).fetch();
     session.close();
     return computers;
   }
@@ -111,7 +110,6 @@ public class ComputerDAO {
    */
   public void create(Computer computer) throws SQLException {
     Session session = this.sessionFactory.getObject().openSession();
-    System.out.println(computer);
     session.save(computer);
     session.close();
   }

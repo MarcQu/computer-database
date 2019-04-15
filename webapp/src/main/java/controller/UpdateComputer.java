@@ -17,6 +17,7 @@ import exception.DateFormatException;
 import exception.DatePrecedenceException;
 import exception.EmptyNameException;
 import exception.SpecialCharacterException;
+import mapper.CompanyMapper;
 import model.Company;
 import model.Computer;
 import service.CompanyService;
@@ -29,30 +30,30 @@ public class UpdateComputer {
   private Logger logger;
   private ComputerService computerService;
   private CompanyService companyService;
+  private CompanyMapper companyMapper;
 
   /**
    * Initialise les instances.
    * @param computerService le service de computer
    * @param companyService le service de company
    */
-  public UpdateComputer(ComputerService computerService, CompanyService companyService) {
+  public UpdateComputer(ComputerService computerService, CompanyService companyService, CompanyMapper companyMapper) {
     this.logger = LoggerFactory.getLogger(UpdateComputer.class);
     this.computerService = computerService;
     this.companyService = companyService;
+    this.companyMapper = companyMapper;
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public String updateComputer(@RequestParam("computerId") String id, @RequestParam("search") String search, @RequestParam("sort") String sort, @RequestParam("nombre") int nombre, @RequestParam("page") int page, Model model) {
-    ComputerTO computerTO = new ComputerTO();
-    computerTO.setId(id);
+  public String updateComputer(@RequestParam("computerId") Integer id, @RequestParam("search") String search, @RequestParam("sort") String sort, @RequestParam("nombre") int nombre, @RequestParam("page") int page, Model model) {
     try {
-      Computer computer = this.computerService.showDetails(computerTO).get(0);
+      ComputerTO computerTO = this.computerService.showDetails(id).get(0);
       List<CompanyTO> companies = this.companyService.listAll();
       model.addAttribute("computerId", id);
-      model.addAttribute("computerName", computer.getName());
-      model.addAttribute("introduced", computer.getIntroduced());
-      model.addAttribute("discontinued", computer.getDiscontinued());
-      model.addAttribute("companyComputer", computer.getCompany());
+      model.addAttribute("computerName", computerTO.getName());
+      model.addAttribute("introduced", computerTO.getIntroduced());
+      model.addAttribute("discontinued", computerTO.getDiscontinued());
+      model.addAttribute("companyComputer", computerTO.getCompany());
       model.addAttribute("companies", companies);
       model.addAttribute("nombre", nombre);
       model.addAttribute("page", page);
@@ -65,31 +66,29 @@ public class UpdateComputer {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public String doPost(@RequestParam("computerId") String id, @RequestParam("computerName") String name, @RequestParam("introduced") String introduced, @RequestParam("discontinued") String discontinued, @RequestParam("companyId") String companyId, @RequestParam("search") String search, @RequestParam("sort") String sort, @RequestParam("nombre") int nombre, @RequestParam("page") int page, Model model) {
+  public String doPost(@RequestParam("computerId") Integer id, @RequestParam("computerName") String name, @RequestParam("introduced") String introduced, @RequestParam("discontinued") String discontinued, @RequestParam("companyId") String companyId, @RequestParam("search") String search, @RequestParam("sort") String sort, @RequestParam("nombre") int nombre, @RequestParam("page") int page, Model model) {
     ComputerTO computerTO = new ComputerTO();
-    computerTO.setId(id);
+    computerTO.setId(id.toString());
     computerTO.setName(name);
     computerTO.setIntroduced(introduced.toString());
     computerTO.setDiscontinued(discontinued.toString());
-    CompanyTO companyTO = new CompanyTO();
-    companyTO.setId(companyId);
     try {
-      List<Company> company = this.companyService.showDetails(companyTO);
-      if (company.size() > 0) {
-        computerTO.setCompany(company.get(0));
+      List<CompanyTO> companyTO = this.companyService.showDetails(id);
+      if (companyTO.size() > 0) {
+        computerTO.setCompany(this.companyMapper.getCompany(companyTO.get(0)));
       }
       List<CompanyTO> companies = this.companyService.listAll();
       model.addAttribute("companies", companies);
       this.computerService.update(computerTO);
 
-      displayInformation(model, computerTO, search, sort, nombre, page);
+      displayInformation(model, id, search, sort, nombre, page);
       model.addAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
       this.logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(model, computerTO, search, sort, nombre, page);
+        displayInformation(model, id, search, sort, nombre, page);
         model.addAttribute("errorName", error);
         this.logger.error(e.toString());
       } catch (SQLException e1) {
@@ -98,7 +97,7 @@ public class UpdateComputer {
     } catch (DateFormatException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(model, computerTO, search, sort, nombre, page);
+        displayInformation(model, id, search, sort, nombre, page);
         model.addAttribute("errorDate", error);
         this.logger.error(e.toString());
       } catch (SQLException e1) {
@@ -107,7 +106,7 @@ public class UpdateComputer {
     } catch (DatePrecedenceException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(model, computerTO, search, sort, nombre, page);
+        displayInformation(model, id, search, sort, nombre, page);
         model.addAttribute("errorDate", error);
         this.logger.error(e.toString());
       } catch (SQLException e1) {
@@ -116,7 +115,7 @@ public class UpdateComputer {
     } catch (SpecialCharacterException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(model, computerTO, search, sort, nombre, page);
+        displayInformation(model, id, search, sort, nombre, page);
         model.addAttribute("error", error);
         this.logger.error(e.toString());
       } catch (SQLException e1) {
@@ -136,13 +135,13 @@ public class UpdateComputer {
    * @param sort le trie
    * @throws SQLException SQLException
    */
-  private void displayInformation(Model model, ComputerTO computerTO, String search, String sort, int nombre, int page) throws SQLException {
-    Computer computer = this.computerService.showDetails(computerTO).get(0);
-    model.addAttribute("computerId", computer.getId());
-    model.addAttribute("computerName", computer.getName());
-    model.addAttribute("introduced", computer.getIntroduced());
-    model.addAttribute("discontinued", computer.getDiscontinued());
-    model.addAttribute("companyComputer", computer.getCompany());
+  private void displayInformation(Model model, Integer id, String search, String sort, int nombre, int page) throws SQLException {
+    ComputerTO computerTO = this.computerService.showDetails(id).get(0);
+    model.addAttribute("computerId", computerTO.getId());
+    model.addAttribute("computerName", computerTO.getName());
+    model.addAttribute("introduced", computerTO.getIntroduced());
+    model.addAttribute("discontinued", computerTO.getDiscontinued());
+    model.addAttribute("companyComputer", computerTO.getCompany());
     model.addAttribute("nombre", nombre);
     model.addAttribute("page", page);
     model.addAttribute("search", search);

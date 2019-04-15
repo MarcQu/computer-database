@@ -34,12 +34,10 @@ public class UpdateCompany {
 
   @RequestMapping(method = RequestMethod.GET)
   public String doGet(@RequestParam("companyId") String id, @RequestParam("search") String search, @RequestParam("sort") String sort, @RequestParam("nombre") int nombre, @RequestParam("page") int page, Model model) {
-    CompanyTO companyTO = new CompanyTO();
-    companyTO.setId(id);
     try {
-      Company company = this.companyService.showDetails(companyTO).get(0);
+      CompanyTO companyTO = this.companyService.showDetails(Integer.valueOf(id)).get(0);
       model.addAttribute("companyId", id);
-      model.addAttribute("companyName", company.getName());
+      model.addAttribute("companyName", companyTO.getName());
       model.addAttribute("nombre", nombre);
       model.addAttribute("page", page);
       model.addAttribute("search", search);
@@ -57,14 +55,14 @@ public class UpdateCompany {
     companyTO.setName(name);
     try {
       this.companyService.update(companyTO);
-      displayInformation(model, companyTO, search, sort, nombre, page);
+      displayInformation(model, Integer.valueOf(id), search, sort, nombre, page);
       model.addAttribute("success", "Succès de la mise à jour");
     } catch (SQLException e) {
       this.logger.error(e.toString());
     } catch (EmptyNameException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(model, companyTO, search, sort, nombre, page);
+        displayInformation(model, Integer.valueOf(id), search, sort, nombre, page);
         model.addAttribute("errorName", error);
         this.logger.error(e.toString());
       } catch (SQLException e1) {
@@ -73,7 +71,7 @@ public class UpdateCompany {
     } catch (SpecialCharacterException e) {
       try {
         String error = e.toString().split(": ")[1];
-        displayInformation(model, companyTO, search, sort, nombre, page);
+        displayInformation(model, Integer.valueOf(id), search, sort, nombre, page);
         model.addAttribute("error", error);
         this.logger.error(e.toString());
       } catch (SQLException e1) {
@@ -93,10 +91,10 @@ public class UpdateCompany {
    * @param sort le trie
    * @throws SQLException SQLException
    */
-  private void displayInformation(Model model, CompanyTO companyTO, String search, String sort, int nombre, int page) throws SQLException {
-    Company company = this.companyService.showDetails(companyTO).get(0);
-    model.addAttribute("companyId", company.getId());
-    model.addAttribute("companyName", company.getName());
+  private void displayInformation(Model model, Integer id, String search, String sort, int nombre, int page) throws SQLException {
+    CompanyTO companyTO = this.companyService.showDetails(id).get(0);
+    model.addAttribute("companyId", companyTO.getId());
+    model.addAttribute("companyName", companyTO.getName());
     model.addAttribute("nombre", nombre);
     model.addAttribute("page", page);
     model.addAttribute("search", search);

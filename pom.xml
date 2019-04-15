@@ -34,6 +34,8 @@
 		<springOrmVersion>5.0.2.RELEASE</springOrmVersion>
 		<queryDslVersion>4.2.1</queryDslVersion>
 		<springSecurity>5.1.4.RELEASE</springSecurity>
+		<jacksonVersion>2.9.8</jacksonVersion>
+		<taglibsVersion>1.1.2</taglibsVersion>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -156,10 +158,20 @@
 			    <artifactId>spring-security-taglibs</artifactId>
 			    <version>${springSecurity}</version>
 			</dependency>
+		    <dependency>
+		        <groupId>com.fasterxml.jackson.core</groupId>
+		        <artifactId>jackson-databind</artifactId>
+    			<version>${jacksonVersion}</version>
+		    </dependency>
+		    <dependency>
+		        <groupId>com.fasterxml.jackson.core</groupId>
+    			<artifactId>jackson-core</artifactId>
+    			<version>${jacksonVersion}</version>
+		    </dependency>
 			<dependency>
 			    <groupId>taglibs</groupId>
 			    <artifactId>standard</artifactId>
-			    <version>1.1.2</version>
+			    <version>${taglibsVersion}</version>
 			</dependency>
 		</dependencies>	
 	</dependencyManagement>
